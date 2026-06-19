@@ -24,7 +24,7 @@ app.use(compression({ threshold: 1024 }))
 
 // Security
 app.use(helmet({
-  // Allow Google Fonts and Maps in CSP
+  strictTransportSecurity: false, // Disabled until HTTPS/domain is configured
   contentSecurityPolicy: {
     directives: {
       defaultSrc:  ["'self'"],
