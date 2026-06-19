@@ -1,0 +1,22 @@
+{
+  "name": "Octavia Dental & Facial Aesthetics",
+  "short_name": "Octavia Dental",
+  "description": "Private dental & facial aesthetics clinic in Godalming, Surrey.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF7",
+  "theme_color": "#2D5A1E",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

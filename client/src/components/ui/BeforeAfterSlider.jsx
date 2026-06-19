@@ -1,0 +1,107 @@
+import { useState, useRef, useCallback } from 'react'
+
+// Default filter applied to the "before" image for dental before/afters.
+// Simulates pre-treatment appearance: slightly yellowed, less bright, less saturated.
+const DENTAL_BEFORE_FILTER = 'sepia(0.4) saturate(0.55) brightness(0.82) contrast(0.95)'
+
+export default function BeforeAfterSlider({
+  beforeSrc,
+  afterSrc,
+  beforeAlt    = 'Before treatment',
+  afterAlt     = 'After treatment',
+  lazy         = true,
+  beforeFilter = DENTAL_BEFORE_FILTER,
+}) {
+  const [position, setPosition] = useState(50)
+  const [dragging, setDragging] = useState(false)
+  const containerRef            = useRef(null)
+
+  const updatePosition = useCallback((clientX) => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width))
+    setPosition((x / rect.width) * 100)
+  }, [])
+
+  const onMouseDown  = ()  => setDragging(true)
+  const onMouseMove  = (e) => { if (dragging) updatePosition(e.clientX) }
+  const onMouseUp    = ()  => setDragging(false)
+  const onTouchStart = ()  => setDragging(true)
+  const onTouchMove  = (e) => { if (dragging) updatePosition(e.touches[0].clientX) }
+  const onTouchEnd   = ()  => setDragging(false)
+
+  return (
+    <div className="space-y-2">
+      <div
+        ref={containerRef}
+        className="relative overflow-hidden rounded-sm aspect-[4/3] select-none cursor-col-resize"
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        role="img"
+        aria-label={`Before and after comparison: ${beforeAlt} / ${afterAlt}`}
+      >
+        {/* After image — clean result */}
+        <img
+          src={afterSrc}
+          alt={afterAlt}
+          loading={lazy ? 'lazy' : 'eager'}
+          className="absolute inset-0 w-full h-full object-cover"
+          draggable={false}
+        />
+
+        {/* Before image — clipped left of handle, with pre-treatment filter */}
+        <div
+          className="absolute inset-0 overflow-hidden"
+          style={{ width: `${position}%` }}
+        >
+          <img
+            src={beforeSrc}
+            alt={beforeAlt}
+            loading={lazy ? 'lazy' : 'eager'}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              width:     `${10000 / position}%`,
+              maxWidth:  'none',
+              filter:    beforeFilter,
+            }}
+            draggable={false}
+          />
+        </div>
+
+        {/* Divider line */}
+        <div
+          className="absolute top-0 bottom-0 w-px bg-white shadow-md"
+          style={{ left: `${position}%` }}
+        />
+
+        {/* Drag handle */}
+        <div
+          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center cursor-col-resize z-10"
+          style={{ left: `${position}%` }}
+          onMouseDown={onMouseDown}
+          onTouchStart={onTouchStart}
+        >
+          <svg className="w-4 h-4 text-brand-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M9 18l-6-6 6-6" />
+            <path d="M15 6l6 6-6 6" />
+          </svg>
+        </div>
+
+        {/* Labels */}
+        <span className="absolute top-2 left-2 bg-black/50 text-white text-xs font-sans px-2 py-0.5 rounded-full pointer-events-none">
+          Before
+        </span>
+        <span className="absolute top-2 right-2 bg-brand-green/80 text-white text-xs font-sans px-2 py-0.5 rounded-full pointer-events-none">
+          After
+        </span>
+      </div>
+
+      <p className="text-center text-xs font-sans text-brand-subtle italic">
+        Results may vary. Images published with written patient consent.
+      </p>
+    </div>
+  )
+}

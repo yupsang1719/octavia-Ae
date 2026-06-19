@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans text-brand-dark bg-brand-cream antialiased;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* Cormorant Garamond only looks premium at 28px+.
+     h3/h4 at card scale use font-sans via explicit class overrides. */
+  h1, h2 {
+    @apply font-serif;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  h3, h4 {
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .prose { --tw-prose-body: theme('colors.brand.muted'); }
+
+  /* Gold decorative accent line used in section headers */
+  .gold-rule {
+    @apply block w-10 h-0.5 bg-brand-gold mb-5;
+  }
+
+  /* Uppercase eyebrow label */
+  .section-label {
+    @apply font-sans text-xs uppercase tracking-[0.18em] text-brand-gold font-semibold mb-3 block;
+  }
+
+  /* Glass surface utility */
+  .glass {
+    @apply backdrop-blur-md bg-white/80 border border-white/60;
+  }
+}
+
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+
+  .container-wide {
+    @apply max-w-7xl mx-auto px-5 sm:px-8 lg:px-10;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-dark text-white font-sans font-medium text-sm rounded-full cursor-pointer transition-all duration-300 ease-out hover:bg-brand-dark/85 hover:shadow-lg hover:shadow-brand-dark/25 focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-brand-green text-brand-green font-sans font-medium text-sm rounded-full cursor-pointer transition-all duration-300 ease-out hover:bg-brand-green hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-gold text-white font-sans font-medium text-sm rounded-full cursor-pointer transition-all duration-300 ease-out hover:bg-brand-gold-dk hover:shadow-lg hover:shadow-brand-gold/20 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:ring-offset-2;
+  }
+
+  /* Ghost button for dark backgrounds */
+  .btn-ghost-white {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/30 text-white font-sans font-medium text-sm rounded-full cursor-pointer transition-all duration-300 ease-out hover:bg-white/10 hover:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/50;
+  }
+
+  .input {
+    @apply w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-shadow;
+  }
+}
