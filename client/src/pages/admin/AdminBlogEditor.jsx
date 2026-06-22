@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { ArrowLeft, Save, Globe, Upload, X } from 'lucide-react'
+import RichTextEditor from '../../components/ui/RichTextEditor'
 
 function slugify(str) {
   return str.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '')
@@ -167,15 +168,14 @@ export default function AdminBlogEditor() {
         </Field>
 
         {/* Body */}
-        <Field label="Body (Markdown) *">
-          <textarea
+        <div>
+          <label className="block text-sm font-medium text-brand-dark mb-1 font-sans">Body *</label>
+          <RichTextEditor
             value={form.body}
-            onChange={e => set('body', e.target.value)}
-            rows={18}
-            className={`${input} font-mono text-xs leading-relaxed`}
-            placeholder="Write your post in Markdown…"
+            onChange={v => set('body', v)}
+            placeholder="Write your post…"
           />
-        </Field>
+        </div>
 
         {/* Category + Author */}
         <div className="grid sm:grid-cols-2 gap-4">

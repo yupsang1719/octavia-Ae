@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Clock, ArrowLeft, Share2 } from 'lucide-react'
-import ReactMarkdown from 'react-markdown'
+import DOMPurify from 'dompurify'
 import axios from 'axios'
 import SchemaMarkup from '../components/ui/SchemaMarkup'
 import BookingModal from '../components/ui/BookingModal'
@@ -130,9 +130,10 @@ export default function BlogPost() {
 
       {/* Body */}
       <div className="container-wide max-w-3xl py-12 lg:py-16">
-        <div className="prose prose-lg prose-headings:font-serif prose-headings:font-medium prose-headings:text-brand-dark prose-p:font-sans prose-p:text-brand-muted prose-p:leading-relaxed prose-a:text-brand-green prose-a:no-underline hover:prose-a:underline max-w-none">
-          <ReactMarkdown>{post.body}</ReactMarkdown>
-        </div>
+        <div
+          className="prose prose-lg prose-headings:font-serif prose-headings:font-medium prose-headings:text-brand-dark prose-p:font-sans prose-p:text-brand-muted prose-p:leading-relaxed prose-a:text-brand-green prose-a:no-underline hover:prose-a:underline max-w-none"
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.body) }}
+        />
 
         {/* Bottom share */}
         <div className="mt-10 pt-8 border-t border-brand-border">
