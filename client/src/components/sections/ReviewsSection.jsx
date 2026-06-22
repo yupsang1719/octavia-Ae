@@ -1,34 +1,8 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import ReviewCard from '../ui/ReviewCard'
 import GoldRule from '../ui/GoldRule'
 import AnimatedHeading from '../ui/AnimatedHeading'
-
-const reviews = [
-  {
-    author: 'Sarah M.',
-    location: 'Guildford',
-    treatment: 'Composite Bonding',
-    rating: 5,
-    text: 'I cannot believe the difference in my smile. Dr Ana was so reassuring throughout and the results are absolutely stunning. I only wish I had done this sooner.',
-    source: 'google',
-  },
-  {
-    author: 'James T.',
-    location: 'Haslemere',
-    treatment: 'Dental Implants',
-    rating: 5,
-    text: 'After years of avoiding the dentist, Dr Ali made the whole implant process completely stress-free. The team are incredibly professional and the practice is spotless. Highly recommend.',
-    source: 'google',
-  },
-  {
-    author: 'Emma L.',
-    location: 'Godalming',
-    treatment: 'Invisalign',
-    rating: 5,
-    text: "Best decision I've made. The Invisalign results were even better than I expected — and nobody at work even noticed I was wearing them. Brilliant practice.",
-    source: 'google',
-  },
-]
 
 function GoogleRatingBadge() {
   return (
@@ -63,6 +37,21 @@ function GoogleRatingBadge() {
 }
 
 export default function ReviewsSection() {
+  const [reviews, setReviews] = useState([])
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/reviews')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) setReviews(data)
+      })
+      .catch(() => {})
+      .finally(() => setLoaded(true))
+  }, [])
+
+  if (loaded && reviews.length === 0) return null
+
   return (
     <section className="section-padding bg-brand-cream">
       <div className="container-wide">
@@ -92,7 +81,7 @@ export default function ReviewsSection() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {reviews.map((review, i) => (
             <motion.div
-              key={review.author}
+              key={review._id}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

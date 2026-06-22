@@ -4,6 +4,7 @@ import TrustBar       from '../components/sections/TrustBar'
 import ServicesGrid   from '../components/sections/ServicesGrid'
 import USPSection     from '../components/sections/USPSection'
 import TeamSection    from '../components/sections/TeamSection'
+import ReviewsSection from '../components/sections/ReviewsSection'
 import GalleryPreview from '../components/sections/GalleryPreview'
 import LocationsBar   from '../components/sections/LocationsBar'
 import BlogPreview    from '../components/sections/BlogPreview'
@@ -51,7 +52,10 @@ export default function Home() {
       {/* Section 5: Team */}
       <TeamSection />
 
-      {/* Section 6: Gallery preview */}
+      {/* Section 6: Reviews — only renders if published reviews exist */}
+      <ReviewsSection />
+
+      {/* Section 7: Gallery preview */}
       <GalleryPreview />
 
       {/* Section 7: Locations bar */}
