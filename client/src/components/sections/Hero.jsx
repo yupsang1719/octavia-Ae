@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle } from 'lucide-react'
 import { useBookingModal } from '../../hooks/useBookingModal'
 import BookingModal from '../ui/BookingModal'
@@ -43,8 +43,6 @@ export default function Hero({
   heroImage   = 'https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1400&q=80',
 }) {
   const { isOpen, open, close } = useBookingModal()
-  const { scrollY } = useScroll()
-  const imageY = useTransform(scrollY, [0, 600], ['0%', '18%'])
 
   const [wordIndex, setWordIndex] = useState(0)
 
@@ -62,9 +60,9 @@ export default function Hero({
     <>
       <section className="relative min-h-screen bg-brand-dark overflow-hidden">
 
-        {/* Parallax background */}
+        {/* Background image — fixed behind content */}
         <div className="absolute inset-0 lg:left-[45%]">
-          <motion.div className="w-full h-[115%] -top-[7.5%] absolute" style={{ y: imageY }}>
+          <div className="absolute inset-0">
             <img
               src={heroImage}
               alt="Octavia Dental & Facial Aesthetics team in Godalming"
@@ -75,7 +73,7 @@ export default function Hero({
               width="900"
               height="1100"
             />
-          </motion.div>
+          </div>
           <div className="absolute inset-0 bg-gradient-to-r from-[#0e1a0c] via-[#0e1a0c]/80 lg:via-[#0e1a0c]/35 to-transparent" />
           <div className="absolute inset-0 lg:hidden bg-gradient-to-t from-[#0e1a0c]/70 via-transparent to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0e1a0c]/30 via-transparent to-transparent" />
