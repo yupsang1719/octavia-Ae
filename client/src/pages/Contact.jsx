@@ -1,19 +1,28 @@
+import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Phone, Mail, MapPin, Clock, MessageCircle } from 'lucide-react'
+import axios from 'axios'
 import ContactForm from '../components/forms/ContactForm'
 import { SITE_URL } from '../utils/seo'
 
 function fade(d=0){return{initial:{opacity:0,y:18},whileInView:{opacity:1,y:0},viewport:{once:true},transition:{duration:0.45,delay:d,ease:'easeOut'}}}
 
-const HOURS = [
-  { day:'Monday – Thursday', hours:'8:30 am – 6:00 pm' },
-  { day:'Friday',            hours:'8:30 am – 5:00 pm' },
-  { day:'Saturday',          hours:'9:00 am – 2:00 pm' },
-  { day:'Sunday',            hours:'Closed' },
+const FALLBACK_HOURS = [
+  { day:'Monday – Thursday', hours:'8:30 am – 6:00 pm', closed: false },
+  { day:'Friday',            hours:'8:30 am – 5:00 pm', closed: false },
+  { day:'Saturday',          hours:'9:00 am – 2:00 pm', closed: false },
+  { day:'Sunday',            hours:'',                  closed: true  },
 ]
 
 export default function Contact() {
+  const [hours, setHours] = useState(FALLBACK_HOURS)
+
+  useEffect(() => {
+    axios.get('/api/settings/opening-hours')
+      .then(({ data }) => { if (Array.isArray(data) && data.length) setHours(data) })
+      .catch(() => {})
+  }, [])
   return (
     <>
       <Helmet>
@@ -77,10 +86,12 @@ export default function Contact() {
                   <h3 className="font-serif text-lg text-brand-dark font-medium">Opening hours</h3>
                 </div>
                 <ul className="space-y-2">
-                  {HOURS.map(h => (
-                    <li key={h.day} className="flex justify-between font-sans text-sm">
+                  {hours.map((h, i) => (
+                    <li key={i} className="flex justify-between font-sans text-sm">
                       <span className="text-brand-muted">{h.day}</span>
-                      <span className={`font-medium ${h.hours === 'Closed' ? 'text-brand-subtle' : 'text-brand-dark'}`}>{h.hours}</span>
+                      <span className={`font-medium ${h.closed ? 'text-brand-subtle' : 'text-brand-dark'}`}>
+                        {h.closed ? 'Closed' : h.hours}
+                      </span>
                     </li>
                   ))}
                 </ul>
