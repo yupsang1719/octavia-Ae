@@ -49,6 +49,7 @@ function ReviewCard({ review }) {
 
 function MarqueeRow({ items, direction = 'left', speed = 40 }) {
   const [paused, setPaused] = useState(false)
+  if (!items.length) return null
   // Duplicate enough times to fill the track
   const fill = Math.max(2, Math.ceil(8 / items.length))
   const track = Array.from({ length: fill }, () => items).flat()
