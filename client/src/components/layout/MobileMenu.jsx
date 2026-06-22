@@ -226,7 +226,7 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking }) {
                   Call us
                 </a>
                 <a
-                  href="https://wa.me/441483860020"
+                  href="https://wa.me/447584965468"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-1.5 px-4 py-3 bg-[#25D366]/10 text-[#1a9e50] border border-[#25D366]/30 rounded-full text-sm font-sans font-medium hover:bg-[#25D366]/20 transition-colors"

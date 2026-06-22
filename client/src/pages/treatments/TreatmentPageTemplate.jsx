@@ -186,22 +186,18 @@ function Process({ steps }) {
   )
 }
 
-// Dental smile photos matched to each treatment for before/after placeholders
-const TREATMENT_PHOTOS = {
-  'dental-implants':  'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=600&h=450&q=80',
-  'invisalign':       'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&h=450&q=80',
-  'composite-bonding':'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=600&h=450&q=80',
-  'veneers':          'https://images.unsplash.com/photo-1559599076-9b6f425d1b07?auto=format&fit=crop&w=600&h=450&q=80',
-  'teeth-whitening':  'https://images.unsplash.com/photo-1559599076-9b6f425d1b07?auto=format&fit=crop&w=600&h=450&q=80',
-  'six-month-smile':  'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&h=450&q=80',
-  'air-flow-hygiene': 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=600&h=450&q=80',
-  'botox-anti-wrinkle':'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&h=450&q=80',
-}
-const DEFAULT_SMILE = 'https://images.unsplash.com/photo-1559599076-9b6f425d1b07?auto=format&fit=crop&w=600&h=450&q=80'
-
 // ── Before/After ──────────────────────────────────────────────────────────────
 function BeforeAfterSection({ treatmentId }) {
-  const photo = TREATMENT_PHOTOS[treatmentId] || DEFAULT_SMILE
+  const [items, setItems] = useState([])
+
+  useEffect(() => {
+    if (!treatmentId) return
+    axios.get(`/api/gallery/${treatmentId}`).then(({ data }) => {
+      if (Array.isArray(data)) setItems(data)
+    }).catch(() => {})
+  }, [treatmentId])
+
+  if (!items.length) return null
 
   return (
     <section className="section-padding bg-brand-cream">
@@ -213,13 +209,13 @@ function BeforeAfterSection({ treatmentId }) {
           Patient results
         </motion.h2>
         <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          {[0, 1, 2].map((i) => (
-            <motion.div key={i} {...fadeUp(i * 0.08)}>
+          {items.slice(0, 3).map((item, i) => (
+            <motion.div key={item._id || i} {...fadeUp(i * 0.08)}>
               <BeforeAfterSlider
-                beforeSrc={photo}
-                afterSrc={photo}
-                beforeAlt={`Before treatment`}
-                afterAlt={`After treatment at Octavia Dental`}
+                beforeSrc={item.beforeImg || item.url || item.src}
+                afterSrc={item.afterImg   || item.url || item.src}
+                beforeAlt={`Before ${item.treatment || 'treatment'}`}
+                afterAlt={`After ${item.treatment || 'treatment'} at Octavia Dental`}
               />
             </motion.div>
           ))}
@@ -384,7 +380,7 @@ function TreatmentCTA({ treatment, onBook }) {
               Book free consultation
             </button>
             <a
-              href="https://wa.me/441483860020"
+              href="https://wa.me/447584965468"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-ghost-white text-base px-8 py-4"

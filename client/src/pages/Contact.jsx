@@ -64,7 +64,7 @@ export default function Contact() {
                   </span>
                 </address>
 
-                <a href="https://wa.me/441483860020" target="_blank" rel="noopener noreferrer"
+                <a href="https://wa.me/447584965468" target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-2 w-full justify-center bg-[#25D366] text-white font-sans font-medium text-sm rounded-full py-3 hover:opacity-90 transition-opacity mt-2">
                   <MessageCircle className="w-4 h-4" /> WhatsApp us
                 </a>

@@ -5,14 +5,6 @@ import { ArrowRight } from 'lucide-react'
 import GoldRule from '../ui/GoldRule'
 import AnimatedHeading from '../ui/AnimatedHeading'
 
-const PLACEHOLDER = [
-  { id: 1, treatment: 'Composite Bonding',  photo: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=600&h=480&q=80' },
-  { id: 2, treatment: 'Dental Implants',    photo: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=600&h=480&q=80' },
-  { id: 3, treatment: 'Teeth Whitening',    photo: 'https://images.unsplash.com/photo-1559599076-9b6f425d1b07?auto=format&fit=crop&w=600&h=480&q=80' },
-  { id: 4, treatment: 'Invisalign',         photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&h=480&q=80' },
-  { id: 5, treatment: 'Porcelain Veneers',  photo: 'https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=600&h=480&q=80' },
-  { id: 6, treatment: 'Air Flow Hygiene',   photo: 'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?auto=format&fit=crop&w=600&h=480&q=80' },
-]
 
 function GalleryItem({ item, index }) {
   const [hovered, setHovered] = useState(false)
@@ -52,13 +44,13 @@ function GalleryItem({ item, index }) {
 }
 
 export default function GalleryPreview() {
-  const [photos, setPhotos] = useState(PLACEHOLDER)
+  const [photos, setPhotos] = useState([])
 
   useEffect(() => {
     fetch('/api/gallery?limit=6')
       .then(r => r.json())
       .then(data => {
-        if (Array.isArray(data) && data.length >= 3) {
+        if (Array.isArray(data) && data.length) {
           setPhotos(data.slice(0, 6).map((p, i) => ({
             id: p._id || i,
             treatment: p.treatment || p.caption || '',
@@ -68,6 +60,8 @@ export default function GalleryPreview() {
       })
       .catch(() => {})
   }, [])
+
+  if (!photos.length) return null
 
   return (
     <section className="section-padding bg-brand-cream">

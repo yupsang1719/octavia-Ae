@@ -78,7 +78,7 @@ export const practiceNAP = {
   address:   'Seymour House, Lower South Street, Godalming, Surrey, GU7 1BZ',
   phone:     '01483 860020',
   phoneTel:  '01483860020',
-  whatsapp:  '441483860020',
+  whatsapp:  '447584965468',
   email:     'info@octavia-dental.co.uk',
   website:   'https://octavia-dental.co.uk',
   instagram: '@octaviadental',

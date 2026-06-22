@@ -160,7 +160,7 @@ export default function Hero({
               </button>
 
               <a
-                href="https://wa.me/441483860020"
+                href="https://wa.me/447584965468"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-ghost-white text-sm px-8 py-4"

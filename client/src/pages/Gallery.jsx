@@ -10,31 +10,16 @@ import { SITE_URL } from '../utils/seo'
 
 const FILTERS = ['All','Implants','Bonding','Veneers','Whitening','Invisalign','Aesthetics']
 
-const BASE_URL = 'auto=format&fit=crop&w=600&h=450&q=80'
-const U = (id) => `https://images.unsplash.com/photo-${id}?${BASE_URL}`
-
-const PLACEHOLDERS = [
-  { id:1, treatment:'Bonding',    photo: U('1609840114035-3c981b782dfe') },
-  { id:2, treatment:'Implants',   photo: U('1606811841689-23dfddce3e95') },
-  { id:3, treatment:'Veneers',    photo: U('1559599076-9b6f425d1b07')    },
-  { id:4, treatment:'Whitening',  photo: U('1559599076-9b6f425d1b07')    },
-  { id:5, treatment:'Invisalign', photo: U('1622253692010-333f2da6031d') },
-  { id:6, treatment:'Aesthetics', photo: U('1570172619644-dfd03ed5d881') },
-  { id:7, treatment:'Bonding',    photo: U('1609840114035-3c981b782dfe') },
-  { id:8, treatment:'Implants',   photo: U('1606811841689-23dfddce3e95') },
-  { id:9, treatment:'Veneers',    photo: U('1622253692010-333f2da6031d') },
-]
-
 function fade(d=0){return{initial:{opacity:0,y:18},whileInView:{opacity:1,y:0},viewport:{once:true},transition:{duration:0.45,delay:d,ease:'easeOut'}}}
 
 export default function Gallery() {
   const [filter, setFilter] = useState('All')
-  const [items, setItems]   = useState(PLACEHOLDERS)
+  const [items, setItems]   = useState([])
   const { isOpen, open, close } = useBookingModal()
 
   useEffect(() => {
     axios.get('/api/gallery').then(({ data }) => {
-      if (Array.isArray(data) && data.length) setItems(data)
+      if (Array.isArray(data)) setItems(data)
     }).catch(() => {})
   }, [])
 
@@ -59,19 +44,23 @@ export default function Gallery() {
         </div>
       </section>
 
-      {/* Filter tabs */}
-      <div className="bg-white border-b border-brand-border sticky top-[72px] lg:top-20 z-30">
-        <div className="container-wide py-4 overflow-x-auto no-scrollbar">
-          <FilterTabs tabs={FILTERS} active={filter} onChange={setFilter} />
+      {/* Filter tabs — only shown when we have images */}
+      {items.length > 0 && (
+        <div className="bg-white border-b border-brand-border sticky top-[72px] lg:top-20 z-30">
+          <div className="container-wide py-4 overflow-x-auto no-scrollbar">
+            <FilterTabs tabs={FILTERS} active={filter} onChange={setFilter} />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Grid */}
       <section className="section-padding bg-brand-cream">
         <div className="container-wide">
           {displayed.length === 0 ? (
             <div className="text-center py-20">
-              <p className="font-serif text-2xl text-brand-muted">No results in this category yet.</p>
+              <p className="font-serif text-2xl text-brand-muted">
+                {items.length === 0 ? 'Patient results coming soon.' : 'No results in this category yet.'}
+              </p>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -89,11 +78,13 @@ export default function Gallery() {
             </div>
           )}
 
-          <motion.div className="mt-12 text-center space-y-2" {...fade(0.3)}>
-            <p className="font-sans text-xs text-brand-subtle max-w-lg mx-auto">
-              Results may vary. All before and after images are published with written patient consent in accordance with GDC guidelines. Individual results depend on the patient's starting point, treatment chosen and aftercare.
-            </p>
-          </motion.div>
+          {items.length > 0 && (
+            <motion.div className="mt-12 text-center space-y-2" {...fade(0.3)}>
+              <p className="font-sans text-xs text-brand-subtle max-w-lg mx-auto">
+                Results may vary. All before and after images are published with written patient consent in accordance with GDC guidelines. Individual results depend on the patient's starting point, treatment chosen and aftercare.
+              </p>
+            </motion.div>
+          )}
         </div>
       </section>
 

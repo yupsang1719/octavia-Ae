@@ -342,7 +342,7 @@ function LocationCTA({ locationName, onBook }) {
               Book free consultation
             </button>
             <a
-              href="https://wa.me/441483860020"
+              href="https://wa.me/447584965468"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 text-white font-sans font-medium text-base rounded-sm transition-all hover:bg-white/10"
