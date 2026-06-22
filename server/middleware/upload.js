@@ -33,5 +33,11 @@ function imageFilter(_req, file, cb) {
 export const teamUpload = multer({
   storage: diskStorage('team'),
   fileFilter: imageFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+  limits: { fileSize: 5 * 1024 * 1024 },
+})
+
+export const galleryUpload = multer({
+  storage: diskStorage('gallery'),
+  fileFilter: imageFilter,
+  limits: { fileSize: 8 * 1024 * 1024 },
 })
