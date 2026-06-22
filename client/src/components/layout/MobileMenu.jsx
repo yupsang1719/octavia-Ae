@@ -4,13 +4,14 @@ import { X, ChevronDown, Phone, MessageCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const treatments = [
-  { label: 'Dental Implants',   href: '/treatments/dental-implants' },
-  { label: 'Invisalign',        href: '/treatments/invisalign' },
-  { label: 'Composite Bonding', href: '/treatments/composite-bonding' },
-  { label: 'Porcelain Veneers', href: '/treatments/veneers' },
-  { label: 'Teeth Whitening',   href: '/treatments/teeth-whitening' },
-  { label: '6 Month Smile',     href: '/treatments/six-month-smile' },
-  { label: 'Air Flow Hygiene',  href: '/treatments/air-flow-hygiene' },
+  { label: 'Dental Implants',      href: '/treatments/dental-implants' },
+  { label: 'Invisalign',           href: '/treatments/invisalign' },
+  { label: 'Composite Bonding',    href: '/treatments/composite-bonding' },
+  { label: 'Porcelain Veneers',    href: '/treatments/veneers' },
+  { label: 'Teeth Whitening',      href: '/treatments/teeth-whitening' },
+  { label: '6 Month Smile',        href: '/treatments/six-month-smile' },
+  { label: 'Air Flow Hygiene',     href: '/treatments/air-flow-hygiene' },
+  { label: 'Botox & Anti-Wrinkle', href: '/treatments/botox-anti-wrinkle' },
 ]
 
 const locationLinks = [

@@ -144,7 +144,7 @@ export default function Hero({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.85, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              Private dental & facial aesthetics in Godalming, Surrey.
+              Driven by smiles, powered by care.
             </motion.p>
 
             {/* CTAs */}

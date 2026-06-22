@@ -1,23 +1,74 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
-import BeforeAfterSlider from '../ui/BeforeAfterSlider'
 import GoldRule from '../ui/GoldRule'
 import AnimatedHeading from '../ui/AnimatedHeading'
 
-const BASE = 'auto=format&fit=crop&w=600&h=450&q=80'
-const U    = (id) => `https://images.unsplash.com/photo-${id}?${BASE}`
-
-const placeholders = [
-  { id: 1, treatment: 'Composite Bonding',  photo: U('1609840114035-3c981b782dfe') },
-  { id: 2, treatment: 'Dental Implants',    photo: U('1606811841689-23dfddce3e95') },
-  { id: 3, treatment: 'Teeth Whitening',    photo: U('1559599076-9b6f425d1b07') },
-  { id: 4, treatment: 'Invisalign',         photo: U('1622253692010-333f2da6031d') },
-  { id: 5, treatment: 'Porcelain Veneers',  photo: U('1609840114035-3c981b782dfe') },
-  { id: 6, treatment: 'Composite Bonding',  photo: U('1559599076-9b6f425d1b07') },
+const PLACEHOLDER = [
+  { id: 1, treatment: 'Composite Bonding',  photo: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=600&h=480&q=80' },
+  { id: 2, treatment: 'Dental Implants',    photo: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=600&h=480&q=80' },
+  { id: 3, treatment: 'Teeth Whitening',    photo: 'https://images.unsplash.com/photo-1559599076-9b6f425d1b07?auto=format&fit=crop&w=600&h=480&q=80' },
+  { id: 4, treatment: 'Invisalign',         photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&h=480&q=80' },
+  { id: 5, treatment: 'Porcelain Veneers',  photo: 'https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=600&h=480&q=80' },
+  { id: 6, treatment: 'Air Flow Hygiene',   photo: 'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?auto=format&fit=crop&w=600&h=480&q=80' },
 ]
 
+function GalleryItem({ item, index }) {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24, scale: 0.97 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="relative rounded-xl overflow-hidden shadow-sm shadow-brand-dark/8 group cursor-pointer"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="aspect-[4/3] overflow-hidden">
+        <motion.img
+          src={item.photo}
+          alt={`${item.treatment} result at Octavia Dental`}
+          className="w-full h-full object-cover"
+          loading="lazy"
+          animate={{ scale: hovered ? 1.05 : 1 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </div>
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-t from-brand-dark/70 via-transparent to-transparent"
+        animate={{ opacity: hovered ? 1 : 0.6 }}
+        transition={{ duration: 0.3 }}
+      />
+      <div className="absolute bottom-0 left-0 right-0 p-4">
+        <span className="font-sans text-xs font-medium text-white/80 tracking-wide">
+          {item.treatment}
+        </span>
+      </div>
+    </motion.div>
+  )
+}
+
 export default function GalleryPreview() {
+  const [photos, setPhotos] = useState(PLACEHOLDER)
+
+  useEffect(() => {
+    fetch('/api/gallery?limit=6')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length >= 3) {
+          setPhotos(data.slice(0, 6).map((p, i) => ({
+            id: p._id || i,
+            treatment: p.treatment || p.caption || '',
+            photo: p.url || p.src,
+          })))
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <section className="section-padding bg-brand-cream">
       <div className="container-wide">
@@ -60,26 +111,8 @@ export default function GalleryPreview() {
 
         {/* Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {placeholders.map((item, i) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 24, scale: 0.97 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="rounded-xl overflow-hidden shadow-sm shadow-brand-dark/5">
-                <BeforeAfterSlider
-                  beforeSrc={item.photo}
-                  afterSrc={item.photo}
-                  beforeAlt={`Before ${item.treatment}`}
-                  afterAlt={`After ${item.treatment} at Octavia Dental`}
-                />
-              </div>
-              <p className="text-center text-xs font-sans font-medium text-brand-muted mt-3 tracking-wide">
-                {item.treatment}
-              </p>
-            </motion.div>
+          {photos.map((item, i) => (
+            <GalleryItem key={item.id} item={item} index={i} />
           ))}
         </div>
 
@@ -90,7 +123,7 @@ export default function GalleryPreview() {
           viewport={{ once: true }}
           transition={{ delay: 0.4 }}
         >
-          Results may vary. All before and after images are published with written patient consent in accordance with GDC guidelines.
+          Results may vary. All images are published with written patient consent in accordance with GDC guidelines.
         </motion.p>
       </div>
     </section>
