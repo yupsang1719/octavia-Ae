@@ -5,7 +5,7 @@ const reviewSchema = new mongoose.Schema({
   location:  { type: String },
   treatment: { type: String },
   rating:    { type: Number, min: 1, max: 5, required: true },
-  text:      { type: String, required: true },
+  text:      { type: String, default: '' },
   source:    { type: String, enum: ['google','website'], default: 'google' },
   published: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },

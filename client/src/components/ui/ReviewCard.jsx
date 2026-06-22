@@ -23,9 +23,15 @@ export default function ReviewCard({ review }) {
 
       <StarRating rating={review.rating} />
 
-      <p className="font-sans text-brand-dark text-[14px] leading-[1.75] flex-1 relative z-10">
-        "{review.text}"
-      </p>
+      {review.text ? (
+        <p className="font-sans text-brand-dark text-[14px] leading-[1.75] flex-1 relative z-10">
+          "{review.text}"
+        </p>
+      ) : (
+        <p className="font-sans text-brand-subtle italic text-[14px] leading-[1.75] flex-1 relative z-10">
+          {review.rating === 5 ? '5-star rating' : `${review.rating}-star rating`}
+        </p>
+      )}
 
       <div className="flex items-center justify-between pt-4 border-t border-brand-border/50">
         <div>

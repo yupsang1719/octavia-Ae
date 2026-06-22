@@ -27,9 +27,15 @@ function ReviewCard({ review }) {
         </div>
         <GoogleLogo />
       </div>
-      <p className="font-sans text-[13px] text-brand-dark/75 leading-relaxed mb-5 line-clamp-3">
-        &ldquo;{review.text}&rdquo;
-      </p>
+      {review.text ? (
+        <p className="font-sans text-[13px] text-brand-dark/75 leading-relaxed mb-5 line-clamp-3">
+          &ldquo;{review.text}&rdquo;
+        </p>
+      ) : (
+        <p className="font-sans text-[13px] text-brand-subtle italic leading-relaxed mb-5">
+          {review.rating === 5 ? '5-star rating' : `${review.rating}-star rating`}
+        </p>
+      )}
       <div className="flex items-end justify-between gap-3 pt-4 border-t border-brand-border/40">
         <div>
           <p className="font-sans text-xs font-semibold text-brand-dark leading-tight">{review.author}</p>
@@ -130,9 +136,15 @@ function FeaturedGrid({ reviews }) {
               </div>
               <GoogleLogo />
             </div>
-            <p className="font-sans text-[13px] text-brand-dark/75 leading-relaxed mb-5">
-              &ldquo;{review.text}&rdquo;
-            </p>
+            {review.text ? (
+              <p className="font-sans text-[13px] text-brand-dark/75 leading-relaxed mb-5">
+                &ldquo;{review.text}&rdquo;
+              </p>
+            ) : (
+              <p className="font-sans text-[13px] text-brand-subtle italic leading-relaxed mb-5">
+                {review.rating === 5 ? '5-star rating' : `${review.rating}-star rating`}
+              </p>
+            )}
             <div className="flex items-end justify-between gap-3 pt-4 border-t border-brand-border/40">
               <div>
                 <p className="font-sans text-xs font-semibold text-brand-dark leading-tight">{review.author}</p>
