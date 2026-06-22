@@ -107,6 +107,52 @@ function GoogleRatingBadge() {
   )
 }
 
+function FeaturedGrid({ reviews }) {
+  return (
+    <div className="container-wide">
+      <div className={`grid gap-5 max-w-4xl mx-auto ${
+        reviews.length === 1 ? 'grid-cols-1 max-w-lg' :
+        reviews.length === 2 ? 'sm:grid-cols-2 max-w-2xl' :
+        'sm:grid-cols-2 lg:grid-cols-3'
+      }`}>
+        {reviews.map((review, i) => (
+          <motion.div
+            key={review._id}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="bg-white border border-brand-border/40 rounded-2xl p-6 shadow-sm shadow-brand-dark/4"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex gap-0.5">
+                {Array.from({ length: review.rating ?? 5 }).map((_, i) => <StarIcon key={i} />)}
+              </div>
+              <GoogleLogo />
+            </div>
+            <p className="font-sans text-[13px] text-brand-dark/75 leading-relaxed mb-5">
+              &ldquo;{review.text}&rdquo;
+            </p>
+            <div className="flex items-end justify-between gap-3 pt-4 border-t border-brand-border/40">
+              <div>
+                <p className="font-sans text-xs font-semibold text-brand-dark leading-tight">{review.author}</p>
+                {review.location && <p className="font-sans text-[11px] text-brand-subtle mt-0.5">{review.location}</p>}
+              </div>
+              {review.treatment && (
+                <span className="text-[10px] font-sans font-medium text-brand-gold bg-brand-gold/8 px-2.5 py-1 rounded-full border border-brand-gold/20 whitespace-nowrap">
+                  {review.treatment}
+                </span>
+              )}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const MARQUEE_THRESHOLD = 4
+
 export default function ReviewsMarquee() {
   const [reviews, setReviews] = useState([])
   const [loaded, setLoaded] = useState(false)
@@ -121,9 +167,10 @@ export default function ReviewsMarquee() {
 
   if (loaded && reviews.length === 0) return null
 
-  const mid = Math.ceil(reviews.length / 2)
-  const row1 = reviews.length > 0 ? reviews.slice(0, mid)   : []
-  const row2 = reviews.length > 0 ? reviews.slice(mid)      : []
+  const useMarquee = reviews.length >= MARQUEE_THRESHOLD
+  const mid  = Math.ceil(reviews.length / 2)
+  const row1 = reviews.slice(0, mid)
+  const row2 = reviews.slice(mid)
 
   return (
     <section className="section-padding bg-brand-cream overflow-hidden">
@@ -150,10 +197,14 @@ export default function ReviewsMarquee() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <MarqueeRow items={row1.length ? row1 : reviews} direction="left"  speed={42} />
-        <MarqueeRow items={row2.length ? row2 : reviews} direction="right" speed={55} />
-      </div>
+      {useMarquee ? (
+        <div className="flex flex-col gap-4">
+          <MarqueeRow items={row1} direction="left"  speed={42} />
+          <MarqueeRow items={row2.length ? row2 : row1} direction="right" speed={55} />
+        </div>
+      ) : (
+        <FeaturedGrid reviews={reviews} />
+      )}
 
       <motion.p
         className="text-center font-sans text-xs text-brand-subtle mt-10 px-5"
