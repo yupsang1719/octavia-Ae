@@ -95,4 +95,39 @@
   .input {
     @apply w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-shadow;
   }
+
+  /* Blog post body — rich text output from TipTap */
+  .blog-body { @apply font-sans text-brand-muted leading-relaxed; }
+  .blog-body h1 { @apply font-serif text-3xl lg:text-4xl text-brand-dark font-medium mt-10 mb-4 leading-snug; }
+  .blog-body h2 { @apply font-serif text-2xl lg:text-3xl text-brand-dark font-medium mt-10 mb-4 leading-snug; }
+  .blog-body h3 { @apply font-serif text-xl text-brand-dark font-medium mt-8 mb-3; }
+  .blog-body p  { @apply mb-5 leading-relaxed; }
+  .blog-body a  { @apply text-brand-green no-underline hover:underline; }
+  .blog-body strong { @apply font-semibold text-brand-dark; }
+  .blog-body em { @apply italic; }
+  .blog-body s  { @apply line-through; }
+  .blog-body ul { @apply list-disc pl-6 mb-5 space-y-1.5; }
+  .blog-body ol { @apply list-decimal pl-6 mb-5 space-y-1.5; }
+  .blog-body li { @apply leading-relaxed; }
+  .blog-body blockquote { @apply border-l-4 border-brand-gold pl-5 italic text-brand-muted my-6; }
+  .blog-body hr { @apply border-brand-border my-8; }
+  .blog-body table { @apply w-full border-collapse text-sm mb-6; }
+  .blog-body th { @apply bg-brand-cream font-sans font-semibold text-brand-dark px-4 py-2 border border-brand-border text-left; }
+  .blog-body td { @apply px-4 py-2 border border-brand-border; }
+
+  /* TipTap editor content mirror */
+  .tiptap h1 { @apply font-serif text-3xl text-brand-dark font-medium mt-8 mb-3 leading-snug; }
+  .tiptap h2 { @apply font-serif text-2xl text-brand-dark font-medium mt-6 mb-2 leading-snug; }
+  .tiptap h3 { @apply font-serif text-xl text-brand-dark font-medium mt-5 mb-2; }
+  .tiptap p  { @apply mb-4 leading-relaxed text-brand-muted; }
+  .tiptap a  { @apply text-brand-green underline; }
+  .tiptap strong { @apply font-semibold text-brand-dark; }
+  .tiptap ul { @apply list-disc pl-5 mb-4 space-y-1; }
+  .tiptap ol { @apply list-decimal pl-5 mb-4 space-y-1; }
+  .tiptap blockquote { @apply border-l-4 border-brand-gold pl-4 italic text-brand-muted my-4; }
+  .tiptap hr { @apply border-brand-border my-6; }
+  .tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    @apply text-brand-subtle float-left pointer-events-none h-0;
+  }
 }

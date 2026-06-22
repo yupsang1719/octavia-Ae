@@ -46,7 +46,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write y
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose-base max-w-none min-h-[420px] px-6 py-5 focus:outline-none font-sans',
+        class: 'tiptap min-h-[420px] px-6 py-5 focus:outline-none font-sans',
       },
     },
   })

@@ -131,7 +131,7 @@ export default function BlogPost() {
       {/* Body */}
       <div className="container-wide max-w-3xl py-12 lg:py-16">
         <div
-          className="prose prose-lg prose-headings:font-serif prose-headings:font-medium prose-headings:text-brand-dark prose-p:font-sans prose-p:text-brand-muted prose-p:leading-relaxed prose-a:text-brand-green prose-a:no-underline hover:prose-a:underline max-w-none"
+          className="blog-body"
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.body) }}
         />
 
