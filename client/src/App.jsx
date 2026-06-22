@@ -47,6 +47,7 @@ const AdminGallery    = lazy(() => import('./pages/admin/AdminGallery'))
 const AdminTeam          = lazy(() => import('./pages/admin/AdminTeam'))
 const AdminTeamEditor    = lazy(() => import('./pages/admin/AdminTeamEditor'))
 const AdminReviews       = lazy(() => import('./pages/admin/AdminReviews'))
+const AdminTrustBar      = lazy(() => import('./pages/admin/AdminTrustBar'))
 const AdminReviewRequest = lazy(() => import('./pages/admin/AdminReviewRequest'))
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -149,6 +150,7 @@ export default function App() {
             <Route path="team"            element={<AdminTeam />} />
             <Route path="team/:id"        element={<AdminTeamEditor />} />
             <Route path="reviews"          element={<AdminReviews />} />
+            <Route path="trust-bar"        element={<AdminTrustBar />} />
             <Route path="review-request"  element={<AdminReviewRequest />} />
           </Route>
         </Routes>
