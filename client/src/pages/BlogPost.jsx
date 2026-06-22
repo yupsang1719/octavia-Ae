@@ -3,17 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Clock, ArrowLeft, Share2 } from 'lucide-react'
+import DOMPurify from 'dompurify'
 import axios from 'axios'
-
-// Strip script/iframe tags and JS event attributes from admin-authored HTML.
-// Full DOMPurify not needed — only authenticated admins write blog content.
-function sanitize(html) {
-  return (html || '')
-    .replace(/<script\b[\s\S]*?<\/script>/gi, '')
-    .replace(/<iframe\b[\s\S]*?<\/iframe>/gi, '')
-    .replace(/\s+on\w+\s*=\s*(['"])[\s\S]*?\1/gi, '')
-    .replace(/javascript:/gi, '')
-}
 import SchemaMarkup from '../components/ui/SchemaMarkup'
 import BookingModal from '../components/ui/BookingModal'
 import { useBookingModal } from '../hooks/useBookingModal'
@@ -141,7 +132,7 @@ export default function BlogPost() {
       <div className="container-wide max-w-3xl py-12 lg:py-16">
         <div
           className="blog-body"
-          dangerouslySetInnerHTML={{ __html: sanitize(post.body) }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.body) }}
         />
 
         {/* Bottom share */}
