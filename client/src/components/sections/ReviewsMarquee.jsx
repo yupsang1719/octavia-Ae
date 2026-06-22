@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import GoldRule from '../ui/GoldRule'
 import AnimatedHeading from '../ui/AnimatedHeading'
@@ -18,79 +18,30 @@ const GoogleLogo = () => (
   </svg>
 )
 
-const REVIEWS = [
-  {
-    author: 'Sarah M.',
-    location: 'Guildford',
-    treatment: 'Composite Bonding',
-    text: 'I cannot believe the difference in my smile. Dr Ana was so reassuring throughout and the results are absolutely stunning.',
-  },
-  {
-    author: 'James T.',
-    location: 'Haslemere',
-    treatment: 'Dental Implants',
-    text: 'After years of avoiding the dentist, Dr Ali made the whole implant process completely stress-free. Highly recommend.',
-  },
-  {
-    author: 'Emma L.',
-    location: 'Godalming',
-    treatment: 'Invisalign',
-    text: "Best decision I've made. The Invisalign results were even better than I expected — nobody at work even noticed I was wearing them.",
-  },
-  {
-    author: 'Claire W.',
-    location: 'Farnham',
-    treatment: 'Teeth Whitening',
-    text: 'My teeth are several shades lighter after just one session. The team were so professional and the results are brilliant.',
-  },
-  {
-    author: 'David K.',
-    location: 'Cranleigh',
-    treatment: 'Porcelain Veneers',
-    text: 'Absolutely transformed my smile. The veneers look completely natural and I cannot stop smiling. Worth every penny.',
-  },
-  {
-    author: 'Rachel B.',
-    location: 'Guildford',
-    treatment: 'Anti-Wrinkle',
-    text: 'So natural-looking — exactly what I asked for. The clinic is beautifully designed and every single person made me feel at ease.',
-  },
-  {
-    author: 'Tom H.',
-    location: 'Godalming',
-    treatment: 'Dental Implants',
-    text: 'Came here after years of being self-conscious about my smile. The team gave me back my confidence. Exceptional standard of care.',
-  },
-  {
-    author: 'Sophie A.',
-    location: 'Witley',
-    treatment: 'Invisalign',
-    text: 'I was nervous about starting Invisalign but the team guided me through every step. My teeth are perfectly straight now.',
-  },
-]
-
 function ReviewCard({ review }) {
   return (
     <div className="flex-none w-[280px] bg-white border border-brand-border/40 rounded-2xl p-6 shadow-sm shadow-brand-dark/4 select-none">
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-0.5">
-          {[1,2,3,4,5].map(i => <StarIcon key={i} />)}
+          {Array.from({ length: review.rating ?? 5 }).map((_, i) => <StarIcon key={i} />)}
         </div>
         <GoogleLogo />
       </div>
-
       <p className="font-sans text-[13px] text-brand-dark/75 leading-relaxed mb-5 line-clamp-3">
         &ldquo;{review.text}&rdquo;
       </p>
-
       <div className="flex items-end justify-between gap-3 pt-4 border-t border-brand-border/40">
         <div>
           <p className="font-sans text-xs font-semibold text-brand-dark leading-tight">{review.author}</p>
-          <p className="font-sans text-[11px] text-brand-subtle mt-0.5">{review.location}</p>
+          {review.location && (
+            <p className="font-sans text-[11px] text-brand-subtle mt-0.5">{review.location}</p>
+          )}
         </div>
-        <span className="text-[10px] font-sans font-medium text-brand-gold bg-brand-gold/8 px-2.5 py-1 rounded-full border border-brand-gold/20 whitespace-nowrap">
-          {review.treatment}
-        </span>
+        {review.treatment && (
+          <span className="text-[10px] font-sans font-medium text-brand-gold bg-brand-gold/8 px-2.5 py-1 rounded-full border border-brand-gold/20 whitespace-nowrap">
+            {review.treatment}
+          </span>
+        )}
       </div>
     </div>
   )
@@ -98,7 +49,10 @@ function ReviewCard({ review }) {
 
 function MarqueeRow({ items, direction = 'left', speed = 40 }) {
   const [paused, setPaused] = useState(false)
-  const doubled = [...items, ...items]
+  // Duplicate enough times to fill the track
+  const fill = Math.max(2, Math.ceil(8 / items.length))
+  const track = Array.from({ length: fill }, () => items).flat()
+  const doubled = [...track, ...track]
   const animation = direction === 'left'
     ? `marquee-left ${speed}s linear infinite`
     : `marquee-right ${speed}s linear infinite`
@@ -122,7 +76,7 @@ function MarqueeRow({ items, direction = 'left', speed = 40 }) {
         onMouseLeave={() => setPaused(false)}
       >
         {doubled.map((review, i) => (
-          <ReviewCard key={`${review.author}-${i}`} review={review} />
+          <ReviewCard key={`${review._id ?? review.author}-${i}`} review={review} />
         ))}
       </div>
     </div>
@@ -152,10 +106,24 @@ function GoogleRatingBadge() {
   )
 }
 
-const ROW_1 = REVIEWS.slice(0, 4)
-const ROW_2 = [...REVIEWS.slice(4), ...REVIEWS.slice(0, 4)]
-
 export default function ReviewsMarquee() {
+  const [reviews, setReviews] = useState([])
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/reviews')
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setReviews(data) })
+      .catch(() => {})
+      .finally(() => setLoaded(true))
+  }, [])
+
+  if (loaded && reviews.length === 0) return null
+
+  const mid = Math.ceil(reviews.length / 2)
+  const row1 = reviews.length > 0 ? reviews.slice(0, mid)   : []
+  const row2 = reviews.length > 0 ? reviews.slice(mid)      : []
+
   return (
     <section className="section-padding bg-brand-cream overflow-hidden">
       <div className="container-wide mb-14">
@@ -182,8 +150,8 @@ export default function ReviewsMarquee() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <MarqueeRow items={ROW_1} direction="left" speed={42} />
-        <MarqueeRow items={ROW_2} direction="right" speed={55} />
+        <MarqueeRow items={row1.length ? row1 : reviews} direction="left"  speed={42} />
+        <MarqueeRow items={row2.length ? row2 : reviews} direction="right" speed={55} />
       </div>
 
       <motion.p
