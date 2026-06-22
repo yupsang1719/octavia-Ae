@@ -1,20 +1,15 @@
 import { useState, useRef, useCallback } from 'react'
 
-// Default filter applied to the "before" image for dental before/afters.
-// Simulates pre-treatment appearance: slightly yellowed, less bright, less saturated.
-const DENTAL_BEFORE_FILTER = 'sepia(0.4) saturate(0.55) brightness(0.82) contrast(0.95)'
-
 export default function BeforeAfterSlider({
   beforeSrc,
   afterSrc,
-  beforeAlt    = 'Before treatment',
-  afterAlt     = 'After treatment',
-  lazy         = true,
-  beforeFilter = DENTAL_BEFORE_FILTER,
+  beforeAlt = 'Before treatment',
+  afterAlt  = 'After treatment',
+  lazy      = true,
 }) {
   const [position, setPosition] = useState(50)
   const [dragging, setDragging] = useState(false)
-  const containerRef            = useRef(null)
+  const containerRef = useRef(null)
 
   const updatePosition = useCallback((clientX) => {
     const rect = containerRef.current?.getBoundingClientRect()
@@ -23,27 +18,31 @@ export default function BeforeAfterSlider({
     setPosition((x / rect.width) * 100)
   }, [])
 
-  const onMouseDown  = ()  => setDragging(true)
+  const onMouseDown  = (e) => { setDragging(true); updatePosition(e.clientX) }
   const onMouseMove  = (e) => { if (dragging) updatePosition(e.clientX) }
   const onMouseUp    = ()  => setDragging(false)
-  const onTouchStart = ()  => setDragging(true)
+  const onTouchStart = (e) => { setDragging(true); updatePosition(e.touches[0].clientX) }
   const onTouchMove  = (e) => { if (dragging) updatePosition(e.touches[0].clientX) }
   const onTouchEnd   = ()  => setDragging(false)
+
+  const safePos = Math.max(1, Math.min(position, 99))
 
   return (
     <div className="space-y-2">
       <div
         ref={containerRef}
         className="relative overflow-hidden rounded-sm aspect-[4/3] select-none cursor-col-resize"
+        onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
         onMouseLeave={onMouseUp}
+        onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         role="img"
         aria-label={`Before and after comparison: ${beforeAlt} / ${afterAlt}`}
       >
-        {/* After image — clean result */}
+        {/* After image — full width underneath */}
         <img
           src={afterSrc}
           alt={afterAlt}
@@ -52,37 +51,31 @@ export default function BeforeAfterSlider({
           draggable={false}
         />
 
-        {/* Before image — clipped left of handle, with pre-treatment filter */}
+        {/* Before image — clipped to left of handle, no artificial filter */}
         <div
           className="absolute inset-0 overflow-hidden"
-          style={{ width: `${position}%` }}
+          style={{ width: `${safePos}%` }}
         >
           <img
             src={beforeSrc}
             alt={beforeAlt}
             loading={lazy ? 'lazy' : 'eager'}
             className="absolute inset-0 w-full h-full object-cover"
-            style={{
-              width:     `${10000 / position}%`,
-              maxWidth:  'none',
-              filter:    beforeFilter,
-            }}
+            style={{ width: `${10000 / safePos}%`, maxWidth: 'none' }}
             draggable={false}
           />
         </div>
 
         {/* Divider line */}
         <div
-          className="absolute top-0 bottom-0 w-px bg-white shadow-md"
-          style={{ left: `${position}%` }}
+          className="absolute top-0 bottom-0 w-0.5 bg-white shadow-md pointer-events-none"
+          style={{ left: `${safePos}%` }}
         />
 
         {/* Drag handle */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center cursor-col-resize z-10"
-          style={{ left: `${position}%` }}
-          onMouseDown={onMouseDown}
-          onTouchStart={onTouchStart}
+          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white shadow-lg flex items-center justify-center pointer-events-none z-10"
+          style={{ left: `${safePos}%` }}
         >
           <svg className="w-4 h-4 text-brand-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <path d="M9 18l-6-6 6-6" />
