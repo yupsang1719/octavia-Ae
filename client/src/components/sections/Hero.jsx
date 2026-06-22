@@ -60,7 +60,7 @@ export default function Hero({
 
   return (
     <>
-      <section className="relative min-h-screen flex items-center bg-brand-dark overflow-hidden">
+      <section className="relative min-h-screen bg-brand-dark overflow-hidden">
 
         {/* Parallax background */}
         <div className="absolute inset-0 lg:left-[45%]">
@@ -82,7 +82,7 @@ export default function Hero({
         </div>
 
         {/* Content */}
-        <div className="container-wide relative z-10 pt-28 pb-24 lg:py-0">
+        <div className="container-wide relative z-10 pt-36 pb-24 lg:pt-44 lg:pb-32">
           <div className="max-w-[540px] lg:max-w-[500px]">
 
             {/* Eyebrow */}
@@ -109,7 +109,7 @@ export default function Hero({
             </h1>
 
             {/* Subheadline — "Your" + rotating word */}
-            <p className="font-display text-[3.5rem] sm:text-[4.5rem] lg:text-[5.5rem] text-brand-gold font-medium leading-[1.02] tracking-[-0.03em] mb-7 flex items-baseline flex-nowrap" style={{ gap: '0.24em' }}>
+            <p className="font-display text-[3.5rem] sm:text-[4.5rem] lg:text-[5.5rem] text-brand-gold font-medium leading-[1.02] tracking-[-0.03em] mb-7 flex items-baseline flex-wrap" style={{ gap: '0.24em' }}>
               <span className="inline-block overflow-hidden">
                 <motion.span
                   className="inline-block"
