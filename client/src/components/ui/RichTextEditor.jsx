@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
-import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
@@ -185,37 +184,6 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write y
           <AlignRight size={14} />
         </Btn>
       </div>
-
-      {/* ── Bubble menu — appears on text selection ── */}
-      <BubbleMenu
-        editor={editor}
-        tippyOptions={{ duration: 100, placement: 'top' }}
-        className="flex items-center gap-0.5 bg-gray-900 text-white rounded-lg px-1.5 py-1 shadow-xl"
-      >
-        <Btn variant="bubble" onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Bold">
-          <Bold size={13} />
-        </Btn>
-        <Btn variant="bubble" onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')} title="Italic">
-          <Italic size={13} />
-        </Btn>
-        <Btn variant="bubble" onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive('underline')} title="Underline">
-          <UnderlineIcon size={13} />
-        </Btn>
-        <Btn variant="bubble" onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')} title="Strikethrough">
-          <Strikethrough size={13} />
-        </Btn>
-        <div className="w-px h-3.5 bg-white/20 mx-0.5" />
-        <Btn variant="bubble" onClick={setLink} active={editor.isActive('link')} title="Link">
-          <LinkIcon size={13} />
-        </Btn>
-        <div className="w-px h-3.5 bg-white/20 mx-0.5" />
-        <Btn variant="bubble" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Heading 2">
-          <span className="text-xs font-bold">H2</span>
-        </Btn>
-        <Btn variant="bubble" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title="Heading 3">
-          <span className="text-xs font-bold">H3</span>
-        </Btn>
-      </BubbleMenu>
 
       {/* ── Editor area ── */}
       <div className="bg-white">
