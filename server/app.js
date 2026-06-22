@@ -32,8 +32,8 @@ app.use(helmet({
       styleSrc:    ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc:     ["'self'", 'https://fonts.gstatic.com'],
       imgSrc:      ["'self'", 'data:', 'https:', 'blob:'],
-      frameSrc:    ["'self'", 'https://maps.google.com'],
-      connectSrc:  ["'self'"],
+      frameSrc:    ["'self'", 'https://maps.google.com', 'https://www.google.com', 'https://maps.googleapis.com'],
+      connectSrc:  ["'self'", 'https://maps.googleapis.com', 'https://maps.google.com'],
     },
   },
 }))

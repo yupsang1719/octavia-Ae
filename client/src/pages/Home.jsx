@@ -5,7 +5,6 @@ import ServicesGrid   from '../components/sections/ServicesGrid'
 import USPSection     from '../components/sections/USPSection'
 import TeamSection    from '../components/sections/TeamSection'
 import GalleryPreview from '../components/sections/GalleryPreview'
-import ReviewsMarquee from '../components/sections/ReviewsMarquee'
 import LocationsBar   from '../components/sections/LocationsBar'
 import BlogPreview    from '../components/sections/BlogPreview'
 import CTASection     from '../components/sections/CTASection'
@@ -55,10 +54,7 @@ export default function Home() {
       {/* Section 6: Gallery preview */}
       <GalleryPreview />
 
-      {/* Section 7: Reviews */}
-      <ReviewsMarquee />
-
-      {/* Section 8: Locations bar */}
+      {/* Section 7: Locations bar */}
       <LocationsBar />
 
       {/* Section 9: Blog preview */}
