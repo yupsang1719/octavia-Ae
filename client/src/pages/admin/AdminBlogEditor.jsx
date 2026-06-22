@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { ArrowLeft, Save, Globe, Upload, X } from 'lucide-react'
 import RichTextEditor from '../../components/ui/RichTextEditor'
@@ -18,13 +18,12 @@ const BLANK = {
 
 export default function AdminBlogEditor() {
   const { id } = useParams()
-  const { state } = useLocation()
   const navigate = useNavigate()
   const isEdit = !!id
 
   const [form, setForm] = useState(BLANK)
   const [slugEdited, setSlugEdited] = useState(false)
-  const [loading, setLoading] = useState(isEdit && !state?.post)
+  const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [imgFile, setImgFile] = useState(null)
@@ -171,6 +170,7 @@ export default function AdminBlogEditor() {
         <div>
           <label className="block text-sm font-medium text-brand-dark mb-1 font-sans">Body *</label>
           <RichTextEditor
+            key={id || 'new'}
             value={form.body}
             onChange={v => set('body', v)}
             placeholder="Write your post…"
