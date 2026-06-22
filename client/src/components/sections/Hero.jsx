@@ -109,7 +109,7 @@ export default function Hero({
             </h1>
 
             {/* Subheadline — "Your" + rotating word */}
-            <p className="font-display text-[3.5rem] sm:text-[4.5rem] lg:text-[5.5rem] text-brand-gold font-medium leading-[1.02] tracking-[-0.03em] mb-7 flex items-baseline flex-wrap" style={{ gap: '0.24em' }}>
+            <p className="font-display text-[3.5rem] sm:text-[4.5rem] lg:text-[5.5rem] text-brand-gold font-medium leading-[1.02] tracking-[-0.03em] mb-7 flex items-baseline flex-nowrap overflow-hidden" style={{ gap: '0.24em' }}>
               <span className="inline-block overflow-hidden">
                 <motion.span
                   className="inline-block"

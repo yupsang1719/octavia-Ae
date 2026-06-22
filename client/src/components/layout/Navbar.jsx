@@ -115,22 +115,16 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Pages whose top section is light-coloured (cream/white) — keep navbar opaque here.
-  // Everything else (home, treatments, locations, team, gallery, blog listing, contact, aesthetics)
-  // has a dark hero so the navbar should be transparent until the user scrolls.
-  const LIGHT_TOP = ['/privacy-policy', '/cookie-policy']
-  const isLightTop = LIGHT_TOP.includes(pathname) || pathname.startsWith('/blog/')
-
-  const transparent = !scrolled && !isLightTop
-  const textColor   = transparent ? 'text-white/90' : 'text-brand-dark'
+  const transparent = !scrolled
+  const textColor   = transparent ? 'text-white' : 'text-brand-dark'
 
   return (
     <>
       <motion.header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-400 ${
           transparent
-            ? 'bg-transparent'
-            : 'bg-white/92 backdrop-blur-md border-b border-brand-border/50 shadow-sm shadow-brand-dark/4'
+            ? 'bg-brand-dark/40 backdrop-blur-md'
+            : 'bg-white/95 backdrop-blur-md border-b border-brand-border/50 shadow-sm shadow-brand-dark/4'
         }`}
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
