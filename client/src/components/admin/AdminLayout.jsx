@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Inbox, FileText, Image, Users, Star, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, LogOut, Menu, X } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 
 const NAV = [
@@ -9,6 +9,7 @@ const NAV = [
   { to: '/admin/blog',      label: 'Blog',       icon: FileText },
   { to: '/admin/gallery',   label: 'Gallery',    icon: Image },
   { to: '/admin/team',           label: 'Team',           icon: Users },
+  { to: '/admin/reviews',        label: 'Reviews',        icon: MessageSquare },
   { to: '/admin/review-request', label: 'Review Requests', icon: Star },
 ]
 
