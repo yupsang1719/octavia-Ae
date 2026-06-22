@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { teamUpload, galleryUpload } from '../middleware/upload.js'
+import { teamUpload, galleryUpload, blogUpload } from '../middleware/upload.js'
 
 const router = Router()
 
@@ -24,5 +24,10 @@ router.post(
     res.json(urls)
   },
 )
+
+router.post('/blog', requireAuth, blogUpload.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' })
+  res.json({ url: `/uploads/blog/${req.file.filename}` })
+})
 
 export default router

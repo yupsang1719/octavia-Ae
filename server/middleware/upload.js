@@ -41,3 +41,9 @@ export const galleryUpload = multer({
   fileFilter: imageFilter,
   limits: { fileSize: 8 * 1024 * 1024 },
 })
+
+export const blogUpload = multer({
+  storage: diskStorage('blog'),
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+})

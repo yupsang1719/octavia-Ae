@@ -1,7 +1,7 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import axios from 'axios'
-import { ArrowLeft, Save, Globe } from 'lucide-react'
+import { ArrowLeft, Save, Globe, Upload, X } from 'lucide-react'
 
 function slugify(str) {
   return str.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '')
@@ -26,6 +26,9 @@ export default function AdminBlogEditor() {
   const [loading, setLoading] = useState(isEdit && !state?.post)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [imgFile, setImgFile] = useState(null)
+  const [imgPreview, setImgPreview] = useState('')
+  const imgInputRef = useRef()
 
   const populateForm = useCallback((post) => {
     setForm({
@@ -42,6 +45,8 @@ export default function AdminBlogEditor() {
       location:    post.location    || '',
       published:   post.published   || false,
     })
+    setImgPreview(post.featuredImg || '')
+    setImgFile(null)
     setSlugEdited(true)
     setLoading(false)
   }, [])
@@ -73,8 +78,20 @@ export default function AdminBlogEditor() {
     setError('')
     setSaving(true)
     try {
+      let featuredImg = form.featuredImg
+
+      if (imgFile) {
+        const fd = new FormData()
+        fd.append('image', imgFile)
+        const { data } = await axios.post('/api/upload/blog', fd, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        featuredImg = data.url
+      }
+
       const payload = {
         ...form,
+        featuredImg,
         tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
         published: publish ?? form.published,
         ...(publish && !form.published ? { publishedAt: new Date() } : {}),
@@ -185,14 +202,51 @@ export default function AdminBlogEditor() {
         </div>
 
         {/* Featured image */}
-        <Field label="Featured Image URL">
-          <input
-            value={form.featuredImg}
-            onChange={e => set('featuredImg', e.target.value)}
-            className={input}
-            placeholder="https://…"
-            type="url"
-          />
+        <Field label="Featured Image">
+          <div className="space-y-2">
+            {imgPreview ? (
+              <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                <img src={imgPreview} alt="Featured" className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => { setImgFile(null); setImgPreview(''); set('featuredImg', '') }}
+                  className="absolute top-2 right-2 p-1 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ) : (
+              <div
+                onClick={() => imgInputRef.current.click()}
+                className="flex flex-col items-center justify-center gap-2 w-full aspect-video rounded-lg border-2 border-dashed border-gray-200 cursor-pointer hover:border-brand-green transition-colors text-brand-muted"
+              >
+                <Upload size={20} />
+                <span className="text-xs font-sans">Click to upload featured image</span>
+                <span className="text-xs font-sans text-brand-subtle">JPEG, PNG, WebP — max 5 MB</span>
+              </div>
+            )}
+            <input
+              ref={imgInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/avif"
+              className="hidden"
+              onChange={e => {
+                const file = e.target.files[0]
+                if (!file) return
+                setImgFile(file)
+                setImgPreview(URL.createObjectURL(file))
+              }}
+            />
+            {imgPreview && !imgFile && (
+              <button
+                type="button"
+                onClick={() => imgInputRef.current.click()}
+                className="text-xs font-sans text-brand-green hover:underline"
+              >
+                Replace image
+              </button>
+            )}
+          </div>
         </Field>
 
         {/* Tags + Location */}
