@@ -143,8 +143,8 @@ export default function AdminReviews() {
             <StarPicker value={form.rating} onChange={v => setForm(f => ({ ...f, rating: v }))} />
           </div>
           <div>
-            <label className="block font-sans text-xs text-brand-muted mb-1.5">Review text <span className="text-red-500">*</span></label>
-            <textarea required rows={4} placeholder="The team at Octavia Dental were absolutely wonderful…"
+            <label className="block font-sans text-xs text-brand-muted mb-1.5">Review text <span className="text-brand-subtle">(optional)</span></label>
+            <textarea rows={4} placeholder="Leave blank if the patient only left a star rating…"
               value={form.text} onChange={e => setForm(f => ({ ...f, text: e.target.value }))}
               className="input resize-none" />
           </div>
@@ -192,7 +192,10 @@ export default function AdminReviews() {
                     {review.source === 'google' ? 'Google' : 'Website'}
                   </span>
                 </div>
-                <p className="font-sans text-sm text-brand-muted leading-relaxed line-clamp-2">{review.text}</p>
+                {review.text
+                  ? <p className="font-sans text-sm text-brand-muted leading-relaxed line-clamp-2">{review.text}</p>
+                  : <p className="font-sans text-xs text-brand-subtle italic">Rating only — no written review</p>
+                }
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <button onClick={() => togglePublished(review)}
