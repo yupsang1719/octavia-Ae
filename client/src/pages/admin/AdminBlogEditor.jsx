@@ -53,16 +53,11 @@ export default function AdminBlogEditor() {
 
   useEffect(() => {
     if (!isEdit) return
-    const post = state?.post
-    if (post) {
-      populateForm(post)
-    } else {
-      axios.get(`/api/admin/posts/${id}`)
-        .then(({ data }) => populateForm(data))
-        .catch(() => setError('Failed to load post.'))
-        .finally(() => setLoading(false))
-    }
-  }, [id, isEdit, state?.post, populateForm])
+    axios.get(`/api/admin/posts/${id}`)
+      .then(({ data }) => populateForm(data))
+      .catch(() => setError('Failed to load post.'))
+      .finally(() => setLoading(false))
+  }, [id, isEdit, populateForm])
 
   function set(field, value) {
     setForm(prev => {
