@@ -13,7 +13,8 @@ import dentallyRoutes from './routes/dentally.js'
 import adminRoutes   from './routes/admin.js'
 import teamRoutes    from './routes/team.js'
 import uploadRoutes    from './routes/upload.js'
-import settingsRoutes  from './routes/settings.js'
+import settingsRoutes    from './routes/settings.js'
+import treatmentRoutes  from './routes/treatments.js'
 import { generateSitemap } from './utils/sitemapGenerator.js'
 
 const __dir = dirname(fileURLToPath(import.meta.url))
@@ -62,7 +63,8 @@ app.use('/api/dentally',  dentallyRoutes)
 app.use('/api/admin',     adminRoutes)
 app.use('/api/team',      teamRoutes)
 app.use('/api/upload',    uploadRoutes)
-app.use('/api/settings',  settingsRoutes)
+app.use('/api/settings',    settingsRoutes)
+app.use('/api/treatments',  treatmentRoutes)
 
 // Sitemap — cached for 24h
 app.get('/sitemap.xml', async (req, res) => {

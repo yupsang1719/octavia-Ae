@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, LogOut, Menu, X } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 
 const NAV = [
@@ -12,6 +12,7 @@ const NAV = [
   { to: '/admin/reviews',        label: 'Reviews',        icon: MessageSquare },
   { to: '/admin/trust-bar',      label: 'Trust Bar',      icon: BarChart2 },
   { to: '/admin/review-request', label: 'Review Requests', icon: Star },
+  { to: '/admin/treatments',     label: 'Treatments',      icon: Stethoscope },
 ]
 
 export default function AdminLayout() {

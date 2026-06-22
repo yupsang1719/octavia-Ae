@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import GoldRule from '../ui/GoldRule'
-import { services } from '../../data/services'
+import { services as staticServices } from '../../data/services'
 
 /* ── Service icons ──────────────────────────────────────────────────────────── */
 function ServiceIcon({ id, className }) {
@@ -133,6 +133,24 @@ function ServiceRow({ service, index }) {
 
 /* ── Section ────────────────────────────────────────────────────────────────── */
 export default function ServicesGrid() {
+  const [services, setServices] = useState(staticServices)
+
+  useEffect(() => {
+    fetch('/api/treatments')
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data)) return
+        const bySlug = Object.fromEntries(data.map(t => [t.slug, t]))
+        setServices(staticServices.map(s => {
+          const slug = s.href.replace('/treatments/', '')
+          const cms = bySlug[slug]
+          if (!cms) return s
+          return { ...s, priceFrom: cms.priceFrom ?? s.priceFrom, tagline: cms.tagline ?? s.tagline }
+        }))
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <section className="section-padding bg-brand-green relative overflow-hidden">
       {/* Subtle decorative rings */}

@@ -11,6 +11,7 @@ import { faqSchema, treatmentSchema, breadcrumbSchema } from '../../utils/schema
 import { SITE_URL } from '../../utils/seo'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { getTreatmentById } from '../../data/treatments'
 
 function fadeUp(delay = 0) {
   return {
@@ -401,8 +402,20 @@ function TreatmentCTA({ treatment, onBook }) {
 }
 
 // ── Main Template ─────────────────────────────────────────────────────────────
-export default function TreatmentPageTemplate({ treatment }) {
+export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }) {
   const { isOpen, open, close } = useBookingModal()
+  const [treatment, setTreatment] = useState(treatmentProp || (slug ? getTreatmentById(slug) : null))
+
+  useEffect(() => {
+    const s = slug || treatmentProp?.slug
+    if (!s) return
+    axios.get(`/api/treatments/${s}`)
+      .then(({ data }) => setTreatment(data))
+      .catch(() => {})
+  }, [slug, treatmentProp?.slug])
+
+  if (!treatment) return null
+
   const canonical = `${SITE_URL}/treatments/${treatment.slug}`
 
   const schemas = [
