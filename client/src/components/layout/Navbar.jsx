@@ -106,8 +106,6 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [hoveredNav, setHoveredNav] = useState(null)
   const { isOpen, open, close }     = useBookingModal()
-  const location                    = useLocation()
-  const { pathname }                = location
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 60) }

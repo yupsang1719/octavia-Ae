@@ -5,6 +5,10 @@ function getClient() {
   return new Resend(process.env.RESEND_API_KEY)
 }
 
+function esc(str) {
+  return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 const FROM = 'Octavia Dental & Facial Aesthetics <info@octavia-dental.co.uk>'
 const TO   = process.env.EMAIL_TO || 'info@octavia-dental.co.uk'
 
@@ -21,13 +25,13 @@ export async function sendEnquiryNotification(enquiry) {
     html: `
       <h2>New Enquiry — Octavia Dental</h2>
       <table style="border-collapse:collapse;width:100%">
-        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Name</td><td style="padding:8px;border:1px solid #ddd">${enquiry.name}</td></tr>
-        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Email</td><td style="padding:8px;border:1px solid #ddd">${enquiry.email}</td></tr>
-        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Phone</td><td style="padding:8px;border:1px solid #ddd">${enquiry.phone || '—'}</td></tr>
-        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Service</td><td style="padding:8px;border:1px solid #ddd">${enquiry.service || '—'}</td></tr>
-        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Preferred time</td><td style="padding:8px;border:1px solid #ddd">${enquiry.preferredTime || '—'}</td></tr>
-        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Message</td><td style="padding:8px;border:1px solid #ddd">${enquiry.message || '—'}</td></tr>
-        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Source page</td><td style="padding:8px;border:1px solid #ddd">${enquiry.source || '—'}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Name</td><td style="padding:8px;border:1px solid #ddd">${esc(enquiry.name)}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Email</td><td style="padding:8px;border:1px solid #ddd">${esc(enquiry.email)}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Phone</td><td style="padding:8px;border:1px solid #ddd">${esc(enquiry.phone) || '—'}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Service</td><td style="padding:8px;border:1px solid #ddd">${esc(enquiry.service) || '—'}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Preferred time</td><td style="padding:8px;border:1px solid #ddd">${esc(enquiry.preferredTime) || '—'}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Message</td><td style="padding:8px;border:1px solid #ddd">${esc(enquiry.message) || '—'}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Source page</td><td style="padding:8px;border:1px solid #ddd">${esc(enquiry.source) || '—'}</td></tr>
       </table>
       <p style="margin-top:16px;color:#666;font-size:13px">Submitted: ${new Date(enquiry.createdAt).toLocaleString('en-GB')}</p>
     `,
@@ -44,7 +48,7 @@ export async function sendEnquiryConfirmation(enquiry) {
     to:      enquiry.email,
     subject: "We've received your enquiry — Octavia Dental",
     html: `
-      <p>Dear ${enquiry.name},</p>
+      <p>Dear ${esc(enquiry.name)},</p>
       <p>Thank you for contacting Octavia Dental & Facial Aesthetics. We've received your enquiry and a member of our team will be in touch within 2 hours during opening hours.</p>
       <p>If your query is urgent, please call us on <strong><a href="tel:01483860020">01483 860020</a></strong>.</p>
       <p>Best regards,<br/>The Octavia Dental team</p>
@@ -63,39 +67,43 @@ export async function sendReviewRequest({ name, email, note, treatment, visitDat
   }
 
   const reviewUrl = process.env.GOOGLE_REVIEW_URL || 'https://g.page/r/CT5vLpOPjfCQEBM/review'
-  const firstName = name.split(' ')[0]
+  const firstName = esc(name.split(' ')[0])
+  const eTreatment = esc(treatment)
+  const eVisitDate = esc(visitDate)
+  const eClinician = esc(clinician)
+  const eNote      = esc(note)
 
   const starSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
   const starGold = `<svg width="32" height="32" viewBox="0 0 24 24" fill="#C8A96E" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
 
-  const treatmentPill = (treatment || visitDate)
-    ? `<div style="display:inline-block;background:#edf7e3;color:#2D5A1E;font-size:12px;font-weight:600;padding:5px 14px;border-radius:100px;margin-bottom:22px;border:1px solid #c3e6a0;font-family:Arial,sans-serif">${[treatment, visitDate].filter(Boolean).join(' · ')}</div>`
+  const treatmentPill = (eTreatment || eVisitDate)
+    ? `<div style="display:inline-block;background:#edf7e3;color:#2D5A1E;font-size:12px;font-weight:600;padding:5px 14px;border-radius:100px;margin-bottom:22px;border:1px solid #c3e6a0;font-family:Arial,sans-serif">${[eTreatment, eVisitDate].filter(Boolean).join(' · ')}</div>`
     : ''
 
-  const noteHtml = note
-    ? `<p style="font-size:15px;color:#555;line-height:1.75;margin:0 0 16px;font-style:italic;border-left:3px solid #6AAF30;padding-left:14px;font-family:Arial,sans-serif">${note}</p>`
+  const noteHtml = eNote
+    ? `<p style="font-size:15px;color:#555;line-height:1.75;margin:0 0 16px;font-style:italic;border-left:3px solid #6AAF30;padding-left:14px;font-family:Arial,sans-serif">${eNote}</p>`
     : ''
 
-  const hasRecap = treatment || visitDate || clinician
+  const hasRecap = eTreatment || eVisitDate || eClinician
   const recapHtml = hasRecap ? `
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#f7faf4;border:1px solid #d4eabd;border-left:4px solid #6AAF30;border-radius:10px;margin:22px 0">
       <tr>
         <td style="padding:18px 20px">
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
-              ${treatment ? `<td style="width:50%;padding-bottom:12px;vertical-align:top">
+              ${eTreatment ? `<td style="width:50%;padding-bottom:12px;vertical-align:top">
                 <div style="font-size:10px;font-weight:700;color:#6AAF30;text-transform:uppercase;letter-spacing:1px;font-family:Arial,sans-serif">Treatment</div>
-                <div style="font-size:14px;font-weight:600;color:#1a3a10;margin-top:2px;font-family:Arial,sans-serif">${treatment}</div>
+                <div style="font-size:14px;font-weight:600;color:#1a3a10;margin-top:2px;font-family:Arial,sans-serif">${eTreatment}</div>
               </td>` : '<td style="width:50%"></td>'}
-              ${visitDate ? `<td style="width:50%;padding-bottom:12px;vertical-align:top">
+              ${eVisitDate ? `<td style="width:50%;padding-bottom:12px;vertical-align:top">
                 <div style="font-size:10px;font-weight:700;color:#6AAF30;text-transform:uppercase;letter-spacing:1px;font-family:Arial,sans-serif">Date</div>
-                <div style="font-size:14px;font-weight:600;color:#1a3a10;margin-top:2px;font-family:Arial,sans-serif">${visitDate}</div>
+                <div style="font-size:14px;font-weight:600;color:#1a3a10;margin-top:2px;font-family:Arial,sans-serif">${eVisitDate}</div>
               </td>` : '<td style="width:50%"></td>'}
             </tr>
             <tr>
-              ${clinician ? `<td style="width:50%;vertical-align:top">
+              ${eClinician ? `<td style="width:50%;vertical-align:top">
                 <div style="font-size:10px;font-weight:700;color:#6AAF30;text-transform:uppercase;letter-spacing:1px;font-family:Arial,sans-serif">Clinician</div>
-                <div style="font-size:14px;font-weight:600;color:#1a3a10;margin-top:2px;font-family:Arial,sans-serif">${clinician}</div>
+                <div style="font-size:14px;font-weight:600;color:#1a3a10;margin-top:2px;font-family:Arial,sans-serif">${eClinician}</div>
               </td>` : '<td style="width:50%"></td>'}
               <td style="width:50%;vertical-align:top">
                 <div style="font-size:10px;font-weight:700;color:#6AAF30;text-transform:uppercase;letter-spacing:1px;font-family:Arial,sans-serif">Location</div>
@@ -107,8 +115,8 @@ export async function sendReviewRequest({ name, email, note, treatment, visitDat
       </tr>
     </table>` : ''
 
-  const sigName = clinician ? `${clinician} &amp; the Octavia Dental team` : 'The Octavia Dental team'
-  const treatmentRef = treatment ? ` after your <strong style="color:#2D5A1E">${treatment}</strong>` : ''
+  const sigName = eClinician ? `${eClinician} &amp; the Octavia Dental team` : 'The Octavia Dental team'
+  const treatmentRef = eTreatment ? ` after your <strong style="color:#2D5A1E">${eTreatment}</strong>` : ''
 
   const siteUrl = process.env.SITE_URL || 'https://octavia-dental.co.uk'
 
@@ -230,7 +238,7 @@ export async function sendReviewRequest({ name, email, note, treatment, visitDat
   const { error } = await getClient().emails.send({
     from:    FROM,
     to:      email,
-    subject: `Thank you for visiting us, ${firstName} — Octavia Dental`,
+    subject: `Thank you for visiting us, ${name.split(' ')[0]} — Octavia Dental`,
     html,
   })
 

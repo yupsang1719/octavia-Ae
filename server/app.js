@@ -26,11 +26,13 @@ app.use(compression({ threshold: 1024 }))
 
 // Security
 app.use(helmet({
-  strictTransportSecurity: false, // Disabled until HTTPS/domain is configured
+  strictTransportSecurity: process.env.NODE_ENV === 'production'
+    ? { maxAge: 31536000, includeSubDomains: true }
+    : false,
   contentSecurityPolicy: {
     directives: {
       defaultSrc:  ["'self'"],
-      scriptSrc:   ["'self'", "'unsafe-inline'"],
+      scriptSrc:   ["'self'"],
       styleSrc:    ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc:     ["'self'", 'https://fonts.gstatic.com'],
       imgSrc:      ["'self'", 'data:', 'https:', 'blob:'],
@@ -48,8 +50,8 @@ app.use(cors({
 app.use('/uploads', express.static(resolve(__dir, '../uploads')))
 
 // Body parsing
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({ limit: '1mb' }))
+app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 
 // Global rate limit
 app.use('/api', apiLimiter)
@@ -98,7 +100,8 @@ if (process.env.NODE_ENV === 'production') {
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err)
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' })
+  const msg = process.env.NODE_ENV === 'production' ? 'Internal server error' : (err.message || 'Internal server error')
+  res.status(err.status || 500).json({ error: msg })
 })
 
 export default app

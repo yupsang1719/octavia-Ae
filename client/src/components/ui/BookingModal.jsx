@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -44,18 +44,18 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
     if (defaultService) setValue('service', defaultService)
   }, [defaultService, setValue])
 
+  const resetModal = useCallback(() => {
+    reset()
+    setStep(1)
+    setSubmitted(false)
+    setApiError('')
+  }, [reset])
+
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-      reset()
-      setStep(1)
-      setSubmitted(false)
-      setApiError('')
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : ''
+    if (!isOpen) resetModal()
     return () => { document.body.style.overflow = '' }
-  }, [isOpen, reset])
+  }, [isOpen, resetModal])
 
   async function onSubmit(data) {
     setApiError('')

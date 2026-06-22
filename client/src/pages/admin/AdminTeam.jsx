@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { PlusCircle, Edit2, Trash2, Eye, EyeOff, Users } from 'lucide-react'
@@ -25,9 +25,7 @@ export default function AdminTeam() {
   const [filter, setFilter] = useState('')
   const [error, setError] = useState('')
 
-  useEffect(() => { fetchMembers() }, [])
-
-  async function fetchMembers() {
+  const fetchMembers = useCallback(async () => {
     try {
       const { data } = await axios.get('/api/admin/team')
       setMembers(data)
@@ -36,7 +34,9 @@ export default function AdminTeam() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => { fetchMembers() }, [fetchMembers])
 
   async function togglePublished(member) {
     try {

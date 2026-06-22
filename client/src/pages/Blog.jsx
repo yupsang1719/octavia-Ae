@@ -16,16 +16,14 @@ function fade(d=0){return{initial:{opacity:0,y:18},whileInView:{opacity:1,y:0},v
 export default function Blog() {
   const [category, setCategory] = useState('All')
   const [posts, setPosts]       = useState([])
-  const [loading, setLoading]   = useState(false)
 
   useEffect(() => {
-    setLoading(true)
     const cat = CAT_MAP[category]
     const url = cat ? `/api/blog/category/${cat}` : '/api/blog?limit=12'
     axios.get(url).then(({ data }) => {
       const arr = Array.isArray(data) ? data : data.posts
       if (arr?.length) setPosts(arr)
-    }).catch(() => {}).finally(() => setLoading(false))
+    }).catch(() => {})
   }, [category])
 
   const displayed = category === 'All' ? posts : posts.filter(p => p.category === CAT_MAP[category])

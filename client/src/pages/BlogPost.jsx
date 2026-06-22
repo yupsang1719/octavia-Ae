@@ -12,15 +12,6 @@ import { blogPostSchema } from '../utils/schema'
 import { formatDate, readTime } from '../utils/formatters'
 import { SITE_URL } from '../utils/seo'
 
-const PLACEHOLDER = {
-  title: 'Article loading...',
-  excerpt: '',
-  body: 'This article is being loaded. Please wait.',
-  author: 'Dr Ana',
-  category: 'dental',
-  publishedAt: new Date().toISOString(),
-}
-
 function ShareButtons({ title, slug }) {
   const url = `${SITE_URL}/blog/${slug}`
   const waText = encodeURIComponent(`${title} — ${url}`)

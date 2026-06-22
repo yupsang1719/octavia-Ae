@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export function useScrollReveal(options = {}) {
+export function useScrollReveal({ threshold = 0.15, ...rest } = {}) {
   const ref = useRef(null)
 
   useEffect(() => {
@@ -14,12 +14,14 @@ export function useScrollReveal(options = {}) {
           observer.unobserve(el)
         }
       },
-      { threshold: options.threshold || 0.15, ...options }
+      { threshold, ...rest }
     )
 
     observer.observe(el)
     return () => observer.disconnect()
-  }, [options.threshold])
+  // rest is excluded intentionally — it's caller-controlled static config
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threshold])
 
   return ref
 }

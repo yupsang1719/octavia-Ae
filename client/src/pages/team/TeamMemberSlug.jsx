@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import axios from 'axios'
@@ -10,13 +10,18 @@ export default function TeamMemberSlug() {
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    setMember(null)
     setLoading(true)
     setNotFound(false)
+  }, [slug])
+
+  useEffect(() => {
+    let cancelled = false
     axios.get(`/api/team/${slug}`)
-      .then(({ data }) => setMember(data))
-      .catch(() => setNotFound(true))
-      .finally(() => setLoading(false))
+      .then(({ data }) => { if (!cancelled) { setMember(data); setLoading(false) } })
+      .catch(() => { if (!cancelled) { setNotFound(true); setLoading(false) } })
+    return () => { cancelled = true }
   }, [slug])
 
   if (loading) {

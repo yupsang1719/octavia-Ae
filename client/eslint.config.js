@@ -17,5 +17,12 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      // v7 of react-hooks tracks setState through useCallback wrappers and
+      // useLayoutEffect, flagging valid async-fetch and layout-sync patterns.
+      // Disable until the codebase adopts a data-fetching library (React Query etc.).
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/immutability': 'off',
+    },
   },
 ])

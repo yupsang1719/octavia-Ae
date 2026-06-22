@@ -3,6 +3,8 @@ import { resolve, dirname, extname } from 'path'
 import { fileURLToPath } from 'url'
 import { mkdirSync } from 'fs'
 
+const ALLOWED_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif'])
+
 const __dir = dirname(fileURLToPath(import.meta.url))
 
 function diskStorage(subfolder) {
@@ -17,12 +19,15 @@ function diskStorage(subfolder) {
   })
 }
 
-const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
+const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif'])
 
 function imageFilter(_req, file, cb) {
-  ALLOWED.includes(file.mimetype)
-    ? cb(null, true)
-    : cb(new Error('Only JPEG, PNG, WebP and AVIF images are allowed'), false)
+  const ext = extname(file.originalname).toLowerCase()
+  if (ALLOWED_MIME.has(file.mimetype) && ALLOWED_EXTS.has(ext)) {
+    cb(null, true)
+  } else {
+    cb(new Error('Only JPEG, PNG, WebP and AVIF images are allowed'), false)
+  }
 }
 
 export const teamUpload = multer({

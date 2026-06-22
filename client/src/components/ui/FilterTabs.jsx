@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 export default function FilterTabs({ tabs, active, onChange }) {
   const containerRef = useRef(null)

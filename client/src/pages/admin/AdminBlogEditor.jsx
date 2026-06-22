@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { ArrowLeft, Save, Globe } from 'lucide-react'
@@ -27,38 +27,37 @@ export default function AdminBlogEditor() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    if (isEdit) {
-      const post = state?.post
-      if (post) {
-        populateForm(post)
-      } else {
-        axios.get(`/api/admin/posts/${id}`)
-          .then(({ data }) => populateForm(data))
-          .catch(() => setError('Failed to load post.'))
-          .finally(() => setLoading(false))
-      }
-    }
-  }, [id])
-
-  function populateForm(post) {
+  const populateForm = useCallback((post) => {
     setForm({
-      title:      post.title      || '',
-      slug:       post.slug       || '',
-      excerpt:    post.excerpt    || '',
-      body:       post.body       || '',
-      category:   post.category   || 'dental',
-      author:     post.author     || 'Octavia Dental',
-      featuredImg:post.featuredImg|| '',
-      seoTitle:   post.seoTitle   || '',
-      seoDesc:    post.seoDesc    || '',
-      tags:       (post.tags || []).join(', '),
-      location:   post.location   || '',
-      published:  post.published  || false,
+      title:       post.title       || '',
+      slug:        post.slug        || '',
+      excerpt:     post.excerpt     || '',
+      body:        post.body        || '',
+      category:    post.category    || 'dental',
+      author:      post.author      || 'Octavia Dental',
+      featuredImg: post.featuredImg || '',
+      seoTitle:    post.seoTitle    || '',
+      seoDesc:     post.seoDesc     || '',
+      tags:        (post.tags || []).join(', '),
+      location:    post.location    || '',
+      published:   post.published   || false,
     })
     setSlugEdited(true)
     setLoading(false)
-  }
+  }, [])
+
+  useEffect(() => {
+    if (!isEdit) return
+    const post = state?.post
+    if (post) {
+      populateForm(post)
+    } else {
+      axios.get(`/api/admin/posts/${id}`)
+        .then(({ data }) => populateForm(data))
+        .catch(() => setError('Failed to load post.'))
+        .finally(() => setLoading(false))
+    }
+  }, [id, isEdit, state?.post, populateForm])
 
   function set(field, value) {
     setForm(prev => {

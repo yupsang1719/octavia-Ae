@@ -10,9 +10,6 @@ import { SITE_URL } from '../../utils/seo'
 
 const ease = [0.22, 1, 0.36, 1]
 
-function fadeUp(delay = 0) {
-  return { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.7, delay, ease } }
-}
 function inView(delay = 0) {
   return { initial: { opacity: 0, y: 18 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.5, delay, ease: 'easeOut' } }
 }

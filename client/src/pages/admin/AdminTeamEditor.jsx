@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { ArrowLeft, Plus, X, Save, Upload, Loader } from 'lucide-react'
@@ -46,13 +46,9 @@ export default function AdminTeamEditor() {
   const [treatmentLabel, setTreatmentLabel] = useState('')
   const [treatmentHref, setTreatmentHref] = useState('')
 
-  useEffect(() => {
-    if (!isNew) loadMember()
-  }, [id])
-
-  async function loadMember() {
+  const loadMember = useCallback(async () => {
     try {
-      const { data } = await axios.get(`/api/admin/team`)
+      const { data } = await axios.get('/api/admin/team')
       const member = data.find(m => m._id === id)
       if (member) setForm(member)
       else setError('Member not found')
@@ -61,7 +57,11 @@ export default function AdminTeamEditor() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [id])
+
+  useEffect(() => {
+    if (!isNew) loadMember()
+  }, [isNew, loadMember])
 
   function set(field, value) {
     setForm(prev => {

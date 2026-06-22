@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback } from 'react'
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import axios from 'axios'
 
 const AuthContext = createContext(null)
@@ -19,12 +20,13 @@ export function AuthProvider({ children }) {
     setToken(null)
   }, [])
 
-  // Attach token to all axios requests
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  } else {
-    delete axios.defaults.headers.common['Authorization']
-  }
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    } else {
+      delete axios.defaults.headers.common['Authorization']
+    }
+  }, [token])
 
   return (
     <AuthContext.Provider value={{ token, isAuthenticated: !!token, login, logout }}>

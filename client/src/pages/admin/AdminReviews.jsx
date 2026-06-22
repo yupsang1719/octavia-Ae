@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import { Star, Eye, EyeOff, Trash2, Plus, X } from 'lucide-react'
 
@@ -34,9 +34,7 @@ export default function AdminReviews() {
   const [saving, setSaving]     = useState(false)
   const [error, setError]       = useState('')
 
-  useEffect(() => { fetchReviews() }, [])
-
-  async function fetchReviews() {
+  const fetchReviews = useCallback(async () => {
     try {
       const { data } = await axios.get('/api/reviews/all')
       setReviews(data)
@@ -45,7 +43,9 @@ export default function AdminReviews() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => { fetchReviews() }, [fetchReviews])
 
   async function handleAdd(e) {
     e.preventDefault()
