@@ -3,7 +3,11 @@ import EmailTemplate from '../models/EmailTemplate.js'
 import { sendTemplateEmail } from '../utils/email.js'
 
 const BASE        = process.env.DENTALLY_BASE_URL || 'https://api.dentally.co/v1'
-const authHeaders = () => ({ Authorization: `Token token=${process.env.DENTALLY_API_KEY}` })
+const authHeaders = () => ({
+  Authorization: `Token token=${process.env.DENTALLY_API_KEY}`,
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+})
 
 // Fetch ALL patients with marketing consent from Dentally (handles pagination)
 async function fetchMarketingPatients() {
@@ -19,9 +23,9 @@ async function fetchMarketingPatients() {
         timeout: 15000,
       })
     } catch (err) {
-      // Surface the actual Dentally error message
+      const status     = err.response?.status || 'network error'
       const dentallyMsg = err.response?.data?.message || err.response?.data?.error || err.message
-      const status = err.response?.status || 'network error'
+      console.error('[Dentally] Error:', status, dentallyMsg, err.response?.data)
       throw new Error(`Dentally responded ${status}: ${dentallyMsg}`)
     }
 
