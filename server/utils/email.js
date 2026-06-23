@@ -244,3 +244,98 @@ export async function sendReviewRequest({ name, email, note, treatment, visitDat
 
   if (error) throw new Error(error.message)
 }
+
+// ── Generic template email ───────────────────────────────────────────────────
+
+function substituteMergeTags(text, vars) {
+  return text
+    .replace(/\{\{firstName\}\}/g, vars.firstName || '')
+    .replace(/\{\{name\}\}/g,      vars.name      || '')
+    .replace(/\{\{treatment\}\}/g, vars.treatment  || '')
+    .replace(/\{\{clinician\}\}/g, vars.clinician  || '')
+    .replace(/\{\{practiceName\}\}/g, 'Octavia Dental &amp; Facial Aesthetics')
+    .replace(/\{\{phone\}\}/g, '01483 860020')
+}
+
+function buildTemplateHtml({ firstName, bodyHtml, includeReviewCta }) {
+  const siteUrl   = process.env.SITE_URL         || 'https://octavia-dental.co.uk'
+  const reviewUrl = process.env.GOOGLE_REVIEW_URL || 'https://g.page/r/CT5vLpOPjfCQEBM/review'
+  const starGold  = `<svg width="28" height="28" viewBox="0 0 24 24" fill="#C8A96E"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
+
+  const reviewCtaHtml = includeReviewCta ? `
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin:28px 0">
+      <tr><td style="text-align:center">
+        <div style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px">Leave us a Google review</div>
+        <div style="margin-bottom:16px">${starGold}${starGold}${starGold}${starGold}${starGold}</div>
+        <a href="${reviewUrl}" style="background:#2D5A1E;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 36px;border-radius:10px;display:inline-block">Leave a Google review ★</a>
+        <div style="margin-top:8px;font-size:12px;color:#999">Takes less than a minute · Opens Google directly</div>
+      </td></tr>
+    </table>
+    <hr style="border:none;border-top:1px solid #eef2eb;margin:0 0 24px"/>` : ''
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/></head>
+<body style="margin:0;padding:40px 16px;background:#f0f2f0;font-family:Arial,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto">
+  <tr><td style="background:#fff;border-radius:14px 14px 0 0;padding:20px 36px;border-bottom:1px solid #eef2eb">
+    <table cellpadding="0" cellspacing="0"><tr>
+      <td style="vertical-align:middle;padding-right:10px"><img src="${LOGO_BASE64}" alt="" width="36" height="36" style="display:block;border-radius:8px"/></td>
+      <td style="vertical-align:middle">
+        <div style="font-size:14px;font-weight:700;color:#2D5A1E">Octavia Dental &amp; Facial Aesthetics</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">Godalming, Surrey</div>
+      </td>
+    </tr></table>
+  </td></tr>
+  <tr><td style="background:#fff;padding:36px 36px 32px">
+    <div style="font-size:22px;font-weight:700;color:#2D5A1E;margin-bottom:20px">Hi ${firstName},</div>
+    <div style="font-size:15px;color:#2a2a2a;line-height:1.75">${bodyHtml}</div>
+    ${reviewCtaHtml}
+    <table cellpadding="0" cellspacing="0" style="background:#f7faf4;border:1px solid #e0efd3;border-radius:10px;width:100%;margin-top:24px">
+      <tr><td style="padding:16px 20px">
+        <table cellpadding="0" cellspacing="0"><tr>
+          <td style="vertical-align:middle;padding-right:14px"><div style="width:42px;height:42px;background:#2D5A1E;border-radius:50%;text-align:center;line-height:42px;font-size:15px;font-weight:700;color:#fff">OD</div></td>
+          <td style="vertical-align:middle">
+            <div style="font-size:13px;font-weight:700;color:#2D5A1E">The Octavia Dental team</div>
+            <div style="font-size:11px;color:#666;margin-top:2px">Octavia Dental &amp; Facial Aesthetics · 01483 860020</div>
+          </td>
+        </tr></table>
+      </td></tr>
+    </table>
+  </td></tr>
+  <tr><td style="background:#2D5A1E;border-radius:0 0 14px 14px;padding:20px 36px">
+    <div style="font-size:11px;color:rgba(255,255,255,0.7);line-height:2">
+      <a href="tel:01483860020" style="color:rgba(255,255,255,0.7);text-decoration:none">01483 860020</a> ·
+      <a href="mailto:info@octavia-dental.co.uk" style="color:rgba(255,255,255,0.7);text-decoration:none">info@octavia-dental.co.uk</a> ·
+      <a href="${siteUrl}" style="color:rgba(255,255,255,0.7);text-decoration:none">octavia-dental.co.uk</a>
+    </div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:4px">Seymour House, Lower South Street, Godalming, Surrey GU7 1BZ</div>
+  </td></tr>
+</table>
+</body>
+</html>`
+}
+
+export async function sendTemplateEmail({ to, name, subject, bodyHtml, templateType, vars = {} }) {
+  if (!process.env.RESEND_API_KEY) {
+    console.log('RESEND_API_KEY not set — skipping template email')
+    return
+  }
+
+  const firstName  = (name || '').split(' ')[0]
+  const mergeVars  = { firstName, name, ...vars }
+  const resolvedSubject  = substituteMergeTags(subject, mergeVars)
+  const resolvedBodyHtml = substituteMergeTags(bodyHtml, mergeVars)
+
+  const html = buildTemplateHtml({
+    firstName,
+    bodyHtml:         resolvedBodyHtml,
+    includeReviewCta: templateType === 'review_request',
+  })
+
+  const { error: sendError } = await getClient().emails.send({
+    from: FROM, to, subject: resolvedSubject, html,
+  })
+
+  if (sendError) throw new Error(sendError.message)
+}

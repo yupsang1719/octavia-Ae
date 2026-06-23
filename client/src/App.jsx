@@ -47,11 +47,14 @@ const AdminGallery    = lazy(() => import('./pages/admin/AdminGallery'))
 const AdminTeam          = lazy(() => import('./pages/admin/AdminTeam'))
 const AdminTeamEditor    = lazy(() => import('./pages/admin/AdminTeamEditor'))
 const AdminReviews       = lazy(() => import('./pages/admin/AdminReviews'))
-const AdminTrustBar         = lazy(() => import('./pages/admin/AdminTrustBar'))
-const AdminOpeningHours     = lazy(() => import('./pages/admin/AdminOpeningHours'))
-const AdminReviewRequest    = lazy(() => import('./pages/admin/AdminReviewRequest'))
-const AdminTreatments       = lazy(() => import('./pages/admin/AdminTreatments'))
-const AdminTreatmentEditor  = lazy(() => import('./pages/admin/AdminTreatmentEditor'))
+const AdminTrustBar             = lazy(() => import('./pages/admin/AdminTrustBar'))
+const AdminOpeningHours         = lazy(() => import('./pages/admin/AdminOpeningHours'))
+const AdminReviewRequest        = lazy(() => import('./pages/admin/AdminReviewRequest'))
+const AdminTreatments           = lazy(() => import('./pages/admin/AdminTreatments'))
+const AdminTreatmentEditor      = lazy(() => import('./pages/admin/AdminTreatmentEditor'))
+const AdminPatients             = lazy(() => import('./pages/admin/AdminPatients'))
+const AdminEmailTemplates       = lazy(() => import('./pages/admin/AdminEmailTemplates'))
+const AdminEmailTemplateEditor  = lazy(() => import('./pages/admin/AdminEmailTemplateEditor'))
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function ScrollToTop() {
@@ -156,8 +159,11 @@ export default function App() {
             <Route path="trust-bar"        element={<AdminTrustBar />} />
             <Route path="opening-hours"    element={<AdminOpeningHours />} />
             <Route path="review-request"       element={<AdminReviewRequest />} />
-            <Route path="treatments"            element={<AdminTreatments />} />
-            <Route path="treatments/:slug"      element={<AdminTreatmentEditor />} />
+            <Route path="treatments"                    element={<AdminTreatments />} />
+            <Route path="treatments/:slug"             element={<AdminTreatmentEditor />} />
+            <Route path="patients"                     element={<AdminPatients />} />
+            <Route path="email-templates"              element={<AdminEmailTemplates />} />
+            <Route path="email-templates/:id"          element={<AdminEmailTemplateEditor />} />
           </Route>
         </Routes>
       </Suspense>
