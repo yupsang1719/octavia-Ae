@@ -13,7 +13,7 @@ export default function AdminOpeningHours() {
 
   useEffect(() => {
     axios.get('/api/settings/opening-hours')
-      .then(({ data }) => setRows(data))
+      .then(({ data }) => setRows(Array.isArray(data) ? data : []))
       .catch(() => setError('Failed to load opening hours.'))
       .finally(() => setLoading(false))
   }, [])
