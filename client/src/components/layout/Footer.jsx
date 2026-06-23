@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Phone, Mail, MapPin, Send } from 'lucide-react'
+import axios from 'axios'
 
 function InstagramIcon({ className }) {
   return (
@@ -55,9 +56,26 @@ function FooterLink({ to, children }) {
   )
 }
 
+const FALLBACK_HOURS = [
+  { day: 'Monday',    hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Tuesday',   hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Wednesday', hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Thursday',  hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Friday',    hours: '8:30 am – 5:00 pm', closed: false },
+  { day: 'Saturday',  hours: '9:00 am – 2:00 pm', closed: false },
+  { day: 'Sunday',    hours: '',                   closed: true  },
+]
+
 export default function Footer() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const [hours, setHours] = useState(FALLBACK_HOURS)
+
+  useEffect(() => {
+    axios.get('/api/settings/opening-hours')
+      .then(({ data }) => { if (Array.isArray(data) && data.length) setHours(data) })
+      .catch(() => {})
+  }, [])
 
   const handleSubscribe = (e) => {
     e.preventDefault()
@@ -103,7 +121,7 @@ export default function Footer() {
       </div>
 
       <div className="container-wide py-16 lg:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
           {/* Practice info */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="mb-5 flex items-center gap-3">
@@ -191,6 +209,23 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {practice.map(l => (
                 <FooterLink key={l.href} to={l.href}>{l.label}</FooterLink>
+              ))}
+            </ul>
+          </div>
+
+          {/* Opening Hours */}
+          <div>
+            <h3 className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 mb-5">
+              Opening Hours
+            </h3>
+            <ul className="space-y-2">
+              {hours.map(h => (
+                <li key={h.day} className="flex justify-between gap-3 text-[12px] font-sans">
+                  <span className="text-white/40">{h.day}</span>
+                  <span className={h.closed ? 'text-white/25' : 'text-white/65'}>
+                    {h.closed ? 'Closed' : h.hours}
+                  </span>
+                </li>
               ))}
             </ul>
           </div>
