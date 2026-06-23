@@ -9,10 +9,13 @@ const DEFAULTS = [
 ]
 
 const DEFAULT_HOURS = [
-  { day: 'Monday – Thursday', hours: '8:30 am – 6:00 pm', closed: false },
-  { day: 'Friday',            hours: '8:30 am – 5:00 pm', closed: false },
-  { day: 'Saturday',          hours: '9:00 am – 2:00 pm', closed: false },
-  { day: 'Sunday',            hours: '',                  closed: true  },
+  { day: 'Monday',    hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Tuesday',   hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Wednesday', hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Thursday',  hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Friday',    hours: '8:30 am – 5:00 pm', closed: false },
+  { day: 'Saturday',  hours: '9:00 am – 2:00 pm', closed: false },
+  { day: 'Sunday',    hours: '',                   closed: true  },
 ]
 
 export async function getTrustBar(_req, res) {

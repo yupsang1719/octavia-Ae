@@ -9,10 +9,13 @@ import { SITE_URL } from '../utils/seo'
 function fade(d=0){return{initial:{opacity:0,y:18},whileInView:{opacity:1,y:0},viewport:{once:true},transition:{duration:0.45,delay:d,ease:'easeOut'}}}
 
 const FALLBACK_HOURS = [
-  { day:'Monday – Thursday', hours:'8:30 am – 6:00 pm', closed: false },
-  { day:'Friday',            hours:'8:30 am – 5:00 pm', closed: false },
-  { day:'Saturday',          hours:'9:00 am – 2:00 pm', closed: false },
-  { day:'Sunday',            hours:'',                  closed: true  },
+  { day: 'Monday',    hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Tuesday',   hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Wednesday', hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Thursday',  hours: '8:30 am – 6:00 pm', closed: false },
+  { day: 'Friday',    hours: '8:30 am – 5:00 pm', closed: false },
+  { day: 'Saturday',  hours: '9:00 am – 2:00 pm', closed: false },
+  { day: 'Sunday',    hours: '',                   closed: true  },
 ]
 
 export default function Contact() {
