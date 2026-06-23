@@ -4,9 +4,8 @@ import { sendTemplateEmail } from '../utils/email.js'
 
 const BASE        = process.env.DENTALLY_BASE_URL || 'https://api.dentally.co/v1'
 const authHeaders = () => ({
-  Authorization: `Token token=${process.env.DENTALLY_API_KEY}`,
+  Authorization: `Bearer ${process.env.DENTALLY_API_KEY}`,
   Accept: 'application/json',
-  'Content-Type': 'application/json',
 })
 
 // Fetch ALL patients with marketing consent from Dentally (handles pagination)
