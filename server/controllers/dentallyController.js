@@ -11,12 +11,23 @@ async function fetchMarketingPatients() {
   let all = []
 
   while (true) {
-    const { data } = await axios.get(`${BASE}/patients`, {
-      headers,
-      params: { per_page: 100, page, marketing_consent: true },
-    })
+    let response
+    try {
+      response = await axios.get(`${BASE}/patients`, {
+        headers,
+        params: { per_page: 100, page },
+        timeout: 15000,
+      })
+    } catch (err) {
+      // Surface the actual Dentally error message
+      const dentallyMsg = err.response?.data?.message || err.response?.data?.error || err.message
+      const status = err.response?.status || 'network error'
+      throw new Error(`Dentally responded ${status}: ${dentallyMsg}`)
+    }
 
-    const patients = data.patients || data.data || []
+    const data = response.data
+    // Dentally wraps results in { patients: [...] } or { data: [...] }
+    const patients = data.patients || data.data || (Array.isArray(data) ? data : [])
     all = all.concat(patients)
 
     const meta = data.meta || {}
@@ -25,7 +36,7 @@ async function fetchMarketingPatients() {
     page++
   }
 
-  // Normalise field names (Dentally uses snake_case)
+  // Filter by marketing consent and normalise field names
   return all
     .filter(p => p.marketing_consent || p.marketingConsent)
     .map(p => ({
@@ -76,7 +87,25 @@ export async function getMarketingPatients(_req, res) {
     const patients = await fetchMarketingPatients()
     res.json({ patients, configured: true })
   } catch (err) {
-    res.status(502).json({ error: 'Failed to fetch patients from Dentally: ' + err.message })
+    res.status(502).json({ error: err.message })
+  }
+}
+
+// Debug — returns the raw first page from Dentally so you can inspect the response shape
+export async function debugDentally(_req, res) {
+  if (!process.env.DENTALLY_API_KEY) {
+    return res.status(503).json({ error: 'DENTALLY_API_KEY not set' })
+  }
+  try {
+    const { data } = await axios.get(`${BASE}/patients`, {
+      headers: { Authorization: `Bearer ${process.env.DENTALLY_API_KEY}` },
+      params:  { per_page: 5, page: 1 },
+      timeout: 15000,
+    })
+    res.json({ base: BASE, raw: data })
+  } catch (err) {
+    const detail = err.response?.data || err.message
+    res.status(502).json({ base: BASE, error: err.message, detail })
   }
 }
 
