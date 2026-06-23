@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { RefreshCw, Send, CheckCircle, AlertCircle, Users, Search } from 'lucide-react'
+import { RefreshCw, Send, CheckCircle, AlertCircle, Users, Search, Filter } from 'lucide-react'
 
 export default function AdminPatients() {
   const [patients, setPatients]     = useState([])
@@ -11,8 +11,9 @@ export default function AdminPatients() {
   const [templateId, setTemplateId] = useState('')
   const [sending, setSending]       = useState(false)
   const [result, setResult]         = useState(null)
-  const [search, setSearch]         = useState('')
-  const [error, setError]           = useState('')
+  const [search, setSearch]           = useState('')
+  const [consentOnly, setConsentOnly] = useState(false)
+  const [error, setError]             = useState('')
 
   useEffect(() => {
     axios.get('/api/email-templates').then(({ data }) => {
@@ -70,7 +71,9 @@ export default function AdminPatients() {
 
   const filtered = patients.filter(p => {
     const q = search.toLowerCase()
-    return !q || p.name.toLowerCase().includes(q) || p.email.toLowerCase().includes(q)
+    const matchSearch = !q || p.name.toLowerCase().includes(q) || p.email.toLowerCase().includes(q)
+    const matchConsent = !consentOnly || p.marketingConsent
+    return matchSearch && matchConsent
   })
 
   const allSelected = filtered.length > 0 && filtered.every(p => selected.has(p.id))
@@ -79,9 +82,9 @@ export default function AdminPatients() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="font-serif text-2xl text-brand-dark">Patients — Marketing Consent</h1>
+        <h1 className="font-serif text-2xl text-brand-dark">Patients</h1>
         <p className="text-sm text-brand-muted font-sans mt-0.5">
-          Patients from Dentally who have ticked marketing consent. Select patients and send an email template.
+          All patients from Dentally. Select patients and send an email template.
         </p>
       </div>
 
@@ -133,6 +136,15 @@ export default function AdminPatients() {
                 className="pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent w-52"
               />
             </div>
+            <label className="flex items-center gap-2 cursor-pointer select-none text-sm font-sans text-brand-muted">
+              <input
+                type="checkbox"
+                checked={consentOnly}
+                onChange={e => setConsentOnly(e.target.checked)}
+                className="rounded border-gray-300 text-brand-green focus:ring-brand-green cursor-pointer"
+              />
+              Marketing consent only
+            </label>
 
             <div className="ml-auto flex items-center gap-3">
               <select
@@ -187,6 +199,7 @@ export default function AdminPatients() {
                 <th className="px-3 py-3 text-left font-medium">Name</th>
                 <th className="px-3 py-3 text-left font-medium hidden sm:table-cell">Email</th>
                 <th className="px-3 py-3 text-left font-medium hidden md:table-cell">Phone</th>
+                <th className="px-3 py-3 text-left font-medium hidden lg:table-cell">Consent</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -207,6 +220,12 @@ export default function AdminPatients() {
                   <td className="px-3 py-3 font-sans font-medium text-brand-dark">{p.name}</td>
                   <td className="px-3 py-3 text-brand-muted font-sans hidden sm:table-cell">{p.email}</td>
                   <td className="px-3 py-3 text-brand-muted font-sans hidden md:table-cell">{p.phone || '—'}</td>
+                  <td className="px-3 py-3 hidden lg:table-cell">
+                    {p.marketingConsent
+                      ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-700 font-medium font-sans">Yes</span>
+                      : <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-400 font-medium font-sans">No</span>
+                    }
+                  </td>
                 </tr>
               ))}
             </tbody>

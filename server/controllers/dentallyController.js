@@ -36,16 +36,16 @@ async function fetchMarketingPatients() {
     page++
   }
 
-  // Filter by marketing consent and normalise field names
+  // Normalise field names, keep all patients that have an email
   return all
-    .filter(p => p.marketing_consent || p.marketingConsent)
     .map(p => ({
-      id:        p.id,
-      firstName: p.first_name  || p.firstName  || '',
-      lastName:  p.last_name   || p.lastName   || '',
-      name:      `${p.first_name || p.firstName || ''} ${p.last_name || p.lastName || ''}`.trim(),
-      email:     p.email_address || p.email || '',
-      phone:     p.mobile_phone  || p.phone || '',
+      id:              p.id,
+      firstName:       p.first_name  || p.firstName  || '',
+      lastName:        p.last_name   || p.lastName   || '',
+      name:            `${p.first_name || p.firstName || ''} ${p.last_name || p.lastName || ''}`.trim(),
+      email:           p.email_address || p.email || '',
+      phone:           p.mobile_phone  || p.phone || '',
+      marketingConsent: !!(p.marketing_consent || p.marketingConsent),
     }))
     .filter(p => p.email)
 }
