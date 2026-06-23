@@ -2,11 +2,11 @@ import axios from 'axios'
 import EmailTemplate from '../models/EmailTemplate.js'
 import { sendTemplateEmail } from '../utils/email.js'
 
-const BASE = process.env.DENTALLY_BASE_URL || 'https://api.dentally.co/v1'
+const BASE        = process.env.DENTALLY_BASE_URL || 'https://api.dentally.co/v1'
+const authHeaders = () => ({ Authorization: `Token token=${process.env.DENTALLY_API_KEY}` })
 
 // Fetch ALL patients with marketing consent from Dentally (handles pagination)
 async function fetchMarketingPatients() {
-  const headers = { Authorization: `Bearer ${process.env.DENTALLY_API_KEY}` }
   let page = 1
   let all = []
 
@@ -14,7 +14,7 @@ async function fetchMarketingPatients() {
     let response
     try {
       response = await axios.get(`${BASE}/patients`, {
-        headers,
+        headers: authHeaders(),
         params: { per_page: 100, page },
         timeout: 15000,
       })
@@ -56,7 +56,7 @@ export async function getSlots(req, res) {
   }
   try {
     const { data } = await axios.get(`${BASE}/availability`, {
-      headers: { Authorization: `Bearer ${process.env.DENTALLY_API_KEY}` },
+      headers: authHeaders(),
       params: req.query,
     })
     res.json(data)
@@ -71,7 +71,7 @@ export async function bookAppointment(req, res) {
   }
   try {
     const { data } = await axios.post(`${BASE}/appointments`, req.body, {
-      headers: { Authorization: `Bearer ${process.env.DENTALLY_API_KEY}` },
+      headers: authHeaders(),
     })
     res.status(201).json(data)
   } catch {
@@ -98,7 +98,7 @@ export async function debugDentally(_req, res) {
   }
   try {
     const { data } = await axios.get(`${BASE}/patients`, {
-      headers: { Authorization: `Bearer ${process.env.DENTALLY_API_KEY}` },
+      headers: authHeaders(),
       params:  { per_page: 5, page: 1 },
       timeout: 15000,
     })
