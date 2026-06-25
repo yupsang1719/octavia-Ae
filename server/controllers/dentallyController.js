@@ -95,6 +95,60 @@ export async function getMarketingPatients(_req, res) {
   }
 }
 
+export async function getPatientAppointments(req, res) {
+  if (!process.env.DENTALLY_API_KEY) return res.status(503).json({ error: 'Dentally not configured' })
+  try {
+    const { data } = await axios.get(`${BASE}/appointments`, {
+      headers: authHeaders(),
+      params:  { patient_id: req.params.id, per_page: 50 },
+      timeout: 15000,
+    })
+
+    const appointments = (data.appointments || data.data || []).map(a => ({
+      id:        a.id,
+      date:      a.start_time || a.date || a.appointment_date,
+      treatment: a.description || a.treatment || a.reason || '',
+      clinician: a.practitioner?.name || a.clinician || '',
+      status:    a.state || a.status || '',
+    }))
+
+    const now  = new Date()
+    const past = appointments
+      .filter(a => new Date(a.date) < now)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+    const upcoming = appointments
+      .filter(a => new Date(a.date) >= now)
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+
+    res.json({ past, upcoming })
+  } catch (err) {
+    const detail = err.response?.data || err.message
+    res.status(502).json({ error: err.message, detail })
+  }
+}
+
+export async function sendSingle(req, res) {
+  const { patient, templateId, vars = {} } = req.body
+  if (!templateId || !patient) return res.status(400).json({ error: 'templateId and patient required' })
+
+  const template = await EmailTemplate.findById(templateId)
+  if (!template) return res.status(404).json({ error: 'Template not found' })
+
+  try {
+    await sendTemplateEmail({
+      to:           patient.email,
+      name:         patient.name,
+      subject:      template.subject,
+      bodyHtml:     template.bodyHtml,
+      templateType: template.type,
+      vars,
+    })
+    res.json({ ok: true })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}
+
 // Debug — returns the raw first page from Dentally so you can inspect the response shape
 export async function debugDentally(_req, res) {
   if (!process.env.DENTALLY_API_KEY) {
