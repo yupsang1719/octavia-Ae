@@ -2,7 +2,7 @@ import axios from 'axios'
 import EmailTemplate from '../models/EmailTemplate.js'
 import { sendTemplateEmail } from '../utils/email.js'
 
-const BASE        = process.env.DENTALLY_BASE_URL || 'https://api.dentally.co/v1'
+const BASE        = process.env.DENTALLY_BASE_URL || 'https://api.dentally.co'
 const authHeaders = () => ({
   Authorization: `Bearer ${process.env.DENTALLY_API_KEY}`,
   Accept: 'application/json',
