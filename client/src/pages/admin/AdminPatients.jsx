@@ -102,8 +102,8 @@ function PatientPanel({ patient, templates, onClose, onSent }) {
                   <div className="space-y-3">
                     {appointments?.past?.length > 0 && (
                       <div>
-                        <p className="text-xs text-brand-subtle font-sans mb-1.5">Last visit</p>
-                        {appointments.past.slice(0, 2).map(a => (
+                        <p className="text-xs text-brand-subtle font-sans mb-1.5">Past visits</p>
+                        {appointments.past.slice(0, 5).map(a => (
                           <div key={a.id} className="bg-gray-50 rounded-lg px-3 py-2.5 text-sm font-sans border border-gray-100">
                             <div className="font-medium text-brand-dark">{a.treatment || 'Appointment'}</div>
                             <div className="text-brand-muted text-xs mt-0.5 flex items-center gap-3">
@@ -117,7 +117,7 @@ function PatientPanel({ patient, templates, onClose, onSent }) {
                     {appointments?.upcoming?.length > 0 && (
                       <div>
                         <p className="text-xs text-brand-subtle font-sans mb-1.5">Upcoming</p>
-                        {appointments.upcoming.slice(0, 2).map(a => (
+                        {appointments.upcoming.slice(0, 5).map(a => (
                           <div key={a.id} className="bg-brand-green/5 rounded-lg px-3 py-2.5 text-sm font-sans border border-brand-green/20">
                             <div className="font-medium text-brand-dark">{a.treatment || 'Appointment'}</div>
                             <div className="text-brand-muted text-xs mt-0.5 flex items-center gap-3">

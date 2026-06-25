@@ -2,14 +2,14 @@ import EmailTemplate from '../models/EmailTemplate.js'
 
 const DEFAULT_REVIEW_TEMPLATE = {
   name: 'Review Request',
-  subject: 'Thank you for visiting us, {{firstName}} — Octavia Dental',
-  bodyHtml: `<p>Thank you so much for coming in to see us — it was genuinely lovely to look after you. We hope you're feeling great and already noticing the difference.</p>
+  subject: 'A small favour, {{firstName}} — Octavia Dental',
+  bodyHtml: `<p>It was so lovely having you with us — thank you for trusting us with your care. The whole team always enjoys seeing familiar faces, and we hope you left feeling well looked after.</p>
 
-<p>As a small independent practice, every review genuinely helps other patients in Surrey and Hampshire find the care they need. If you have just one minute, we'd be so grateful if you could share your experience on Google.</p>
+<p>If you have just a minute, it would mean the world to us if you could share a quick review on Google. We're a small independent practice in Godalming, and every kind word genuinely helps other local families find a dentist they can feel at ease with.</p>
 
-<p>If anything about your visit could have been better, please reply to this email or call us on <strong>01483 860020</strong> — we always want to know, and we'll make it right.</p>
+<p>If anything about your visit wasn't quite right, please just reply to this email or give us a call on <strong>01483 860020</strong> — we'd always rather know, and we'll do everything we can to make it right.</p>
 
-<p>We look forward to seeing you again soon.</p>`,
+<p>Warm wishes from all of us at Octavia Dental.</p>`,
   type: 'review_request',
   isDefault: true,
 }
@@ -20,6 +20,16 @@ export async function listTemplates(_req, res) {
     if (!templates.length) {
       const seeded = await EmailTemplate.create(DEFAULT_REVIEW_TEMPLATE)
       templates = [seeded]
+    } else {
+      // Keep the default template in sync with the code definition
+      const existing = templates.find(t => t.isDefault)
+      if (existing && existing.subject !== DEFAULT_REVIEW_TEMPLATE.subject) {
+        await EmailTemplate.findByIdAndUpdate(existing._id, {
+          subject: DEFAULT_REVIEW_TEMPLATE.subject,
+          bodyHtml: DEFAULT_REVIEW_TEMPLATE.bodyHtml,
+        })
+        templates = await EmailTemplate.find().sort({ isDefault: -1, createdAt: 1 })
+      }
     }
     res.json(templates)
   } catch (err) {
