@@ -6,6 +6,7 @@ const BASE        = process.env.DENTALLY_BASE_URL || 'https://api.dentally.co/v1
 const authHeaders = () => ({
   Authorization: `Bearer ${process.env.DENTALLY_API_KEY}`,
   Accept: 'application/json',
+  'User-Agent': 'OctaviaDental/1.0',
 })
 
 // Fetch ALL patients with marketing consent from Dentally (handles pagination)
