@@ -87,6 +87,8 @@ export async function getMarketingPatients(_req, res) {
   if (!process.env.DENTALLY_API_KEY) {
     return res.json({ patients: [], configured: false })
   }
+  const key = process.env.DENTALLY_API_KEY
+  console.log('[Dentally] key length:', key.length, '| first 6:', key.slice(0, 6), '| last 4:', key.slice(-4))
   try {
     const patients = await fetchMarketingPatients()
     res.json({ patients, configured: true })
