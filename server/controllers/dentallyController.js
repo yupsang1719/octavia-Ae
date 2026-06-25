@@ -10,99 +10,83 @@ const authHeaders = () => ({
 })
 
 // Fetch patients who had an appointment in the last N days.
+// Fetches patients from /patients endpoint (appointments list requires broader permissions).
+// Filters by last_visit_date / last_contacted_at if available on the patient record,
+// otherwise returns all patients with an email (capped at 500).
 async function fetchRecentPatients(days = 30) {
   const since = new Date()
   since.setDate(since.getDate() - days)
-  const startDate = since.toISOString().split('T')[0]
-  const today     = new Date().toISOString().split('T')[0]
 
   let page = 1
-  const patientMap = new Map()
+  let all = []
 
   while (true) {
     let response
     try {
-      response = await axios.get(`${BASE}/appointments`, {
+      response = await axios.get(`${BASE}/patients`, {
         headers: authHeaders(),
-        params: { start_date: startDate, finish_date: today, per_page: 100, page },
+        params: { per_page: 100, page },
         timeout: 15000,
       })
     } catch (err) {
       const status = err.response?.status || 'network error'
       const msg    = err.response?.data?.message || err.response?.data?.error || err.message
-      console.error('[Dentally] Appointments error:', status, msg, err.response?.data)
+      console.error('[Dentally] Patients error:', status, msg)
       throw new Error(`Dentally responded ${status}: ${msg}`)
     }
 
-    const data  = response.data
-    const appts = data.appointments || data.data || (Array.isArray(data) ? data : [])
+    const data     = response.data
+    const patients = data.patients || data.data || (Array.isArray(data) ? data : [])
 
+    // Log field names on first page so we can see what date fields exist
     if (page === 1) {
-      console.log('[Dentally] Appointments raw keys:', Object.keys(data))
-      console.log('[Dentally] Appointments page 1 count:', appts.length)
-      if (appts[0]) console.log('[Dentally] Appointment sample:', JSON.stringify(appts[0]))
-      else console.log('[Dentally] Full response:', JSON.stringify(data))
+      console.log('[Dentally] Patient fields:', Object.keys(patients[0] || {}))
     }
 
-    let allOlderThanCutoff = true
-    for (const a of appts) {
-      const apptDate = new Date(a.start_time || a.date || a.appointment_date || 0)
-      if (apptDate >= since) allOlderThanCutoff = false
-
-      const pid = a.patient_id || a.patient?.id
-      if (!pid) continue
-      // Only keep appointments within the window; keep only the most recent per patient
-      if (apptDate >= since && !patientMap.has(String(pid))) {
-        const p = a.patient || {}
-        patientMap.set(String(pid), {
-          id:               String(pid),
-          firstName:        p.first_name  || p.firstName  || '',
-          lastName:         p.last_name   || p.lastName   || '',
-          name:             `${p.first_name || p.firstName || ''} ${p.last_name || p.lastName || ''}`.trim(),
-          email:            p.email_address || p.email || '',
-          phone:            p.mobile_phone  || p.phone || '',
-          marketingConsent: !!(p.marketing_consent || p.marketingConsent),
-          lastVisit:        a.start_time || a.date || a.appointment_date || '',
-          lastTreatment:    a.description || a.treatment || a.reason || '',
-          lastClinician:    a.practitioner?.name || a.clinician || '',
-        })
-      }
-    }
+    all = all.concat(patients)
 
     const meta       = data.meta || data.pagination || {}
     const totalPages = meta.total_pages || meta.last_page || meta.pageCount || null
-    const done = !appts.length
-      || allOlderThanCutoff          // all appointments on this page are old — stop
+    const done = !patients.length
       || (totalPages !== null && page >= totalPages)
-      || (totalPages === null && appts.length < 100)
-      || page >= 20
+      || (totalPages === null && patients.length < 100)
+      || page >= 5   // cap at 500 patients
     if (done) break
     page++
   }
 
-  console.log(`[Dentally] ${patientMap.size} unique patients found in appointments`)
+  console.log(`[Dentally] Raw patient count: ${all.length}`)
 
-  // Patients from appointments often lack email — fetch each one individually
-  const all = [...patientMap.values()]
-  await Promise.all(all.slice(0, 100).map(async patient => {
-    if (patient.email) return
-    try {
-      const { data } = await axios.get(`${BASE}/patients/${patient.id}`, {
-        headers: authHeaders(), timeout: 10000,
-      })
-      const p = data.patient || data
-      patient.email            = p.email_address || p.email || ''
-      patient.phone            = patient.phone || p.mobile_phone || p.phone || ''
-      patient.marketingConsent = !!(p.marketing_consent || p.marketingConsent)
-      if (!patient.name) {
-        patient.firstName = p.first_name || ''
-        patient.lastName  = p.last_name  || ''
-        patient.name      = `${patient.firstName} ${patient.lastName}`.trim()
-      }
-    } catch { /* skip */ }
-  }))
+  const normalised = all.map(p => {
+    // Grab any last-visit date field Dentally exposes
+    const lastVisitRaw = p.last_visit_date || p.last_contacted_at || p.last_appointment_at
+      || p.last_appointment_date || p.updated_at || ''
 
-  return all.filter(p => p.email)
+    return {
+      id:               String(p.id),
+      firstName:        p.first_name  || '',
+      lastName:         p.last_name   || '',
+      name:             `${p.first_name || ''} ${p.last_name || ''}`.trim(),
+      email:            p.email_address || p.email || '',
+      phone:            p.mobile_phone  || p.phone || '',
+      marketingConsent: !!(p.marketing_consent || p.marketingConsent),
+      lastVisit:        lastVisitRaw,
+      lastTreatment:    '',
+      lastClinician:    '',
+    }
+  }).filter(p => p.email)
+
+  // If patients have a usable last-visit date, filter to the last N days
+  const withDate = normalised.filter(p => p.lastVisit)
+  if (withDate.length > 0) {
+    const recent = normalised.filter(p => !p.lastVisit || new Date(p.lastVisit) >= since)
+    console.log(`[Dentally] Filtered to ${recent.length} patients visited in last ${days} days`)
+    return recent
+  }
+
+  // No date field available — return all (with email)
+  console.log(`[Dentally] No last-visit date field found; returning all ${normalised.length} patients with email`)
+  return normalised
 }
 
 export async function getSlots(req, res) {
