@@ -34,9 +34,15 @@ async function fetchMarketingPatients() {
     const patients = data.patients || data.data || (Array.isArray(data) ? data : [])
     all = all.concat(patients)
 
-    const meta = data.meta || {}
-    const totalPages = meta.total_pages || meta.last_page || 1
-    if (page >= totalPages || !patients.length) break
+    const meta = data.meta || data.pagination || {}
+    const totalPages = meta.total_pages || meta.last_page || meta.pageCount || meta.pages || null
+
+    // Stop when: explicit total reached, got fewer than requested (last page), nothing returned, or safety cap
+    const done = !patients.length
+      || (totalPages !== null && page >= totalPages)
+      || (totalPages === null && patients.length < 100)
+      || page >= 50
+    if (done) break
     page++
   }
 
@@ -89,6 +95,7 @@ export async function getMarketingPatients(_req, res) {
   }
   try {
     const patients = await fetchMarketingPatients()
+    console.log(`[Dentally] Fetched ${patients.length} patients with email`)
     res.json({ patients, configured: true })
   } catch (err) {
     res.status(502).json({ error: err.message })
