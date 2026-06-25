@@ -203,36 +203,36 @@ export async function debugDentally(_req, res) {
   }
 }
 
-// Debug — raw first page of appointments with and without date params
+// Debug — tries four different param combinations so we can see which one Dentally accepts
 export async function debugAppointments(_req, res) {
   if (!process.env.DENTALLY_API_KEY) {
     return res.status(503).json({ error: 'DENTALLY_API_KEY not set' })
   }
-  const today     = new Date().toISOString().split('T')[0]
+  const today     = new Date().toISOString().split('T')[0]           // YYYY-MM-DD
   const startDate = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0]
-  try {
-    const [withDates, withoutDates] = await Promise.all([
-      axios.get(`${BASE}/appointments`, {
-        headers: authHeaders(),
-        params: { start_date: startDate, finish_date: today, per_page: 3, page: 1 },
-        timeout: 15000,
-      }),
-      axios.get(`${BASE}/appointments`, {
-        headers: authHeaders(),
-        params: { per_page: 3, page: 1 },
-        timeout: 15000,
-      }),
-    ])
-    res.json({
-      base: BASE,
-      params_used: { start_date: startDate, finish_date: today },
-      with_date_filter: withDates.data,
-      without_date_filter: withoutDates.data,
-    })
-  } catch (err) {
-    const detail = err.response?.data || err.message
-    res.status(502).json({ base: BASE, error: err.message, detail })
+  const todayISO  = new Date().toISOString()                          // full ISO
+  const startISO  = new Date(Date.now() - 30 * 86400000).toISOString()
+
+  const attempts = [
+    { label: 'start_date/finish_date (YYYY-MM-DD)',    params: { start_date: startDate, finish_date: today,    per_page: 3 } },
+    { label: 'start_time/finish_time (YYYY-MM-DD)',    params: { start_time: startDate, finish_time: today,    per_page: 3 } },
+    { label: 'start_time/finish_time (ISO datetime)',  params: { start_time: startISO,  finish_time: todayISO, per_page: 3 } },
+    { label: 'no date params',                         params: { per_page: 3, page: 1 } },
+  ]
+
+  const results = {}
+  for (const { label, params } of attempts) {
+    try {
+      const { data } = await axios.get(`${BASE}/appointments`, {
+        headers: authHeaders(), params, timeout: 10000,
+      })
+      results[label] = { ok: true, count: (data.appointments || data.data || []).length, data }
+    } catch (err) {
+      results[label] = { ok: false, status: err.response?.status, error: err.response?.data || err.message }
+    }
   }
+
+  res.json({ base: BASE, results })
 }
 
 export async function sendCampaign(req, res) {
