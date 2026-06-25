@@ -10,11 +10,11 @@ const authHeaders = () => ({
 })
 
 // Fetch patients who had an appointment in the last N days.
-// Does NOT rely on Dentally date filter params (inconsistent across API versions).
-// Fetches pages newest-first and stops once appointments go older than the cutoff.
 async function fetchRecentPatients(days = 30) {
   const since = new Date()
   since.setDate(since.getDate() - days)
+  const startDate = since.toISOString().split('T')[0]
+  const today     = new Date().toISOString().split('T')[0]
 
   let page = 1
   const patientMap = new Map()
@@ -24,7 +24,7 @@ async function fetchRecentPatients(days = 30) {
     try {
       response = await axios.get(`${BASE}/appointments`, {
         headers: authHeaders(),
-        params: { per_page: 100, page },
+        params: { start_date: startDate, finish_date: today, per_page: 100, page },
         timeout: 15000,
       })
     } catch (err) {
@@ -37,10 +37,11 @@ async function fetchRecentPatients(days = 30) {
     const data  = response.data
     const appts = data.appointments || data.data || (Array.isArray(data) ? data : [])
 
-    // Log first page so we can see the actual shape in PM2 logs
     if (page === 1) {
+      console.log('[Dentally] Appointments raw keys:', Object.keys(data))
       console.log('[Dentally] Appointments page 1 count:', appts.length)
       if (appts[0]) console.log('[Dentally] Appointment sample:', JSON.stringify(appts[0]))
+      else console.log('[Dentally] Full response:', JSON.stringify(data))
     }
 
     let allOlderThanCutoff = true
@@ -218,18 +219,32 @@ export async function debugDentally(_req, res) {
   }
 }
 
-// Debug — raw first page of appointments so we can inspect field names
+// Debug — raw first page of appointments with and without date params
 export async function debugAppointments(_req, res) {
   if (!process.env.DENTALLY_API_KEY) {
     return res.status(503).json({ error: 'DENTALLY_API_KEY not set' })
   }
+  const today     = new Date().toISOString().split('T')[0]
+  const startDate = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0]
   try {
-    const { data } = await axios.get(`${BASE}/appointments`, {
-      headers: authHeaders(),
-      params:  { per_page: 3, page: 1 },
-      timeout: 15000,
+    const [withDates, withoutDates] = await Promise.all([
+      axios.get(`${BASE}/appointments`, {
+        headers: authHeaders(),
+        params: { start_date: startDate, finish_date: today, per_page: 3, page: 1 },
+        timeout: 15000,
+      }),
+      axios.get(`${BASE}/appointments`, {
+        headers: authHeaders(),
+        params: { per_page: 3, page: 1 },
+        timeout: 15000,
+      }),
+    ])
+    res.json({
+      base: BASE,
+      params_used: { start_date: startDate, finish_date: today },
+      with_date_filter: withDates.data,
+      without_date_filter: withoutDates.data,
     })
-    res.json({ base: BASE, raw: data })
   } catch (err) {
     const detail = err.response?.data || err.message
     res.status(502).json({ base: BASE, error: err.message, detail })
