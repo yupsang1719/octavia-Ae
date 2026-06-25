@@ -24,7 +24,11 @@ function PatientPanel({ patient, templates, onClose, onSent }) {
   const [appointments, setAppointments] = useState(null)
   const [loadingAppts, setLoadingAppts] = useState(true)
   const [templateId, setTemplateId]     = useState(templates[0]?._id || '')
-  const [vars, setVars]                 = useState({ treatment: '', clinician: '', note: '' })
+  const [vars, setVars]                 = useState({
+    treatment: patient.lastTreatment || '',
+    clinician: patient.lastClinician || '',
+    note: '',
+  })
   const [sending, setSending]           = useState(false)
   const [sent, setSent]                 = useState(false)
   const [error, setError]               = useState('')
@@ -344,7 +348,7 @@ export default function AdminPatients() {
       <div className="mb-6">
         <h1 className="font-serif text-2xl text-brand-dark">Patients</h1>
         <p className="text-sm text-brand-muted font-sans mt-0.5">
-          All patients from Dentally. Click a patient to preview and send individually, or select multiple for bulk send.
+          Patients who visited in the last 30 days. Click a patient to preview and send individually, or select multiple for bulk send.
         </p>
       </div>
 
@@ -375,7 +379,7 @@ export default function AdminPatients() {
           className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-sans text-brand-dark hover:border-brand-green transition-colors disabled:opacity-50"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-          {patients.length ? 'Refresh' : 'Load patients from Dentally'}
+          {patients.length ? 'Refresh' : 'Load last 30 days'}
         </button>
 
         {patients.length > 0 && (
@@ -449,7 +453,7 @@ export default function AdminPatients() {
                 </th>
                 <th className="px-3 py-3 text-left font-medium">Name</th>
                 <th className="px-3 py-3 text-left font-medium hidden sm:table-cell">Email</th>
-                <th className="px-3 py-3 text-left font-medium hidden md:table-cell">Phone</th>
+                <th className="px-3 py-3 text-left font-medium hidden md:table-cell">Last visit</th>
                 <th className="px-3 py-3 text-left font-medium hidden lg:table-cell">Consent</th>
                 <th className="px-3 py-3 w-8" />
               </tr>
@@ -463,7 +467,7 @@ export default function AdminPatients() {
                   </td>
                   <td className="px-3 py-3 font-sans font-medium text-brand-dark">{p.name}</td>
                   <td className="px-3 py-3 text-brand-muted font-sans hidden sm:table-cell">{p.email}</td>
-                  <td className="px-3 py-3 text-brand-muted font-sans hidden md:table-cell">{p.phone || '—'}</td>
+                  <td className="px-3 py-3 text-brand-muted font-sans hidden md:table-cell">{formatDate(p.lastVisit) || '—'}</td>
                   <td className="px-3 py-3 hidden lg:table-cell">
                     {p.marketingConsent
                       ? <span className="text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-700 font-medium font-sans">Yes</span>

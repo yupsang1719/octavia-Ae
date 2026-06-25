@@ -9,55 +9,83 @@ const authHeaders = () => ({
   'User-Agent': 'OctaviaDental/1.0',
 })
 
-// Fetch ALL patients with marketing consent from Dentally (handles pagination)
-async function fetchMarketingPatients() {
+// Fetch patients who had an appointment in the last N days
+async function fetchRecentPatients(days = 30) {
+  const since = new Date()
+  since.setDate(since.getDate() - days)
+  const startDate = since.toISOString().split('T')[0]
+  const today     = new Date().toISOString().split('T')[0]
+
   let page = 1
-  let all = []
+  const patientMap = new Map()
 
   while (true) {
     let response
     try {
-      response = await axios.get(`${BASE}/patients`, {
+      response = await axios.get(`${BASE}/appointments`, {
         headers: authHeaders(),
-        params: { per_page: 100, page },
+        params: { start_date: startDate, finish_date: today, per_page: 100, page },
         timeout: 15000,
       })
     } catch (err) {
-      const status     = err.response?.status || 'network error'
-      const dentallyMsg = err.response?.data?.message || err.response?.data?.error || err.message
-      console.error('[Dentally] Error:', status, dentallyMsg, err.response?.data)
-      throw new Error(`Dentally responded ${status}: ${dentallyMsg}`)
+      const status = err.response?.status || 'network error'
+      const msg    = err.response?.data?.message || err.response?.data?.error || err.message
+      console.error('[Dentally] Appointments error:', status, msg, err.response?.data)
+      throw new Error(`Dentally responded ${status}: ${msg}`)
     }
 
-    const data = response.data
-    // Dentally wraps results in { patients: [...] } or { data: [...] }
-    const patients = data.patients || data.data || (Array.isArray(data) ? data : [])
-    all = all.concat(patients)
+    const data  = response.data
+    const appts = data.appointments || data.data || (Array.isArray(data) ? data : [])
 
-    const meta = data.meta || data.pagination || {}
-    const totalPages = meta.total_pages || meta.last_page || meta.pageCount || meta.pages || null
+    for (const a of appts) {
+      const pid = a.patient_id || a.patient?.id
+      if (!pid || patientMap.has(String(pid))) continue
 
-    // Stop when: explicit total reached, got fewer than requested (last page), nothing returned, or safety cap
-    const done = !patients.length
+      const p = a.patient || {}
+      patientMap.set(String(pid), {
+        id:               String(pid),
+        firstName:        p.first_name  || p.firstName  || '',
+        lastName:         p.last_name   || p.lastName   || '',
+        name:             `${p.first_name || p.firstName || ''} ${p.last_name || p.lastName || ''}`.trim(),
+        email:            p.email_address || p.email || '',
+        phone:            p.mobile_phone  || p.phone || '',
+        marketingConsent: !!(p.marketing_consent || p.marketingConsent),
+        lastVisit:        a.start_time || a.date || a.appointment_date || '',
+        lastTreatment:    a.description || a.treatment || a.reason || '',
+        lastClinician:    a.practitioner?.name || a.clinician || '',
+      })
+    }
+
+    const meta       = data.meta || data.pagination || {}
+    const totalPages = meta.total_pages || meta.last_page || meta.pageCount || null
+    const done = !appts.length
       || (totalPages !== null && page >= totalPages)
-      || (totalPages === null && patients.length < 100)
-      || page >= 50
+      || (totalPages === null && appts.length < 100)
+      || page >= 20
     if (done) break
     page++
   }
 
-  // Normalise field names, keep all patients that have an email
-  return all
-    .map(p => ({
-      id:              p.id,
-      firstName:       p.first_name  || p.firstName  || '',
-      lastName:        p.last_name   || p.lastName   || '',
-      name:            `${p.first_name || p.firstName || ''} ${p.last_name || p.lastName || ''}`.trim(),
-      email:           p.email_address || p.email || '',
-      phone:           p.mobile_phone  || p.phone || '',
-      marketingConsent: !!(p.marketing_consent || p.marketingConsent),
-    }))
-    .filter(p => p.email)
+  // For patients whose email wasn't embedded in the appointment, fetch individually (parallel, cap 50)
+  const needsFetch = [...patientMap.values()].filter(p => !p.email).slice(0, 50)
+  await Promise.all(needsFetch.map(async patient => {
+    try {
+      const { data } = await axios.get(`${BASE}/patients/${patient.id}`, {
+        headers: authHeaders(), timeout: 10000,
+      })
+      const p = data.patient || data
+      patient.email            = p.email_address || p.email || ''
+      patient.phone            = patient.phone || p.mobile_phone || p.phone || ''
+      patient.marketingConsent = !!(p.marketing_consent || p.marketingConsent)
+      if (!patient.name) {
+        patient.firstName = p.first_name || ''
+        patient.lastName  = p.last_name  || ''
+        patient.name      = `${patient.firstName} ${patient.lastName}`.trim()
+      }
+    } catch { /* skip patients we can't enrich */ }
+  }))
+
+  return [...patientMap.values()].filter(p => p.email)
 }
 
 export async function getSlots(req, res) {
@@ -94,8 +122,8 @@ export async function getMarketingPatients(_req, res) {
     return res.json({ patients: [], configured: false })
   }
   try {
-    const patients = await fetchMarketingPatients()
-    console.log(`[Dentally] Fetched ${patients.length} patients with email`)
+    const patients = await fetchRecentPatients(30)
+    console.log(`[Dentally] Fetched ${patients.length} patients from last 30 days`)
     res.json({ patients, configured: true })
   } catch (err) {
     res.status(502).json({ error: err.message })
