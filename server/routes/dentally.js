@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { getSlots, bookAppointment, getMarketingPatients, sendCampaign, sendSingle, getPatientAppointments, debugDentally } from '../controllers/dentallyController.js'
+import { getSlots, bookAppointment, getMarketingPatients, sendCampaign, sendSingle, getPatientAppointments, debugDentally, debugAppointments } from '../controllers/dentallyController.js'
 
 const router = Router()
 
@@ -11,5 +11,6 @@ router.get('/patients/:id/appointments',   requireAuth, getPatientAppointments)
 router.post('/send',                       requireAuth, sendCampaign)
 router.post('/send-single',                requireAuth, sendSingle)
 router.get('/debug',                       requireAuth, debugDentally)
+router.get('/debug-appointments',          requireAuth, debugAppointments)
 
 export default router

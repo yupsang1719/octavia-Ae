@@ -9,12 +9,12 @@ const authHeaders = () => ({
   'User-Agent': 'OctaviaDental/1.0',
 })
 
-// Fetch patients who had an appointment in the last N days
+// Fetch patients who had an appointment in the last N days.
+// Does NOT rely on Dentally date filter params (inconsistent across API versions).
+// Fetches pages newest-first and stops once appointments go older than the cutoff.
 async function fetchRecentPatients(days = 30) {
   const since = new Date()
   since.setDate(since.getDate() - days)
-  const startDate = since.toISOString().split('T')[0]
-  const today     = new Date().toISOString().split('T')[0]
 
   let page = 1
   const patientMap = new Map()
@@ -24,7 +24,7 @@ async function fetchRecentPatients(days = 30) {
     try {
       response = await axios.get(`${BASE}/appointments`, {
         headers: authHeaders(),
-        params: { start_date: startDate, finish_date: today, per_page: 100, page },
+        params: { per_page: 100, page },
         timeout: 15000,
       })
     } catch (err) {
@@ -37,28 +37,41 @@ async function fetchRecentPatients(days = 30) {
     const data  = response.data
     const appts = data.appointments || data.data || (Array.isArray(data) ? data : [])
 
-    for (const a of appts) {
-      const pid = a.patient_id || a.patient?.id
-      if (!pid || patientMap.has(String(pid))) continue
+    // Log first page so we can see the actual shape in PM2 logs
+    if (page === 1) {
+      console.log('[Dentally] Appointments page 1 count:', appts.length)
+      if (appts[0]) console.log('[Dentally] Appointment sample:', JSON.stringify(appts[0]))
+    }
 
-      const p = a.patient || {}
-      patientMap.set(String(pid), {
-        id:               String(pid),
-        firstName:        p.first_name  || p.firstName  || '',
-        lastName:         p.last_name   || p.lastName   || '',
-        name:             `${p.first_name || p.firstName || ''} ${p.last_name || p.lastName || ''}`.trim(),
-        email:            p.email_address || p.email || '',
-        phone:            p.mobile_phone  || p.phone || '',
-        marketingConsent: !!(p.marketing_consent || p.marketingConsent),
-        lastVisit:        a.start_time || a.date || a.appointment_date || '',
-        lastTreatment:    a.description || a.treatment || a.reason || '',
-        lastClinician:    a.practitioner?.name || a.clinician || '',
-      })
+    let allOlderThanCutoff = true
+    for (const a of appts) {
+      const apptDate = new Date(a.start_time || a.date || a.appointment_date || 0)
+      if (apptDate >= since) allOlderThanCutoff = false
+
+      const pid = a.patient_id || a.patient?.id
+      if (!pid) continue
+      // Only keep appointments within the window; keep only the most recent per patient
+      if (apptDate >= since && !patientMap.has(String(pid))) {
+        const p = a.patient || {}
+        patientMap.set(String(pid), {
+          id:               String(pid),
+          firstName:        p.first_name  || p.firstName  || '',
+          lastName:         p.last_name   || p.lastName   || '',
+          name:             `${p.first_name || p.firstName || ''} ${p.last_name || p.lastName || ''}`.trim(),
+          email:            p.email_address || p.email || '',
+          phone:            p.mobile_phone  || p.phone || '',
+          marketingConsent: !!(p.marketing_consent || p.marketingConsent),
+          lastVisit:        a.start_time || a.date || a.appointment_date || '',
+          lastTreatment:    a.description || a.treatment || a.reason || '',
+          lastClinician:    a.practitioner?.name || a.clinician || '',
+        })
+      }
     }
 
     const meta       = data.meta || data.pagination || {}
     const totalPages = meta.total_pages || meta.last_page || meta.pageCount || null
     const done = !appts.length
+      || allOlderThanCutoff          // all appointments on this page are old — stop
       || (totalPages !== null && page >= totalPages)
       || (totalPages === null && appts.length < 100)
       || page >= 20
@@ -66,9 +79,12 @@ async function fetchRecentPatients(days = 30) {
     page++
   }
 
-  // For patients whose email wasn't embedded in the appointment, fetch individually (parallel, cap 50)
-  const needsFetch = [...patientMap.values()].filter(p => !p.email).slice(0, 50)
-  await Promise.all(needsFetch.map(async patient => {
+  console.log(`[Dentally] ${patientMap.size} unique patients found in appointments`)
+
+  // Patients from appointments often lack email — fetch each one individually
+  const all = [...patientMap.values()]
+  await Promise.all(all.slice(0, 100).map(async patient => {
+    if (patient.email) return
     try {
       const { data } = await axios.get(`${BASE}/patients/${patient.id}`, {
         headers: authHeaders(), timeout: 10000,
@@ -82,10 +98,10 @@ async function fetchRecentPatients(days = 30) {
         patient.lastName  = p.last_name  || ''
         patient.name      = `${patient.firstName} ${patient.lastName}`.trim()
       }
-    } catch { /* skip patients we can't enrich */ }
+    } catch { /* skip */ }
   }))
 
-  return [...patientMap.values()].filter(p => p.email)
+  return all.filter(p => p.email)
 }
 
 export async function getSlots(req, res) {
@@ -184,7 +200,7 @@ export async function sendSingle(req, res) {
   }
 }
 
-// Debug — returns the raw first page from Dentally so you can inspect the response shape
+// Debug — raw first page of patients
 export async function debugDentally(_req, res) {
   if (!process.env.DENTALLY_API_KEY) {
     return res.status(503).json({ error: 'DENTALLY_API_KEY not set' })
@@ -193,6 +209,24 @@ export async function debugDentally(_req, res) {
     const { data } = await axios.get(`${BASE}/patients`, {
       headers: authHeaders(),
       params:  { per_page: 5, page: 1 },
+      timeout: 15000,
+    })
+    res.json({ base: BASE, raw: data })
+  } catch (err) {
+    const detail = err.response?.data || err.message
+    res.status(502).json({ base: BASE, error: err.message, detail })
+  }
+}
+
+// Debug — raw first page of appointments so we can inspect field names
+export async function debugAppointments(_req, res) {
+  if (!process.env.DENTALLY_API_KEY) {
+    return res.status(503).json({ error: 'DENTALLY_API_KEY not set' })
+  }
+  try {
+    const { data } = await axios.get(`${BASE}/appointments`, {
+      headers: authHeaders(),
+      params:  { per_page: 3, page: 1 },
       timeout: 15000,
     })
     res.json({ base: BASE, raw: data })
