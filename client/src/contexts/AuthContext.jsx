@@ -6,8 +6,25 @@ const AuthContext = createContext(null)
 
 const TOKEN_KEY = 'octavia_admin_token'
 
+function isTokenValid(token) {
+  if (!token) return false
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return payload.exp * 1000 > Date.now()
+  } catch {
+    return false
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY))
+  const [token, setToken] = useState(() => {
+    const stored = localStorage.getItem(TOKEN_KEY)
+    if (!isTokenValid(stored)) {
+      localStorage.removeItem(TOKEN_KEY)
+      return null
+    }
+    return stored
+  })
 
   const login = useCallback(async (email, password) => {
     const { data } = await axios.post('/api/admin/login', { email, password })

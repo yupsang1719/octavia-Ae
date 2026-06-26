@@ -28,15 +28,18 @@ export async function createEnquiry(req, res) {
 
 export async function getEnquiries(req, res) {
   try {
-    const { status, page = 1, limit = 20 } = req.query
-    const filter = status ? { status } : {}
+    const VALID_STATUSES = ['new', 'contacted', 'booked', 'closed']
+    const rawStatus = req.query.status
+    const page  = Math.max(1, parseInt(req.query.page)  || 1)
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20))
+    const filter = rawStatus && VALID_STATUSES.includes(rawStatus) ? { status: rawStatus } : {}
 
     const [enquiries, total] = await Promise.all([
-      Enquiry.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(Number(limit)),
+      Enquiry.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
       Enquiry.countDocuments(filter),
     ])
 
-    res.json({ enquiries, total, page: Number(page), pages: Math.ceil(total / limit) })
+    res.json({ enquiries, total, page, pages: Math.ceil(total / limit) })
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch enquiries' })
   }

@@ -10,7 +10,9 @@ router.get('/patients',                    requireAuth, getMarketingPatients)
 router.get('/patients/:id/appointments',   requireAuth, getPatientAppointments)
 router.post('/send',                       requireAuth, sendCampaign)
 router.post('/send-single',                requireAuth, sendSingle)
-router.get('/debug',                       requireAuth, debugDentally)
-router.get('/debug-appointments',          requireAuth, debugAppointments)
+if (process.env.NODE_ENV !== 'production') {
+  router.get('/debug',              requireAuth, debugDentally)
+  router.get('/debug-appointments', requireAuth, debugAppointments)
+}
 
 export default router

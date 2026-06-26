@@ -9,6 +9,10 @@ function esc(str) {
   return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
+function safeSubject(str) {
+  return String(str ?? '').replace(/[\r\n\t]/g, ' ').trim()
+}
+
 const FROM = 'Octavia Dental & Facial Aesthetics <info@octavia-dental.co.uk>'
 const TO   = process.env.EMAIL_TO || 'info@octavia-dental.co.uk'
 
@@ -21,7 +25,7 @@ export async function sendEnquiryNotification(enquiry) {
   const { error } = await getClient().emails.send({
     from:    FROM,
     to:      TO,
-    subject: `New enquiry: ${enquiry.name} — ${enquiry.service || 'General'}`,
+    subject: safeSubject(`New enquiry: ${enquiry.name} — ${enquiry.service || 'General'}`),
     html: `
       <h2>New Enquiry — Octavia Dental</h2>
       <table style="border-collapse:collapse;width:100%">
@@ -238,7 +242,7 @@ export async function sendReviewRequest({ name, email, note, treatment, visitDat
   const { error } = await getClient().emails.send({
     from:    FROM,
     to:      email,
-    subject: `Thank you for visiting us, ${name.split(' ')[0]} — Octavia Dental`,
+    subject: safeSubject(`Thank you for visiting us, ${name.split(' ')[0]} — Octavia Dental`),
     html,
   })
 

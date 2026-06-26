@@ -2,16 +2,17 @@ import BlogPost from '../models/BlogPost.js'
 
 export async function getPosts(req, res) {
   try {
-    const { page = 1, limit = 9 } = req.query
+    const page  = Math.max(1, parseInt(req.query.page)  || 1)
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 9))
     const [posts, total] = await Promise.all([
       BlogPost.find({ published: true })
         .sort({ publishedAt: -1 })
         .skip((page - 1) * limit)
-        .limit(Number(limit))
+        .limit(limit)
         .select('-body'),
       BlogPost.countDocuments({ published: true }),
     ])
-    res.json({ posts, total, page: Number(page), pages: Math.ceil(total / limit) })
+    res.json({ posts, total, page, pages: Math.ceil(total / limit) })
   } catch {
     res.status(500).json({ error: 'Failed to fetch posts' })
   }
