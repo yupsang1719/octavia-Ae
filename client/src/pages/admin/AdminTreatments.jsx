@@ -19,7 +19,7 @@ export default function AdminTreatments() {
       <div className="mb-6">
         <h1 className="font-serif text-2xl text-brand-dark font-medium">Treatments</h1>
         <p className="font-sans text-sm text-brand-muted mt-1">
-          Manage prices and content for all 8 treatment pages.
+          Manage prices and content for all 9 treatment pages.
         </p>
       </div>
 

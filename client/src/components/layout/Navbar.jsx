@@ -7,13 +7,14 @@ import BookingModal from '../ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
 
 const treatments = [
-  { label: 'Dental Implants',    href: '/treatments/dental-implants' },
-  { label: 'Invisalign',         href: '/treatments/invisalign' },
-  { label: 'Composite Bonding',  href: '/treatments/composite-bonding' },
-  { label: 'Porcelain Veneers',  href: '/treatments/veneers' },
-  { label: 'Teeth Whitening',    href: '/treatments/teeth-whitening' },
-  { label: '6 Month Smile',      href: '/treatments/six-month-smile' },
-  { label: 'Air Flow Hygiene',   href: '/treatments/air-flow-hygiene' },
+  { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
+  { label: 'Dental Implants',      href: '/treatments/dental-implants' },
+  { label: 'Invisalign',           href: '/treatments/invisalign' },
+  { label: 'Composite Bonding',    href: '/treatments/composite-bonding' },
+  { label: 'Porcelain Veneers',    href: '/treatments/veneers' },
+  { label: 'Teeth Whitening',      href: '/treatments/teeth-whitening' },
+  { label: '6 Month Smile',        href: '/treatments/six-month-smile' },
+  { label: 'Air Flow Hygiene',     href: '/treatments/air-flow-hygiene' },
   { label: 'Botox & Anti-Wrinkle', href: '/treatments/botox-anti-wrinkle' },
 ]
 

@@ -4,6 +4,7 @@ import { X, ChevronDown, Phone, MessageCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const treatments = [
+  { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
   { label: 'Dental Implants',      href: '/treatments/dental-implants' },
   { label: 'Invisalign',           href: '/treatments/invisalign' },
   { label: 'Composite Bonding',    href: '/treatments/composite-bonding' },
