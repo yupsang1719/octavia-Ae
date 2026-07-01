@@ -173,11 +173,11 @@ export default function Navbar() {
           {/* Desktop right */}
           <div className="hidden lg:flex items-center gap-5">
             <a
-              href="tel:01483860020"
+              href="tel:01483958205"
               className={`flex items-center gap-1.5 text-sm font-sans font-medium transition-colors hover:text-brand-gold ${textColor}`}
             >
               <Phone className="w-3.5 h-3.5" />
-              01483 860020
+              01483 958205
             </a>
             <button
               onClick={() => open()}

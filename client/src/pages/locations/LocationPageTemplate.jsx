@@ -48,11 +48,11 @@ function LocationHero({ location, onBook }) {
               Book free consultation
             </button>
             <a
-              href="tel:01483860020"
+              href="tel:01483958205"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 text-white font-sans font-medium text-base rounded-sm transition-all duration-300 hover:bg-white/10"
             >
               <Phone className="w-4 h-4" />
-              01483 860020
+              01483 958205
             </a>
           </div>
           <p className="mt-5 font-sans text-sm text-white/40">
@@ -233,9 +233,9 @@ function HowToGetHere({ location }) {
             <MapPin className="w-4 h-4 text-brand-green" />
             <span className="font-medium">Seymour House, Lower South Street, Godalming, Surrey, GU7 1BZ</span>
           </div>
-          <a href="tel:01483860020" className="flex items-center gap-2 text-sm font-sans text-brand-green font-medium hover:underline">
+          <a href="tel:01483958205" className="flex items-center gap-2 text-sm font-sans text-brand-green font-medium hover:underline">
             <Phone className="w-4 h-4" />
-            01483 860020
+            01483 958205
           </a>
         </motion.div>
       </div>
@@ -351,7 +351,7 @@ function LocationCTA({ locationName, onBook }) {
             </a>
           </div>
           <p className="mt-6 font-sans text-sm text-white/40">
-            01483 860020 · Seymour House, Lower South Street, Godalming GU7 1BZ
+            01483 958205 · Seymour House, Lower South Street, Godalming GU7 1BZ
           </p>
         </motion.div>
       </div>

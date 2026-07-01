@@ -56,10 +56,10 @@ function TreatmentHero({ treatment, onBook }) {
               Book free consultation
             </button>
             <a
-              href="tel:01483860020"
+              href="tel:01483958205"
               className="btn-ghost-white text-base px-8 py-4"
             >
-              01483 860020
+              01483 958205
             </a>
           </div>
           {treatment.priceFrom && (
@@ -389,7 +389,7 @@ function TreatmentCTA({ treatment, onBook }) {
             </a>
           </div>
           <p className="mt-6 font-sans text-sm text-white/50">
-            01483 860020 · Seymour House, Lower South Street, Godalming GU7 1BZ
+            01483 958205 · Seymour House, Lower South Street, Godalming GU7 1BZ
           </p>
         </motion.div>
       </div>

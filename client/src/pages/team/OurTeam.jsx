@@ -145,7 +145,7 @@ export default function OurTeam() {
                   Our friendly reception team are here to make every visit to Octavia Dental as smooth and comfortable as possible — from booking your first appointment to supporting you throughout treatment.
                 </p>
                 <div className="mt-4 pt-4 border-t border-brand-border flex flex-wrap gap-4 text-sm font-sans">
-                  <a href="tel:01483860020" className="text-brand-green hover:underline">01483 860020</a>
+                  <a href="tel:01483958205" className="text-brand-green hover:underline">01483 958205</a>
                   <a href="mailto:info@octavia-dental.co.uk" className="text-brand-green hover:underline">info@octavia-dental.co.uk</a>
                 </div>
               </motion.div>

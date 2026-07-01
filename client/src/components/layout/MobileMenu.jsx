@@ -222,7 +222,7 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking }) {
                 Book Free Consultation
               </button>
               <div className="grid grid-cols-2 gap-2">
-                <a href="tel:01483860020" className="btn-secondary text-sm text-center flex items-center justify-center gap-1.5">
+                <a href="tel:01483958205" className="btn-secondary text-sm text-center flex items-center justify-center gap-1.5">
                   <Phone className="w-3.5 h-3.5" />
                   Call us
                 </a>

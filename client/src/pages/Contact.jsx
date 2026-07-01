@@ -30,10 +30,10 @@ export default function Contact() {
     <>
       <Helmet>
         <title>Contact Us | Octavia Dental & Facial Aesthetics Godalming</title>
-        <meta name="description" content="Contact Octavia Dental & Facial Aesthetics in Godalming, Surrey. Call 01483 860020, WhatsApp us or send a message. Seymour House, Lower South Street, GU7 1BZ." />
+        <meta name="description" content="Contact Octavia Dental & Facial Aesthetics in Godalming, Surrey. Call 01483 958205, WhatsApp us or send a message. Seymour House, Lower South Street, GU7 1BZ." />
         <link rel="canonical" href={`${SITE_URL}/contact`} />
         <meta property="og:title"       content="Contact Us | Octavia Dental & Facial Aesthetics" />
-        <meta property="og:description" content="Call 01483 860020 or send a message. Seymour House, Lower South Street, Godalming, Surrey GU7 1BZ." />
+        <meta property="og:description" content="Call 01483 958205 or send a message. Seymour House, Lower South Street, Godalming, Surrey GU7 1BZ." />
         <meta property="og:url"         content={`${SITE_URL}/contact`} />
         <meta name="twitter:card"       content="summary_large_image" />
       </Helmet>
@@ -59,9 +59,9 @@ export default function Contact() {
               <motion.div className="bg-brand-cream border border-brand-border rounded-xl p-6 space-y-4" {...fade(0)}>
                 <h2 className="font-serif text-xl text-brand-dark font-medium">Octavia Dental & Facial Aesthetics</h2>
 
-                <a href="tel:01483860020" className="flex items-start gap-3 group">
+                <a href="tel:01483958205" className="flex items-start gap-3 group">
                   <Phone className="w-4 h-4 text-brand-green mt-0.5 flex-shrink-0" />
-                  <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors">01483 860020</span>
+                  <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors">01483 958205</span>
                 </a>
 
                 <a href="mailto:info@octavia-dental.co.uk" className="flex items-start gap-3 group">

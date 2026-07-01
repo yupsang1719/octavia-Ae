@@ -6,7 +6,7 @@ export const dentalClinicSchema = {
   '@id': `${SITE_URL}/#dentist`,
   name: 'Octavia Dental & Facial Aesthetics',
   url: SITE_URL,
-  telephone: '+441483860020',
+  telephone: '+441483958205',
   email: 'info@octavia-dental.co.uk',
   image: `${SITE_URL}/images/og-default.webp`,
   logo: `${SITE_URL}/images/logo.png`,
@@ -120,7 +120,7 @@ export function localBusinessSchema({ name, description, url }) {
     name: `Octavia Dental & Facial Aesthetics — ${name}`,
     description,
     url: `${SITE_URL}${url}`,
-    telephone: '+441483860020',
+    telephone: '+441483958205',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Seymour House, Lower South Street',

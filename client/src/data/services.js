@@ -76,8 +76,8 @@ export const services = [
 export const practiceNAP = {
   name:      'Octavia Dental & Facial Aesthetics',
   address:   'Seymour House, Lower South Street, Godalming, Surrey, GU7 1BZ',
-  phone:     '01483 860020',
-  phoneTel:  '01483860020',
+  phone:     '01483 958205',
+  phoneTel:  '01483958205',
   whatsapp:  '447584965468',
   email:     'info@octavia-dental.co.uk',
   website:   'https://octavia-dental.co.uk',

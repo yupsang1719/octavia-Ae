@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="font-serif text-2xl text-brand-dark font-medium mb-3">1. Who we are</h2>
               <p className="font-sans text-brand-muted leading-relaxed">Octavia Dental & Facial Aesthetics ("we", "us", "our") is a private dental and facial aesthetics practice located at Seymour House, Lower South Street, Godalming, Surrey, GU7 1BZ. We are registered with the Care Quality Commission (CQC) and all our clinicians are registered with the General Dental Council (GDC).</p>
-              <p className="font-sans text-brand-muted leading-relaxed mt-3">For data protection purposes, we are the Data Controller for personal information collected through this website and during your treatment with us. Contact us at <a href="mailto:info@octavia-dental.co.uk" className="text-brand-green hover:underline">info@octavia-dental.co.uk</a> or <a href="tel:01483860020" className="text-brand-green hover:underline">01483 860020</a>.</p>
+              <p className="font-sans text-brand-muted leading-relaxed mt-3">For data protection purposes, we are the Data Controller for personal information collected through this website and during your treatment with us. Contact us at <a href="mailto:info@octavia-dental.co.uk" className="text-brand-green hover:underline">info@octavia-dental.co.uk</a> or <a href="tel:01483958205" className="text-brand-green hover:underline">01483 958205</a>.</p>
             </section>
 
             <section>

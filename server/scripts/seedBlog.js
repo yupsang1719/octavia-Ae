@@ -135,7 +135,7 @@ Patients travel to us from Guildford, Farnham, Haslemere, Hampshire and beyond. 
 
 Dr Ali's postgraduate training and extensive clinical experience with complex cases means patients get predictable, long-lasting results. If you've been quoted elsewhere, a second opinion from Dr Ali costs nothing and could save you from a wrong decision.
 
-*Book a free consultation at our Godalming clinic — 01483 860020.*`,
+*Book a free consultation at our Godalming clinic — 01483 958205.*`,
   },
   {
     slug: 'why-dentist-botox-safer',
@@ -196,7 +196,7 @@ If the answers are vague or evasive, look elsewhere.
 
 At Octavia Dental, I offer free facial aesthetics consultations at our Godalming clinic. Anti-wrinkle treatments are prescription-only medicines and I carry out a full clinical assessment for every patient.
 
-*Anti-wrinkle treatments at Octavia Dental start from £200 per area. Book a free consultation — 01483 860020.*`,
+*Anti-wrinkle treatments at Octavia Dental start from £200 per area. Book a free consultation — 01483 958205.*`,
   },
   {
     slug: 'invisalign-adults-godalming',
@@ -253,7 +253,7 @@ Most patients are delighted with their results. The discipline of wearing the al
 
 ---
 
-*Free Invisalign consultations at our Godalming clinic, serving patients from Guildford, Farnham, Haslemere and Hampshire. Book online or call 01483 860020.*`,
+*Free Invisalign consultations at our Godalming clinic, serving patients from Guildford, Farnham, Haslemere and Hampshire. Book online or call 01483 958205.*`,
   },
   {
     slug: 'nhs-dental-crisis-surrey',
@@ -306,7 +306,7 @@ We know that private care is not the right choice for everyone, and we'd never p
 
 The most expensive dental decision you can make is to do nothing. If your teeth need attention, getting it sorted sooner — whatever the route — is almost always better than waiting.
 
-*01483 860020 · Seymour House, Lower South Street, Godalming, GU7 1BZ*`,
+*01483 958205 · Seymour House, Lower South Street, Godalming, GU7 1BZ*`,
   },
   {
     slug: 'teeth-whitening-what-to-expect',
@@ -373,7 +373,7 @@ Dr Ana will give you a realistic expectation at your consultation — not an ove
 
 ---
 
-*Teeth whitening at Octavia Dental from £299. Free consultations available — 01483 860020.*
+*Teeth whitening at Octavia Dental from £299. Free consultations available — 01483 958205.*
 
 *Prices quoted at consultation may vary based on individual assessment.*`,
   },

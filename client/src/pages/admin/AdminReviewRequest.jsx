@@ -79,7 +79,7 @@ function EmailPreview({ form }) {
           <hr style={{ border: 'none', borderTop: '1px solid #eef2eb', margin: '0 0 20px' }} />
 
           <p style={{ fontSize: 13, color: '#444', lineHeight: 1.75, margin: '0 0 20px' }}>
-            If anything about your visit could have been better, please reply to this email or call us on <strong style={{ color: '#2D5A1E' }}>01483 860020</strong> — we always want to know.
+            If anything about your visit could have been better, please reply to this email or call us on <strong style={{ color: '#2D5A1E' }}>01483 958205</strong> — we always want to know.
           </p>
 
           {/* Signature */}
@@ -89,7 +89,7 @@ function EmailPreview({ form }) {
             </div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#2D5A1E' }}>{sigName}</div>
-              <div style={{ fontSize: 11, color: '#666', marginTop: 1 }}>Octavia Dental & Facial Aesthetics · 01483 860020</div>
+              <div style={{ fontSize: 11, color: '#666', marginTop: 1 }}>Octavia Dental & Facial Aesthetics · 01483 958205</div>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ function EmailPreview({ form }) {
         {/* Footer */}
         <div style={{ background: '#2D5A1E', borderRadius: '0 0 10px 10px', padding: '18px 24px' }}>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', lineHeight: 2 }}>
-            01483 860020 · info@octavia-dental.co.uk · octavia-dental.co.uk
+            01483 958205 · info@octavia-dental.co.uk · octavia-dental.co.uk
           </div>
           <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>
             Seymour House, Lower South Street, Godalming, Surrey GU7 1BZ

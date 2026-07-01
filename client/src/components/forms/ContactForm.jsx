@@ -48,7 +48,7 @@ export default function ContactForm() {
       })
       setSubmitted(true)
     } catch {
-      setApiError('Something went wrong. Please call us on 01483 860020.')
+      setApiError('Something went wrong. Please call us on 01483 958205.')
     }
   }
 

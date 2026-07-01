@@ -121,7 +121,7 @@ export const locations = [
       { q: 'How do I get from Cranleigh to Octavia Dental?', a: 'Take the B2128 north-west towards Bramley, then follow the A281 into Godalming town centre. We are on Lower South Street at Seymour House. The journey is approximately 20 minutes by car.' },
       { q: 'Do you see patients from the wider Waverley area?', a: 'Yes. We welcome patients from across the Waverley district, including Cranleigh, Ewhurst, Alfold, Bramley and the surrounding villages. All our treatments are available to new Waverley patients and there is no waiting list.' },
       { q: 'Can I get Botox near Cranleigh at Octavia Dental?', a: 'Yes. Dr Ana offers Botox and anti-wrinkle injections at our Godalming clinic, just 20 minutes from Cranleigh. As a GDC-registered dentist with specialist facial anatomy training, Dr Ana provides a standard of care that cannot be matched by beauty salons or non-medical practitioners.' },
-      { q: 'How quickly can I be seen as a patient from Cranleigh?', a: 'New patients from Cranleigh can typically be seen within one week of contacting us. We have no NHS waiting list and no registration delays. Call us on 01483 860020 or book online and we will find you an early appointment.' },
+      { q: 'How quickly can I be seen as a patient from Cranleigh?', a: 'New patients from Cranleigh can typically be seen within one week of contacting us. We have no NHS waiting list and no registration delays. Call us on 01483 958205 or book online and we will find you an early appointment.' },
     ],
   },
   {
@@ -180,7 +180,7 @@ export const locations = [
       { q: 'Why can\'t I get an NHS dentist in Surrey or Hampshire?', a: 'NHS dental funding has been dramatically reduced in recent years, and many dental practices have handed back their NHS contracts. This has created a critical shortage of NHS dental capacity across Surrey and Hampshire, leaving thousands of patients without access to basic care.' },
       { q: 'How much does private dentistry cost compared to NHS?', a: 'For routine treatments, private fees are higher than NHS Band 1 (£26.80) or Band 2 (£73.50) charges. However, many treatments — including dental implants, Invisalign, cosmetic bonding and veneers — are simply not available on the NHS at any price. We provide a full cost breakdown at your free consultation and offer payment plans for larger treatments.' },
       { q: 'Do I need a referral to be seen at Octavia Dental?', a: 'No. You can contact us directly by phone, WhatsApp or through our website and we will arrange your free initial consultation. No referral letter, no waiting list and no registration delays.' },
-      { q: 'How quickly can I be seen at Octavia Dental?', a: 'Most new patients from Surrey and Hampshire can be seen within a week of contacting us. For urgent dental concerns, please call us on 01483 860020 and we will do everything we can to see you as quickly as possible.' },
+      { q: 'How quickly can I be seen at Octavia Dental?', a: 'Most new patients from Surrey and Hampshire can be seen within a week of contacting us. For urgent dental concerns, please call us on 01483 958205 and we will do everything we can to see you as quickly as possible.' },
     ],
   },
 ]

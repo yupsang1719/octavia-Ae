@@ -114,11 +114,11 @@ export default function CTASection() {
               transition={{ delay: 0.45 }}
             >
               <a
-                href="tel:01483860020"
+                href="tel:01483958205"
                 className="flex items-center gap-2 font-sans text-sm text-white/50 hover:text-white/80 transition-colors duration-200"
               >
                 <Phone className="w-4 h-4" />
-                01483 860020
+                01483 958205
               </a>
               <span className="hidden sm:block w-px h-3 bg-white/15" />
               <p className="font-sans text-sm text-white/50">

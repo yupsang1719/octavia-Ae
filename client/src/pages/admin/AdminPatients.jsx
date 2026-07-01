@@ -11,7 +11,7 @@ function substitute(text, vars) {
     .replace(/\{\{treatment\}\}/g, vars.treatment  || '')
     .replace(/\{\{clinician\}\}/g, vars.clinician  || '')
     .replace(/\{\{practiceName\}\}/g, 'Octavia Dental & Facial Aesthetics')
-    .replace(/\{\{phone\}\}/g, '01483 860020')
+    .replace(/\{\{phone\}\}/g, '01483 958205')
 }
 
 function formatDate(d) {
@@ -244,7 +244,7 @@ function PatientPanel({ patient, templates, onClose, onSent }) {
                   </div>
                   {/* Footer */}
                   <div className="px-5 py-3 bg-brand-green">
-                    <p className="text-xs text-white/70 font-sans">01483 860020 · info@octavia-dental.co.uk · octavia-dental.co.uk</p>
+                    <p className="text-xs text-white/70 font-sans">01483 958205 · info@octavia-dental.co.uk · octavia-dental.co.uk</p>
                   </div>
                 </div>
               ) : (

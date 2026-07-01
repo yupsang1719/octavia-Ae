@@ -66,7 +66,7 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
       })
       setSubmitted(true)
     } catch {
-      setApiError('Something went wrong. Please call us on 01483 860020.')
+      setApiError('Something went wrong. Please call us on 01483 958205.')
     }
   }
 
@@ -230,8 +230,8 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
 
                     <p className="text-center text-xs text-brand-subtle">
                       Or call us now:{' '}
-                      <a href="tel:01483860020" className="font-medium text-brand-green hover:underline">
-                        01483 860020
+                      <a href="tel:01483958205" className="font-medium text-brand-green hover:underline">
+                        01483 958205
                       </a>
                     </p>
                   </div>

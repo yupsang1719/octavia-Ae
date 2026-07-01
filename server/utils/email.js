@@ -54,7 +54,7 @@ export async function sendEnquiryConfirmation(enquiry) {
     html: `
       <p>Dear ${esc(enquiry.name)},</p>
       <p>Thank you for contacting Octavia Dental & Facial Aesthetics. We've received your enquiry and a member of our team will be in touch within 2 hours during opening hours.</p>
-      <p>If your query is urgent, please call us on <strong><a href="tel:01483860020">01483 860020</a></strong>.</p>
+      <p>If your query is urgent, please call us on <strong><a href="tel:01483958205">01483 958205</a></strong>.</p>
       <p>Best regards,<br/>The Octavia Dental team</p>
       <hr/>
       <p style="font-size:12px;color:#999">Octavia Dental & Facial Aesthetics · Seymour House, Lower South Street, Godalming, Surrey GU7 1BZ</p>
@@ -187,7 +187,7 @@ export async function sendReviewRequest({ name, email, note, treatment, visitDat
 
     <p style="font-size:14px;color:#444;line-height:1.75;margin:0 0 16px">
       If anything about your visit could have been better, please reply to this email or call
-      us on <strong style="color:#2D5A1E">01483 860020</strong> — we always want to know,
+      us on <strong style="color:#2D5A1E">01483 958205</strong> — we always want to know,
       and we'll make it right.
     </p>
     <p style="font-size:14px;color:#444;line-height:1.75;margin:0 0 24px">
@@ -205,7 +205,7 @@ export async function sendReviewRequest({ name, email, note, treatment, visitDat
               </td>
               <td style="vertical-align:middle">
                 <div style="font-size:14px;font-weight:700;color:#2D5A1E">${sigName}</div>
-                <div style="font-size:12px;color:#666;margin-top:2px">Octavia Dental &amp; Facial Aesthetics · 01483 860020</div>
+                <div style="font-size:12px;color:#666;margin-top:2px">Octavia Dental &amp; Facial Aesthetics · 01483 958205</div>
               </td>
             </tr>
           </table>
@@ -221,7 +221,7 @@ export async function sendReviewRequest({ name, email, note, treatment, visitDat
       <tr>
         <td>
           <div style="font-size:12px;color:rgba(255,255,255,0.75);line-height:2;font-family:Arial,sans-serif">
-            <a href="tel:01483860020" style="color:rgba(255,255,255,0.75);text-decoration:none">01483 860020</a>
+            <a href="tel:01483958205" style="color:rgba(255,255,255,0.75);text-decoration:none">01483 958205</a>
             &nbsp;·&nbsp;
             <a href="mailto:info@octavia-dental.co.uk" style="color:rgba(255,255,255,0.75);text-decoration:none">info@octavia-dental.co.uk</a>
             &nbsp;·&nbsp;
@@ -258,7 +258,7 @@ function substituteMergeTags(text, vars) {
     .replace(/\{\{treatment\}\}/g, vars.treatment  || '')
     .replace(/\{\{clinician\}\}/g, vars.clinician  || '')
     .replace(/\{\{practiceName\}\}/g, 'Octavia Dental &amp; Facial Aesthetics')
-    .replace(/\{\{phone\}\}/g, '01483 860020')
+    .replace(/\{\{phone\}\}/g, '01483 958205')
 }
 
 function buildTemplateHtml({ firstName, bodyHtml, includeReviewCta }) {
@@ -301,7 +301,7 @@ function buildTemplateHtml({ firstName, bodyHtml, includeReviewCta }) {
           <td style="vertical-align:middle;padding-right:14px"><div style="width:42px;height:42px;background:#2D5A1E;border-radius:50%;text-align:center;line-height:42px;font-size:15px;font-weight:700;color:#fff">OD</div></td>
           <td style="vertical-align:middle">
             <div style="font-size:13px;font-weight:700;color:#2D5A1E">The Octavia Dental team</div>
-            <div style="font-size:11px;color:#666;margin-top:2px">Octavia Dental &amp; Facial Aesthetics · 01483 860020</div>
+            <div style="font-size:11px;color:#666;margin-top:2px">Octavia Dental &amp; Facial Aesthetics · 01483 958205</div>
           </td>
         </tr></table>
       </td></tr>
@@ -309,7 +309,7 @@ function buildTemplateHtml({ firstName, bodyHtml, includeReviewCta }) {
   </td></tr>
   <tr><td style="background:#2D5A1E;border-radius:0 0 14px 14px;padding:20px 36px">
     <div style="font-size:11px;color:rgba(255,255,255,0.7);line-height:2">
-      <a href="tel:01483860020" style="color:rgba(255,255,255,0.7);text-decoration:none">01483 860020</a> ·
+      <a href="tel:01483958205" style="color:rgba(255,255,255,0.7);text-decoration:none">01483 958205</a> ·
       <a href="mailto:info@octavia-dental.co.uk" style="color:rgba(255,255,255,0.7);text-decoration:none">info@octavia-dental.co.uk</a> ·
       <a href="${siteUrl}" style="color:rgba(255,255,255,0.7);text-decoration:none">octavia-dental.co.uk</a>
     </div>

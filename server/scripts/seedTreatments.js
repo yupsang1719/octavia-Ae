@@ -396,7 +396,7 @@ const treatments = [
       { q: 'How often should I have a check-up?', a: 'For most patients, every six months is the right interval. Some patients with a history of gum disease, decay, or complex restorations benefit from more frequent visits. We will recommend a personalised recall interval at your first appointment.' },
       { q: 'Do you do white fillings?', a: 'Yes. We use tooth-coloured composite resin for all fillings. We do not place amalgam (silver) fillings. Composite is bonded to the tooth, which means we can preserve more natural tooth structure than with traditional amalgam techniques.' },
       { q: 'What happens at a hygiene appointment?', a: 'Our hygiene appointments include removal of plaque and tartar using ultrasonic and hand instruments, stain removal, polishing, and personalised oral hygiene instruction. We offer standard hygiene and Air Flow advanced hygiene treatments.' },
-      { q: 'Can I be seen as an emergency patient?', a: 'Yes. We keep same-day or next-day appointments for patients in pain or with urgent dental needs. Call us on 01483 860020 and we will do everything we can to see you quickly.' },
+      { q: 'Can I be seen as an emergency patient?', a: 'Yes. We keep same-day or next-day appointments for patients in pain or with urgent dental needs. Call us on 01483 958205 and we will do everything we can to see you quickly.' },
       { q: 'How much does a check-up cost?', a: 'A comprehensive private check-up at Octavia Dental starts from £65. This includes a full clinical examination, gum assessment, oral cancer screening, and a personalised treatment plan. X-rays are charged separately if required.' },
     ],
   },

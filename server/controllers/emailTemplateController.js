@@ -7,7 +7,7 @@ const DEFAULT_REVIEW_TEMPLATE = {
 
 <p>If you have just a minute, it would mean the world to us if you could share a quick review on Google. We're a small independent practice in Godalming, and every kind word genuinely helps other local families find a dentist they can feel at ease with.</p>
 
-<p>If anything about your visit wasn't quite right, please just reply to this email or give us a call on <strong>01483 860020</strong> — we'd always rather know, and we'll do everything we can to make it right.</p>
+<p>If anything about your visit wasn't quite right, please just reply to this email or give us a call on <strong>01483 958205</strong> — we'd always rather know, and we'll do everything we can to make it right.</p>
 
 <p>Warm wishes from all of us at Octavia Dental.</p>`,
   type: 'review_request',
