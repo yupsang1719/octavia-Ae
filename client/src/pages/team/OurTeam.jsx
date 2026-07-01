@@ -28,7 +28,7 @@ const TRUST_POINTS = [
   {
     icon: Award,
     heading: 'Specialist-led care',
-    body: 'Every clinical treatment is led by a specialist — not a generalist. Dr Ali holds a postgraduate diploma in implantology. Dr Ana is a certified Invisalign provider with advanced facial aesthetics training.',
+    body: 'Every clinical treatment is led by a specialist — not a generalist. Dr Ali holds a postgraduate diploma in implantology. Dr Ana Biel is a dual-qualified Dentist and Medical Doctor with a Master\'s in Oral Surgery and Implantology.',
   },
   {
     icon: Shield,

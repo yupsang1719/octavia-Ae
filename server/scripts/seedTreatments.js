@@ -354,6 +354,52 @@ const treatments = [
       { q: 'Can Botox treat teeth grinding?', a: 'Yes. Injections into the masseter muscles (the large jaw muscles) can significantly reduce the force of grinding and clenching, alleviating jaw pain and protecting teeth. This is a growing and highly effective use of anti-wrinkle treatments.' },
     ],
   },
+  {
+    slug: 'general-dentistry',
+    name: 'General Dentistry',
+    tagline: 'Preventive, restorative, and routine care — all under one roof.',
+    priceFrom: '£65',
+    priceNote: 'Check-up from £65. Hygiene appointments from £85. Treatment costs quoted at examination.',
+    financeAvailable: false,
+    h1: 'General Dentistry in Godalming',
+    title: 'General Dentistry Godalming | Check-ups, Fillings & Hygiene | Octavia Dental',
+    metaDesc: 'Private general dentistry in Godalming, Surrey. Comprehensive check-ups, white fillings, hygiene appointments, X-rays and emergency dental care. New patients welcome.',
+    heroImage: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=1200&q=80',
+    specialist: 'dr-ana',
+    gdcNote: false,
+    rxNote: false,
+    order: 9,
+    whatIsIt: [
+      'General dentistry forms the foundation of good oral health. At Octavia Dental, our private general dentistry service covers everything you need to maintain healthy teeth and gums — from routine check-ups and hygiene appointments to fillings, X-rays, and emergency care.',
+      'As a private practice, we are not restricted by NHS appointment times or treatment options. Every check-up is thorough, unhurried, and personalised — we look beyond the obvious to identify early signs of decay, gum disease, oral cancer, and other conditions that are far easier to treat when caught early.',
+      'Whether you are registering as a new patient, looking for a higher standard of routine care, or need urgent dental treatment, our team is here to help.',
+    ],
+    benefits: [
+      'Comprehensive check-ups that go beyond a quick look — includes gum assessment, cancer screening, and X-rays where needed',
+      'White composite fillings that match your natural tooth colour',
+      'Professional hygiene appointments to remove plaque, tartar, and staining',
+      'Digital X-rays with lower radiation exposure and immediate on-screen results',
+      'Emergency appointments available for toothache, broken teeth, and lost fillings',
+      'Personalised oral health advice tailored to your diet, habits, and dental history',
+      'No waiting lists — appointments available at a time that suits you',
+    ],
+    process: [
+      { step: 1, title: 'Comprehensive examination', body: 'We carry out a thorough clinical examination of your teeth, gums, bite, jaw joints, and soft tissues. Digital X-rays are taken where clinically appropriate to detect problems not visible to the naked eye.' },
+      { step: 2, title: 'Gum health assessment', body: 'We measure the depth of the pockets around each tooth to assess gum health and identify any early signs of gum disease, which is the leading cause of tooth loss in adults.' },
+      { step: 3, title: 'Oral cancer screening', body: 'A systematic check of the tongue, cheeks, lips, floor of the mouth and throat for any unusual changes. Early detection significantly improves outcomes.' },
+      { step: 4, title: 'Treatment plan & discussion', body: 'We explain exactly what we have found, show you X-rays and photographs, and discuss all your options — including costs — clearly and without pressure.' },
+      { step: 5, title: 'Hygiene & preventive care', body: 'A professional clean removes plaque and tartar that brushing cannot reach. We provide tailored advice on brushing technique, flossing, and any products that could improve your oral health at home.' },
+      { step: 6, title: 'Restorative treatment (if needed)', body: 'Any fillings, repairs, or other restorative work are carried out using tooth-coloured materials to achieve a natural result. We always use the most conservative approach to preserve as much natural tooth structure as possible.' },
+    ],
+    faq: [
+      { q: 'Are you accepting new NHS patients?', a: 'We are a private practice and do not provide NHS dental treatment. However, our private check-up and hygiene fees are clearly listed and we provide full cost transparency before any treatment begins.' },
+      { q: 'How often should I have a check-up?', a: 'For most patients, every six months is the right interval. Some patients with a history of gum disease, decay, or complex restorations benefit from more frequent visits. We will recommend a personalised recall interval at your first appointment.' },
+      { q: 'Do you do white fillings?', a: 'Yes. We use tooth-coloured composite resin for all fillings. We do not place amalgam (silver) fillings. Composite is bonded to the tooth, which means we can preserve more natural tooth structure than with traditional amalgam techniques.' },
+      { q: 'What happens at a hygiene appointment?', a: 'Our hygiene appointments include removal of plaque and tartar using ultrasonic and hand instruments, stain removal, polishing, and personalised oral hygiene instruction. We offer standard hygiene and Air Flow advanced hygiene treatments.' },
+      { q: 'Can I be seen as an emergency patient?', a: 'Yes. We keep same-day or next-day appointments for patients in pain or with urgent dental needs. Call us on 01483 860020 and we will do everything we can to see you quickly.' },
+      { q: 'How much does a check-up cost?', a: 'A comprehensive private check-up at Octavia Dental starts from £65. This includes a full clinical examination, gum assessment, oral cancer screening, and a personalised treatment plan. X-rays are charged separately if required.' },
+    ],
+  },
 ]
 
 async function seed() {
@@ -365,7 +411,7 @@ async function seed() {
     console.log(`Seeded: ${t.name}`)
   }
 
-  console.log('Done — all 8 treatments seeded')
+  console.log('Done — all 9 treatments seeded')
   await mongoose.disconnect()
 }
 
