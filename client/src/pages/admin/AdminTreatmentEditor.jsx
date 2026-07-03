@@ -181,14 +181,21 @@ function FAQEditor({ faqs, onChange }) {
 export default function AdminTreatmentEditor() {
   const { slug } = useParams()
   const [form, setForm] = useState(null)
+  const [dentists, setDentists] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    axios.get(`/api/treatments/${slug}`)
-      .then(({ data }) => setForm(data))
+    Promise.all([
+      axios.get(`/api/treatments/${slug}`),
+      axios.get('/api/team/category/dentist'),
+    ])
+      .then(([treatment, team]) => {
+        setForm(treatment.data)
+        setDentists(team.data)
+      })
       .catch(() => setError('Failed to load treatment'))
       .finally(() => setLoading(false))
   }, [slug])
@@ -211,6 +218,7 @@ export default function AdminTreatmentEditor() {
         benefits:         form.benefits,
         process:          form.process,
         faq:              form.faq,
+        specialist:       form.specialist,
       })
       setForm(data)
       setSaved(true)
@@ -286,6 +294,21 @@ export default function AdminTreatmentEditor() {
         <input type="text" value={form.tagline || ''} onChange={e => set('tagline', e.target.value)}
           placeholder="Permanent. Natural-looking. Life-changing."
           className="input text-sm" />
+      </Section>
+
+      {/* Specialist */}
+      <Section title="Specialist">
+        <p className="font-sans text-xs text-brand-muted mb-3">The dentist shown at the bottom of this treatment page.</p>
+        <select
+          value={form.specialist || ''}
+          onChange={e => set('specialist', e.target.value)}
+          className="input text-sm"
+        >
+          <option value="">— None —</option>
+          {dentists.map(d => (
+            <option key={d.slug} value={d.slug}>{d.name} — {d.role}</option>
+          ))}
+        </select>
       </Section>
 
       {/* What is it */}

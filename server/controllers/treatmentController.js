@@ -19,7 +19,7 @@ export async function getTreatmentBySlug(req, res) {
   }
 }
 
-const ALLOWED_FIELDS = ['tagline', 'priceFrom', 'priceNote', 'financeAvailable', 'whatIsIt', 'benefits', 'process', 'faq']
+const ALLOWED_FIELDS = ['tagline', 'priceFrom', 'priceNote', 'financeAvailable', 'whatIsIt', 'benefits', 'process', 'faq', 'specialist']
 
 export async function updateTreatment(req, res) {
   const update = {}
