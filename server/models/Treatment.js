@@ -28,7 +28,7 @@ const treatmentSchema = new mongoose.Schema({
   process:   [processStepSchema],
   faq:       [faqSchema],
 
-  specialist: String,
+  specialists: [String],
   gdcNote:    { type: Boolean, default: false },
   rxNote:     { type: Boolean, default: false },
 

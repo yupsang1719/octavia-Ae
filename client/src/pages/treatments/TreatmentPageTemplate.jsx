@@ -42,9 +42,11 @@ function TreatmentHero({ treatment, member, onBook }) {
 
       <div className="container-wide relative z-10 py-28 lg:py-36">
         <motion.div className="max-w-xl" {...fadeUp(0)}>
-          {member && (
+          {member?.length > 0 && (
             <p className="font-sans text-xs uppercase tracking-widest text-brand-gold font-semibold mb-4">
-              {member.name} — {member.role}
+              {member.length === 1
+                ? `${member[0].name} — ${member[0].role}`
+                : member.map(m => m.name).join(' & ')}
             </p>
           )}
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-white font-medium leading-[1.08] mb-4">
@@ -290,8 +292,8 @@ function FAQSection({ faqs }) {
 }
 
 // ── Specialist ────────────────────────────────────────────────────────────────
-function SpecialistSection({ member }) {
-  if (!member) return null
+function SpecialistSection({ member: members }) {
+  if (!members?.length) return null
 
   return (
     <section className="section-padding bg-white">
@@ -301,42 +303,45 @@ function SpecialistSection({ member }) {
             className="font-serif text-3xl lg:text-4xl text-brand-dark font-medium mb-8 leading-snug"
             {...fadeUp(0)}
           >
-            Meet your specialist
+            {members.length === 1 ? 'Meet your specialist' : 'Meet your specialists'}
           </motion.h2>
-          <motion.div
-            className="flex flex-col sm:flex-row gap-6 bg-brand-cream border border-brand-border rounded-sm overflow-hidden"
-            {...fadeUp(0.1)}
-          >
-            <div className="sm:w-48 flex-shrink-0">
-              {member.image ? (
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-48 sm:h-full object-cover"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full h-48 sm:h-full bg-brand-green-bg flex items-center justify-center">
-                  <svg className="w-16 h-16 text-brand-green/20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-                  </svg>
+          <div className="space-y-4">
+            {members.map((m, i) => (
+              <motion.div
+                key={m.slug || i}
+                className="flex flex-col sm:flex-row gap-6 bg-brand-cream border border-brand-border rounded-sm overflow-hidden"
+                {...fadeUp(i * 0.08)}
+              >
+                <div className="sm:w-40 flex-shrink-0">
+                  {m.image ? (
+                    <img
+                      src={m.image}
+                      alt={m.name}
+                      className="w-full h-40 sm:h-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-40 sm:h-full bg-brand-green-bg flex items-center justify-center">
+                      <span className="font-serif text-3xl text-brand-green/30">{m.initials || m.name[0]}</span>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <div className="p-6">
-              <p className="font-sans text-xs uppercase tracking-widest text-brand-gold font-semibold mb-1">Your specialist</p>
-              <h3 className="font-serif text-2xl text-brand-dark font-medium">{member.name}</h3>
-              <p className="font-sans text-sm text-brand-green font-medium mb-3">{member.role}</p>
-              <p className="font-sans text-sm text-brand-muted leading-relaxed mb-4">{member.bio}</p>
-              <div className="flex flex-wrap gap-2">
-                {member.specialisms.map(s => (
-                  <span key={s} className="text-xs font-sans px-2.5 py-1 bg-white border border-brand-border text-brand-muted rounded-full">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+                <div className="p-6">
+                  <p className="font-sans text-xs uppercase tracking-widest text-brand-gold font-semibold mb-1">Your specialist</p>
+                  <h3 className="font-serif text-2xl text-brand-dark font-medium">{m.name}</h3>
+                  <p className="font-sans text-sm text-brand-green font-medium mb-3">{m.role}</p>
+                  <p className="font-sans text-sm text-brand-muted leading-relaxed mb-4">{m.bio}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {m.specialisms?.map(s => (
+                      <span key={s} className="text-xs font-sans px-2.5 py-1 bg-white border border-brand-border text-brand-muted rounded-full">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -367,7 +372,7 @@ function TreatmentCTA({ member, onBook }) {
             Ready to get started?
           </h2>
           <p className="font-sans text-white/70 max-w-md mx-auto mb-8">
-            Book a free consultation with {member ? member.name : 'our specialist'} to discuss your options and receive a transparent, personalised quote.
+            Book a free consultation with {member?.length ? member.map(m => m.name).join(' or ') : 'our specialist'} to discuss your options and receive a transparent, personalised quote.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -409,12 +414,11 @@ export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }
   }, [slug, treatmentProp?.slug])
 
   useEffect(() => {
-    const specialistSlug = treatment?.specialist
-    if (!specialistSlug) { setMember(null); return }
-    axios.get(`/api/team/${specialistSlug}`)
-      .then(({ data }) => setMember(data))
-      .catch(() => setMember(null))
-  }, [treatment?.specialist])
+    const slugs = treatment?.specialists?.length ? treatment.specialists : []
+    if (!slugs.length) { setMember(null); return }
+    Promise.all(slugs.map(s => axios.get(`/api/team/${s}`).then(r => r.data).catch(() => null)))
+      .then(results => setMember(results.filter(Boolean)))
+  }, [treatment?.specialists])
 
   if (!treatment) return null
 

@@ -218,7 +218,7 @@ export default function AdminTreatmentEditor() {
         benefits:         form.benefits,
         process:          form.process,
         faq:              form.faq,
-        specialist:       form.specialist,
+        specialists:      form.specialists,
       })
       setForm(data)
       setSaved(true)
@@ -296,19 +296,33 @@ export default function AdminTreatmentEditor() {
           className="input text-sm" />
       </Section>
 
-      {/* Specialist */}
-      <Section title="Specialist">
-        <p className="font-sans text-xs text-brand-muted mb-3">The dentist shown at the bottom of this treatment page.</p>
-        <select
-          value={form.specialist || ''}
-          onChange={e => set('specialist', e.target.value)}
-          className="input text-sm"
-        >
-          <option value="">— None —</option>
-          {dentists.map(d => (
-            <option key={d.slug} value={d.slug}>{d.name} — {d.role}</option>
-          ))}
-        </select>
+      {/* Specialists */}
+      <Section title="Specialists">
+        <p className="font-sans text-xs text-brand-muted mb-3">Dentists shown at the bottom of this treatment page. Tick all that apply.</p>
+        <div className="space-y-2">
+          {dentists.map(d => {
+            const checked = (form.specialists || []).includes(d.slug)
+            return (
+              <label key={d.slug} className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => {
+                    const current = form.specialists || []
+                    set('specialists', checked
+                      ? current.filter(s => s !== d.slug)
+                      : [...current, d.slug]
+                    )
+                  }}
+                  className="w-4 h-4 accent-brand-green"
+                />
+                <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors">
+                  {d.name} <span className="text-brand-muted">— {d.role}</span>
+                </span>
+              </label>
+            )
+          })}
+        </div>
       </Section>
 
       {/* What is it */}
