@@ -23,7 +23,7 @@ function fadeUp(delay = 0) {
 }
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
-function TreatmentHero({ treatment, onBook }) {
+function TreatmentHero({ treatment, member, onBook }) {
   return (
     <section className="relative min-h-[60vh] lg:min-h-[70vh] flex items-center bg-brand-dark overflow-hidden">
       {treatment.heroImage && (
@@ -42,9 +42,11 @@ function TreatmentHero({ treatment, onBook }) {
 
       <div className="container-wide relative z-10 py-28 lg:py-36">
         <motion.div className="max-w-xl" {...fadeUp(0)}>
-          <p className="font-sans text-xs uppercase tracking-widest text-brand-gold font-semibold mb-4">
-            {treatment.specialist === 'dr-ali' ? 'Dr Ali — Implant & Restorative Specialist' : 'Dr Ana — Cosmetic & Aesthetics Specialist'}
-          </p>
+          {member && (
+            <p className="font-sans text-xs uppercase tracking-widest text-brand-gold font-semibold mb-4">
+              {member.name} — {member.role}
+            </p>
+          )}
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-white font-medium leading-[1.08] mb-4">
             {treatment.h1}
           </h1>
@@ -288,12 +290,7 @@ function FAQSection({ faqs }) {
 }
 
 // ── Specialist ────────────────────────────────────────────────────────────────
-function SpecialistSection({ specialistId }) {
-  const [member, setMember] = useState(null)
-  useEffect(() => {
-    if (!specialistId) return
-    axios.get(`/api/team/${specialistId}`).then(({ data }) => setMember(data)).catch(() => {})
-  }, [specialistId])
+function SpecialistSection({ member }) {
   if (!member) return null
 
   return (
@@ -361,7 +358,7 @@ function GDCNotes({ gdcNote, rxNote }) {
 }
 
 // ── Final CTA ─────────────────────────────────────────────────────────────────
-function TreatmentCTA({ treatment, onBook }) {
+function TreatmentCTA({ member, onBook }) {
   return (
     <section className="section-padding bg-brand-green">
       <div className="container-wide text-center">
@@ -370,7 +367,7 @@ function TreatmentCTA({ treatment, onBook }) {
             Ready to get started?
           </h2>
           <p className="font-sans text-white/70 max-w-md mx-auto mb-8">
-            Book a free consultation with {treatment.specialist === 'dr-ali' ? 'Dr Ali' : 'Dr Ana'} to discuss your options and receive a transparent, personalised quote.
+            Book a free consultation with {member ? member.name : 'our specialist'} to discuss your options and receive a transparent, personalised quote.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -401,6 +398,7 @@ function TreatmentCTA({ treatment, onBook }) {
 export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }) {
   const { isOpen, open, close } = useBookingModal()
   const [treatment, setTreatment] = useState(treatmentProp || (slug ? getTreatmentById(slug) : null))
+  const [member, setMember] = useState(null)
 
   useEffect(() => {
     const s = slug || treatmentProp?.slug
@@ -409,6 +407,14 @@ export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }
       .then(({ data }) => setTreatment(data))
       .catch(() => {})
   }, [slug, treatmentProp?.slug])
+
+  useEffect(() => {
+    const specialistSlug = treatment?.specialist
+    if (!specialistSlug) { setMember(null); return }
+    axios.get(`/api/team/${specialistSlug}`)
+      .then(({ data }) => setMember(data))
+      .catch(() => setMember(null))
+  }, [treatment?.specialist])
 
   if (!treatment) return null
 
@@ -445,7 +451,7 @@ export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }
 
       {/* pt-16 offsets the fixed navbar */}
       <div className="pt-16">
-        <TreatmentHero treatment={treatment} onBook={open} />
+        <TreatmentHero treatment={treatment} member={member} onBook={open} />
         <WhatIsIt paragraphs={treatment.whatIsIt} />
         <Benefits benefits={treatment.benefits} />
         <Process steps={treatment.process} />
@@ -453,8 +459,8 @@ export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }
         <Pricing treatment={treatment} />
         <FAQSection faqs={treatment.faq} />
         <GDCNotes gdcNote={treatment.gdcNote} rxNote={treatment.rxNote} />
-        <SpecialistSection specialistId={treatment.specialist} />
-        <TreatmentCTA treatment={treatment} onBook={open} />
+        <SpecialistSection member={member} />
+        <TreatmentCTA member={member} onBook={open} />
       </div>
 
       <BookingModal isOpen={isOpen} onClose={close} defaultService={treatment.id} />
