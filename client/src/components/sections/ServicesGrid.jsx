@@ -139,12 +139,14 @@ export default function ServicesGrid() {
     fetch('/api/treatments')
       .then(r => r.json())
       .then(data => {
-        if (!Array.isArray(data)) return
+        if (!Array.isArray(data) || !data.length) return
         const bySlug = Object.fromEntries(data.map(t => [t.slug, t]))
-        setServices(staticServices.map(s => {
+        // Only show treatments the API returns — drafts/hidden won't be in bySlug
+        const visible = staticServices.filter(s => bySlug[s.href.replace('/treatments/', '')])
+        if (!visible.length) return
+        setServices(visible.map(s => {
           const slug = s.href.replace('/treatments/', '')
           const cms = bySlug[slug]
-          if (!cms) return s
           return { ...s, priceFrom: cms.priceFrom ?? s.priceFrom, tagline: cms.tagline ?? s.tagline }
         }))
       })

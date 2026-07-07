@@ -189,7 +189,7 @@ export default function AdminTreatmentEditor() {
 
   useEffect(() => {
     Promise.all([
-      axios.get(`/api/treatments/${slug}`),
+      axios.get(`/api/treatments/admin/${slug}`),
       axios.get('/api/team/category/dentist'),
     ])
       .then(([treatment, team]) => {

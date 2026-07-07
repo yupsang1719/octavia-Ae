@@ -403,14 +403,15 @@ function TreatmentCTA({ member, onBook }) {
 export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }) {
   const { isOpen, open, close } = useBookingModal()
   const [treatment, setTreatment] = useState(treatmentProp || (slug ? getTreatmentById(slug) : null))
+  const [notFound, setNotFound] = useState(false)
   const [member, setMember] = useState(null)
 
   useEffect(() => {
     const s = slug || treatmentProp?.slug
     if (!s) return
     axios.get(`/api/treatments/${s}`)
-      .then(({ data }) => setTreatment(data))
-      .catch(() => {})
+      .then(({ data }) => { setTreatment(data); setNotFound(false) })
+      .catch(err => { if (err.response?.status === 404) setNotFound(true) })
   }, [slug, treatmentProp?.slug])
 
   useEffect(() => {
@@ -419,6 +420,16 @@ export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }
     Promise.all(slugs.map(s => axios.get(`/api/team/${s}`).then(r => r.data).catch(() => null)))
       .then(results => setMember(results.filter(Boolean)))
   }, [treatment?.specialists])
+
+  if (notFound) return (
+    <main className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <p className="font-serif text-2xl text-brand-dark mb-2">Treatment not available</p>
+        <p className="font-sans text-sm text-brand-muted mb-6">This treatment is not currently offered at this practice.</p>
+        <a href="/" className="font-sans text-sm text-brand-green hover:underline">Return to homepage</a>
+      </div>
+    </main>
+  )
 
   if (!treatment) return null
 

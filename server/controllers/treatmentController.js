@@ -30,6 +30,21 @@ export async function getAllTreatmentsAdmin(req, res) {
 
 export async function getTreatmentBySlug(req, res) {
   try {
+    const treatment = await Treatment.findOne({
+      slug: req.params.slug,
+      practice: req.practiceSlug,
+      published: { $ne: false },
+    })
+    if (!treatment) return res.status(404).json({ error: 'Not found' })
+    res.json(treatment)
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch treatment' })
+  }
+}
+
+// Admin only — returns draft treatments too
+export async function getAdminTreatmentBySlug(req, res) {
+  try {
     const treatment = await Treatment.findOne({ slug: req.params.slug, practice: req.practiceSlug })
     if (!treatment) return res.status(404).json({ error: 'Not found' })
     res.json(treatment)
