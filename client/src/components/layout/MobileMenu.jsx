@@ -17,14 +17,13 @@ const FALLBACK_TREATMENTS = [
   { label: 'Botox & Anti-Wrinkle', href: '/treatments/botox-anti-wrinkle' },
 ]
 
-const locationLinks = [
-  { label: 'Godalming',      href: '/dentist-godalming' },
-  { label: 'Guildford',      href: '/dentist-guildford' },
-  { label: 'Haslemere',      href: '/dentist-haslemere' },
-  { label: 'Farnham',        href: '/dentist-farnham' },
-  { label: 'Cranleigh',      href: '/dentist-cranleigh' },
-  { label: 'Hampshire',      href: '/dentist-hampshire' },
-  { label: 'NHS Alternative',href: '/nhs-alternative-surrey' },
+const BASE_LOCATION_LINKS = [
+  { label: 'Godalming',  href: '/dentist-godalming' },
+  { label: 'Guildford',  href: '/dentist-guildford' },
+  { label: 'Haslemere',  href: '/dentist-haslemere' },
+  { label: 'Farnham',    href: '/dentist-farnham' },
+  { label: 'Cranleigh',  href: '/dentist-cranleigh' },
+  { label: 'Hampshire',  href: '/dentist-hampshire' },
 ]
 
 const mainLinks = [
@@ -141,6 +140,10 @@ const MENU_ANIMATION = {
 export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments = FALLBACK_TREATMENTS }) {
   const [height, setHeight] = useState(0)
   const { name, phone, phoneTel, whatsapp, slug, type } = usePractice()
+  const locationLinks = [
+    ...BASE_LOCATION_LINKS,
+    ...(slug === 'octavia-aesthetic' ? [{ label: 'NHS Alternative', href: '/nhs-alternative-surrey' }] : []),
+  ]
   const [logoTitle, logoSub]                = splitPracticeName(name)
 
   useEffect(() => {

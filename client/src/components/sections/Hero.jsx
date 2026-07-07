@@ -44,7 +44,7 @@ export default function Hero({
   heroImage = 'https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1400&q=80',
 }) {
   const { isOpen, open, close } = useBookingModal()
-  const { type } = usePractice()
+  const { type, whatsapp, address } = usePractice()
 
   const isPrivate = type === 'private'
   const resolvedHeadline = headline ?? 'Your smile.'
@@ -169,15 +169,17 @@ export default function Hero({
                 <TextScramble text={isPrivate ? 'Book free consultation' : 'Request appointment'} />
               </button>
 
-              <a
-                href="https://wa.me/447584965468"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost-white text-sm px-8 py-4"
-              >
-                <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                WhatsApp us
-              </a>
+              {whatsapp && (
+                <a
+                  href={`https://wa.me/${whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost-white text-sm px-8 py-4"
+                >
+                  <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                  WhatsApp us
+                </a>
+              )}
             </motion.div>
 
             {/* Tag pills */}
@@ -206,7 +208,7 @@ export default function Hero({
               animate={{ opacity: 1 }}
               transition={{ delay: 1.45, duration: 0.5 }}
             >
-              GDC registered clinicians · Seymour House, Godalming GU7 1BZ
+              GDC registered clinicians · {address}
             </motion.p>
           </div>
         </div>

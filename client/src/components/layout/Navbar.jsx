@@ -20,14 +20,13 @@ const FALLBACK_TREATMENTS = [
   { label: 'Botox & Anti-Wrinkle', href: '/treatments/botox-anti-wrinkle' },
 ]
 
-const locationLinks = [
-  { label: 'Godalming',       href: '/dentist-godalming' },
-  { label: 'Guildford',       href: '/dentist-guildford' },
-  { label: 'Haslemere',       href: '/dentist-haslemere' },
-  { label: 'Farnham',         href: '/dentist-farnham' },
-  { label: 'Cranleigh',       href: '/dentist-cranleigh' },
-  { label: 'Hampshire',       href: '/dentist-hampshire' },
-  { label: 'NHS Alternative', href: '/nhs-alternative-surrey' },
+const BASE_LOCATION_LINKS = [
+  { label: 'Godalming',   href: '/dentist-godalming' },
+  { label: 'Guildford',   href: '/dentist-guildford' },
+  { label: 'Haslemere',   href: '/dentist-haslemere' },
+  { label: 'Farnham',     href: '/dentist-farnham' },
+  { label: 'Cranleigh',   href: '/dentist-cranleigh' },
+  { label: 'Hampshire',   href: '/dentist-hampshire' },
 ]
 
 function DropdownMenu({ items }) {
@@ -111,6 +110,10 @@ export default function Navbar() {
   const [treatments, setTreatments]     = useState(FALLBACK_TREATMENTS)
   const { isOpen, open, close }         = useBookingModal()
   const { phone, phoneTel, name, slug, type }  = usePractice()
+  const locationLinks = [
+    ...BASE_LOCATION_LINKS,
+    ...(slug === 'octavia-aesthetic' ? [{ label: 'NHS Alternative', href: '/nhs-alternative-surrey' }] : []),
+  ]
   const [logoTitle, logoSub]            = splitPracticeName(name)
 
   useEffect(() => {

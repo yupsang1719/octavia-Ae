@@ -25,6 +25,7 @@ function fadeUp(delay = 0) {
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function TreatmentHero({ treatment, member, onBook, isPrivate }) {
+  const { phone, phoneTel } = usePractice()
   return (
     <section className="relative min-h-[60vh] lg:min-h-[70vh] flex items-center bg-brand-dark overflow-hidden">
       {treatment.heroImage && (
@@ -61,10 +62,10 @@ function TreatmentHero({ treatment, member, onBook, isPrivate }) {
               {isPrivate ? 'Book free consultation' : 'Request appointment'}
             </button>
             <a
-              href="tel:01483958205"
+              href={`tel:${phoneTel}`}
               className="btn-ghost-white text-base px-8 py-4"
             >
-              01483 958205
+              {phone}
             </a>
           </div>
           {treatment.priceFrom && (
@@ -365,6 +366,7 @@ function GDCNotes({ gdcNote, rxNote }) {
 
 // ── Final CTA ─────────────────────────────────────────────────────────────────
 function TreatmentCTA({ member, onBook, isPrivate }) {
+  const { phone, whatsapp, address } = usePractice()
   return (
     <section className="section-padding bg-brand-green">
       <div className="container-wide text-center">
@@ -384,17 +386,19 @@ function TreatmentCTA({ member, onBook, isPrivate }) {
             >
               {isPrivate ? 'Book free consultation' : 'Request appointment'}
             </button>
-            <a
-              href="https://wa.me/447584965468"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost-white text-base px-8 py-4"
-            >
-              WhatsApp us
-            </a>
+            {whatsapp && (
+              <a
+                href={`https://wa.me/${whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost-white text-base px-8 py-4"
+              >
+                WhatsApp us
+              </a>
+            )}
           </div>
           <p className="mt-6 font-sans text-sm text-white/50">
-            01483 958205 · Seymour House, Lower South Street, Godalming GU7 1BZ
+            {phone} · {address}
           </p>
         </motion.div>
       </div>

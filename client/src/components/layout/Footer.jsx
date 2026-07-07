@@ -51,7 +51,7 @@ export default function Footer() {
   const [emailVal, setEmailVal] = useState('')
   const [subscribed, setSubscribed] = useState(false)
   const [treatments, setTreatments] = useState(FALLBACK_TREATMENTS)
-  const { phone, phoneTel, email: practiceEmail, address, instagram, name, type, hours } = usePractice()
+  const { phone, phoneTel, email: practiceEmail, address, instagram, name, type, hours, slug } = usePractice()
   const [logoTitle, logoSub] = splitPracticeName(name)
 
   // Fetch published treatments for this practice (same as navbar)
@@ -120,7 +120,7 @@ export default function Footer() {
       </div>
 
       <div className="container-wide py-16 lg:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
+        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-10 lg:gap-8 ${slug === 'octavia-aesthetic' ? 'lg:grid-cols-5' : 'lg:grid-cols-4'}`}>
           {/* Practice info */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="mb-5 flex items-center gap-3">
@@ -195,17 +195,19 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Locations */}
-          <div>
-            <h3 className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 mb-5">
-              We Serve
-            </h3>
-            <ul className="space-y-2.5">
-              {locationLinks.map(l => (
-                <FooterLink key={l.href} to={l.href}>{l.label}</FooterLink>
-              ))}
-            </ul>
-          </div>
+          {/* Locations — only shown on octavia-aesthetic (these are SEO pages) */}
+          {slug === 'octavia-aesthetic' && (
+            <div>
+              <h3 className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 mb-5">
+                We Serve
+              </h3>
+              <ul className="space-y-2.5">
+                {locationLinks.map(l => (
+                  <FooterLink key={l.href} to={l.href}>{l.label}</FooterLink>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Practice links */}
           <div>
@@ -225,14 +227,24 @@ export default function Footer() {
               Opening Hours
             </h3>
             <ul className="space-y-2">
-              {hours.length > 0 ? hours.map(h => (
-                <li key={h.day} className="flex justify-between gap-3 text-[12px] font-sans">
-                  <span className="text-white/40">{h.day}</span>
-                  <span className={h.closed ? 'text-white/25' : 'text-white/65'}>
-                    {h.closed ? 'Closed' : h.hours}
-                  </span>
-                </li>
-              )) : (
+              {hours.length > 0 ? hours.map(h => {
+                const [mainHours, lunchNote] = h.closed ? [] : h.hours.split(' (')
+                return (
+                  <li key={h.day} className="text-[12px] font-sans">
+                    <div className="flex justify-between gap-3">
+                      <span className="text-white/40 flex-shrink-0">{h.day}</span>
+                      <span className={`text-right ${h.closed ? 'text-white/25' : 'text-white/65'}`}>
+                        {h.closed ? 'Closed' : mainHours}
+                      </span>
+                    </div>
+                    {lunchNote && (
+                      <p className="text-white/30 text-[10px] text-right mt-0.5">
+                        ({lunchNote}
+                      </p>
+                    )}
+                  </li>
+                )
+              }) : (
                 <li className="text-[12px] font-sans text-white/40">Mon–Fri 9 am – 5 pm</li>
               )}
             </ul>

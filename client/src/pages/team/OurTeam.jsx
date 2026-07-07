@@ -45,7 +45,7 @@ const TRUST_POINTS = [
 
 export default function OurTeam() {
   const { isOpen, open, close } = useBookingModal()
-  const { type } = usePractice()
+  const { type, phone, phoneTel, email: practiceEmail, whatsapp } = usePractice()
   const isPrivate = type === 'private'
   const [members, setMembers] = useState([])
 
@@ -148,8 +148,8 @@ export default function OurTeam() {
                   Our friendly reception team are here to make every visit to Octavia Dental as smooth and comfortable as possible — from booking your first appointment to supporting you throughout treatment.
                 </p>
                 <div className="mt-4 pt-4 border-t border-brand-border flex flex-wrap gap-4 text-sm font-sans">
-                  <a href="tel:01483958205" className="text-brand-green hover:underline">01483 958205</a>
-                  <a href="mailto:info@octavia-dental.co.uk" className="text-brand-green hover:underline">info@octavia-dental.co.uk</a>
+                  <a href={`tel:${phoneTel}`} className="text-brand-green hover:underline">{phone}</a>
+                  {practiceEmail && <a href={`mailto:${practiceEmail}`} className="text-brand-green hover:underline">{practiceEmail}</a>}
                 </div>
               </motion.div>
             </div>
@@ -174,14 +174,16 @@ export default function OurTeam() {
               >
                 {isPrivate ? 'Book free consultation' : 'Request appointment'}
               </button>
-              <a
-                href="https://wa.me/447584965468"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 text-white font-sans font-medium text-sm rounded-sm hover:bg-white/10 transition-all"
-              >
-                WhatsApp us
-              </a>
+              {whatsapp && (
+                <a
+                  href={`https://wa.me/${whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 text-white font-sans font-medium text-sm rounded-sm hover:bg-white/10 transition-all"
+                >
+                  WhatsApp us
+                </a>
+              )}
             </div>
           </motion.div>
         </div>
