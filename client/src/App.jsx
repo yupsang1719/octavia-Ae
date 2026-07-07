@@ -56,6 +56,7 @@ const AdminTreatmentEditor      = lazy(() => import('./pages/admin/AdminTreatmen
 const AdminPatients             = lazy(() => import('./pages/admin/AdminPatients'))
 const AdminEmailTemplates       = lazy(() => import('./pages/admin/AdminEmailTemplates'))
 const AdminEmailTemplateEditor  = lazy(() => import('./pages/admin/AdminEmailTemplateEditor'))
+const AdminPracticeSettings     = lazy(() => import('./pages/admin/AdminPracticeSettings'))
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function ScrollToTop() {
@@ -166,6 +167,7 @@ export default function App() {
             <Route path="patients"                     element={<AdminPatients />} />
             <Route path="email-templates"              element={<AdminEmailTemplates />} />
             <Route path="email-templates/:id"          element={<AdminEmailTemplateEditor />} />
+            <Route path="practice-settings"            element={<AdminPracticeSettings />} />
           </Route>
         </Routes>
       </Suspense>

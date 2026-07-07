@@ -42,9 +42,9 @@ export async function getPostById(req, res) {
   }
 }
 
-export async function getAllTeam(_req, res) {
+export async function getAllTeam(req, res) {
   try {
-    const members = await TeamMember.find().sort({ order: 1, createdAt: 1 })
+    const members = await TeamMember.find({ practices: req.practiceSlug }).sort({ order: 1, createdAt: 1 })
     res.json(members)
   } catch {
     res.status(500).json({ error: 'Failed to fetch team' })

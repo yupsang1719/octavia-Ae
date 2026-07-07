@@ -10,7 +10,17 @@ export async function getPractice(req, res) {
   }
 }
 
-export async function getPractices(req, res) {
+export async function getPracticeBySlug(req, res) {
+  try {
+    const practice = await Practice.findOne({ slug: req.params.slug })
+    if (!practice) return res.status(404).json({ error: 'Practice not found' })
+    res.json(practice)
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch practice' })
+  }
+}
+
+export async function getPractices(_req, res) {
   try {
     const practices = await Practice.find({}, 'slug name type domains').sort({ name: 1 })
     res.json(practices)

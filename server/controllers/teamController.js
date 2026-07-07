@@ -1,8 +1,14 @@
 import TeamMember from '../models/TeamMember.js'
 
+const publicFilter = slug => ({
+  published: true,
+  practices: slug,
+  hiddenInPractices: { $ne: slug },
+})
+
 export async function getTeam(req, res) {
   try {
-    const members = await TeamMember.find({ published: true, practices: req.practiceSlug }).sort({ order: 1, createdAt: 1 })
+    const members = await TeamMember.find(publicFilter(req.practiceSlug)).sort({ order: 1, createdAt: 1 })
     res.json(members)
   } catch {
     res.status(500).json({ error: 'Failed to fetch team' })
@@ -11,7 +17,7 @@ export async function getTeam(req, res) {
 
 export async function getTeamByCategory(req, res) {
   try {
-    const members = await TeamMember.find({ category: req.params.category, published: true, practices: req.practiceSlug }).sort({ order: 1 })
+    const members = await TeamMember.find({ category: req.params.category, ...publicFilter(req.practiceSlug) }).sort({ order: 1 })
     res.json(members)
   } catch {
     res.status(500).json({ error: 'Failed to fetch team' })
@@ -20,7 +26,7 @@ export async function getTeamByCategory(req, res) {
 
 export async function getTeamMemberBySlug(req, res) {
   try {
-    const member = await TeamMember.findOne({ slug: req.params.slug, published: true, practices: req.practiceSlug })
+    const member = await TeamMember.findOne({ slug: req.params.slug, ...publicFilter(req.practiceSlug) })
     if (!member) return res.status(404).json({ error: 'Team member not found' })
     res.json(member)
   } catch {
@@ -31,7 +37,6 @@ export async function getTeamMemberBySlug(req, res) {
 export async function createTeamMember(req, res) {
   try {
     const body = { ...req.body }
-    // Ensure new member is linked to the current practice
     if (!Array.isArray(body.practices) || body.practices.length === 0) {
       body.practices = [req.practiceSlug]
     }
@@ -52,6 +57,20 @@ export async function updateTeamMember(req, res) {
   }
 }
 
+export async function toggleVisibility(req, res) {
+  const { visible } = req.body
+  const op = visible
+    ? { $pull: { hiddenInPractices: req.practiceSlug } }
+    : { $addToSet: { hiddenInPractices: req.practiceSlug } }
+  try {
+    const member = await TeamMember.findByIdAndUpdate(req.params.id, op, { new: true })
+    if (!member) return res.status(404).json({ error: 'Team member not found' })
+    res.json(member)
+  } catch {
+    res.status(500).json({ error: 'Failed to update visibility' })
+  }
+}
+
 export async function deleteTeamMember(req, res) {
   try {
     const member = await TeamMember.findById(req.params.id)
@@ -62,11 +81,10 @@ export async function deleteTeamMember(req, res) {
       // Shared across practices — only unlink from this one
       await TeamMember.findByIdAndUpdate(req.params.id, { practices: otherPractices })
     } else {
-      // Only belongs to this practice — safe to fully delete
       await TeamMember.findByIdAndDelete(req.params.id)
     }
     res.json({ success: true })
   } catch {
-    res.status(500).json({ error: 'Failed to delete team member' })
+    res.status(500).json({ error: 'Failed to delete member' })
   }
 }

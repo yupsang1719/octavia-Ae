@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { PlusCircle, Edit2, Trash2, Eye, EyeOff, Users } from 'lucide-react'
+import { useAdminPractice } from '../../contexts/AdminPracticeContext'
 
 const CATEGORIES = [
   { value: '', label: 'All' },
@@ -20,12 +21,14 @@ const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.slice(1).map(c => [c.value
 
 export default function AdminTeam() {
   const navigate = useNavigate()
+  const { selectedSlug } = useAdminPractice()
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('')
   const [error, setError] = useState('')
 
   const fetchMembers = useCallback(async () => {
+    setLoading(true)
     try {
       const { data } = await axios.get('/api/admin/team')
       setMembers(data)
@@ -36,19 +39,24 @@ export default function AdminTeam() {
     }
   }, [])
 
-  useEffect(() => { fetchMembers() }, [fetchMembers])
+  useEffect(() => { fetchMembers() }, [fetchMembers, selectedSlug])
 
-  async function togglePublished(member) {
+  async function toggleVisibility(member) {
+    const isHidden = member.hiddenInPractices?.includes(selectedSlug)
     try {
-      await axios.patch(`/api/team/${member._id}`, { published: !member.published })
-      setMembers(prev => prev.map(m => m._id === member._id ? { ...m, published: !m.published } : m))
+      const { data } = await axios.patch(`/api/team/${member._id}/visibility`, { visible: isHidden })
+      setMembers(prev => prev.map(m => m._id === member._id ? data : m))
     } catch {
-      setError('Failed to update member')
+      setError('Failed to update visibility')
     }
   }
 
   async function deleteMember(member) {
-    if (!window.confirm(`Delete ${member.name}? This cannot be undone.`)) return
+    const isShared = member.practices?.length > 1
+    const msg = isShared
+      ? `Remove ${member.name} from this practice? They will remain on other practice sites.`
+      : `Permanently delete ${member.name}? This cannot be undone.`
+    if (!window.confirm(msg)) return
     try {
       await axios.delete(`/api/team/${member._id}`)
       setMembers(prev => prev.filter(m => m._id !== member._id))
@@ -58,6 +66,16 @@ export default function AdminTeam() {
   }
 
   const visible = filter ? members.filter(m => m.category === filter) : members
+
+  function statusBadge(member) {
+    if (!member.published) {
+      return <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500">Draft</span>
+    }
+    if (member.hiddenInPractices?.includes(selectedSlug)) {
+      return <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full font-medium bg-yellow-100 text-yellow-700">Hidden here</span>
+    }
+    return <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full font-medium bg-green-100 text-green-700">Visible</span>
+  }
 
   return (
     <div>
@@ -76,7 +94,6 @@ export default function AdminTeam() {
         <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>
       )}
 
-      {/* Category filter */}
       <div className="flex flex-wrap gap-2 mb-6">
         {CATEGORIES.map(cat => (
           <button
@@ -98,7 +115,7 @@ export default function AdminTeam() {
       ) : visible.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <Users size={40} className="mx-auto mb-3 opacity-40" />
-          <p className="text-sm">No team members yet. Add your first one.</p>
+          <p className="text-sm">No team members for this practice yet.</p>
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -108,66 +125,76 @@ export default function AdminTeam() {
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Name</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Role</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Category</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600">Visibility</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600">Practices</th>
                 <th className="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {visible.map(member => (
-                <tr key={member._id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-gray-900">
-                    {member.name}
-                    {member.hasPage && (
-                      <a
-                        href={`/our-team/${member.slug}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="ml-2 text-xs text-brand-green hover:underline"
-                      >
-                        view page ↗
-                      </a>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600">{member.role}</td>
-                  <td className="px-4 py-3">
-                    <span className="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs">
-                      {CATEGORY_LABELS[member.category] || member.category}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${
-                      member.published ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                    }`}>
-                      {member.published ? 'Published' : 'Hidden'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => togglePublished(member)}
-                        title={member.published ? 'Hide' : 'Publish'}
-                        className="p-1.5 text-gray-400 hover:text-brand-green transition-colors"
-                      >
-                        {member.published ? <EyeOff size={15} /> : <Eye size={15} />}
-                      </button>
-                      <button
-                        onClick={() => navigate(`/admin/team/${member._id}`)}
-                        title="Edit"
-                        className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
-                      >
-                        <Edit2 size={15} />
-                      </button>
-                      <button
-                        onClick={() => deleteMember(member)}
-                        title="Delete"
-                        className="p-1.5 text-gray-400 hover:text-red-600 transition-colors"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {visible.map(member => {
+                const isHidden = member.hiddenInPractices?.includes(selectedSlug)
+                const isShared = member.practices?.length > 1
+                return (
+                  <tr key={member._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-gray-900">
+                      {member.name}
+                      {member.hasPage && (
+                        <a
+                          href={`/our-team/${member.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="ml-2 text-xs text-brand-green hover:underline"
+                        >
+                          view ↗
+                        </a>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">{member.role}</td>
+                    <td className="px-4 py-3">
+                      <span className="inline-block bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs">
+                        {CATEGORY_LABELS[member.category] || member.category}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">{statusBadge(member)}</td>
+                    <td className="px-4 py-3">
+                      {isShared ? (
+                        <span className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                          {member.practices.length} sites
+                        </span>
+                      ) : (
+                        <span className="text-xs text-gray-400">This site only</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        {member.published && (
+                          <button
+                            onClick={() => toggleVisibility(member)}
+                            title={isHidden ? 'Show on this site' : 'Hide from this site'}
+                            className={`p-1.5 transition-colors ${isHidden ? 'text-yellow-500 hover:text-green-600' : 'text-gray-400 hover:text-yellow-500'}`}
+                          >
+                            {isHidden ? <EyeOff size={15} /> : <Eye size={15} />}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => navigate(`/admin/team/${member._id}`)}
+                          title="Edit"
+                          className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
+                        >
+                          <Edit2 size={15} />
+                        </button>
+                        <button
+                          onClick={() => deleteMember(member)}
+                          title={isShared ? 'Remove from this practice' : 'Delete'}
+                          className="p-1.5 text-gray-400 hover:text-red-600 transition-colors"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
