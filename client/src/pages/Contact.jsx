@@ -1,39 +1,43 @@
-import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Phone, Mail, MapPin, Clock, MessageCircle } from 'lucide-react'
-import axios from 'axios'
 import ContactForm from '../components/forms/ContactForm'
+import { usePractice } from '../contexts/PracticeContext'
 import { SITE_URL } from '../utils/seo'
 
 function fade(d=0){return{initial:{opacity:0,y:18},whileInView:{opacity:1,y:0},viewport:{once:true},transition:{duration:0.45,delay:d,ease:'easeOut'}}}
 
-const FALLBACK_HOURS = [
-  { day: 'Monday',    hours: '8:30 am – 6:00 pm', closed: false },
-  { day: 'Tuesday',   hours: '8:30 am – 6:00 pm', closed: false },
-  { day: 'Wednesday', hours: '8:30 am – 6:00 pm', closed: false },
-  { day: 'Thursday',  hours: '8:30 am – 6:00 pm', closed: false },
-  { day: 'Friday',    hours: '8:30 am – 5:00 pm', closed: false },
-  { day: 'Saturday',  hours: '9:00 am – 2:00 pm', closed: false },
-  { day: 'Sunday',    hours: '',                   closed: true  },
-]
+const GETTING_HERE = {
+  'octavia-aesthetic': [
+    'Parking available on Lower South Street (pay-and-display) and at Flambard Way car park, a 3-minute walk.',
+    'Godalming railway station is a 7-minute walk. Regular services from London Waterloo, Guildford and Haslemere.',
+  ],
+  'octavia-house': [
+    'Adjacent to Crown Court Car Park and the Wilfred Noyce Community Centre.',
+    'Godalming railway station is a 5-minute walk. Disabled access available on the ground floor.',
+  ],
+  'new-octavia': [
+    'Located in Beacon Hill, Hindhead. Use GU26 6NP for sat nav.',
+  ],
+}
 
 export default function Contact() {
-  const [hours, setHours] = useState(FALLBACK_HOURS)
+  const {
+    name, phone, phoneTel, email: practiceEmail,
+    address, whatsapp, hours, metaTitle, slug,
+  } = usePractice()
 
-  useEffect(() => {
-    axios.get('/api/settings/opening-hours')
-      .then(({ data }) => { if (Array.isArray(data) && data.length) setHours(data) })
-      .catch(() => {})
-  }, [])
+  const gettingHere = GETTING_HERE[slug] || []
+  const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed&z=16`
+
   return (
     <>
       <Helmet>
-        <title>Contact Us | Octavia Dental & Facial Aesthetics Godalming</title>
-        <meta name="description" content="Contact Octavia Dental & Facial Aesthetics in Godalming, Surrey. Call 01483 958205, WhatsApp us or send a message. Seymour House, Lower South Street, GU7 1BZ." />
+        <title>Contact Us | {metaTitle}</title>
+        <meta name="description" content={`Contact ${name}. Call ${phone} or send a message. ${address}.`} />
         <link rel="canonical" href={`${SITE_URL}/contact`} />
-        <meta property="og:title"       content="Contact Us | Octavia Dental & Facial Aesthetics" />
-        <meta property="og:description" content="Call 01483 958205 or send a message. Seymour House, Lower South Street, Godalming, Surrey GU7 1BZ." />
+        <meta property="og:title"       content={`Contact Us | ${name}`} />
+        <meta property="og:description" content={`Call ${phone} or send a message. ${address}.`} />
         <meta property="og:url"         content={`${SITE_URL}/contact`} />
         <meta name="twitter:card"       content="summary_large_image" />
       </Helmet>
@@ -44,7 +48,11 @@ export default function Contact() {
           <motion.div className="max-w-xl" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}}>
             <p className="font-sans text-xs uppercase tracking-widest text-brand-gold font-semibold mb-3">Get in touch</p>
             <h1 className="font-display text-4xl sm:text-5xl text-white font-medium leading-[1.08] mb-4">Contact us.</h1>
-            <p className="font-sans text-lg text-white/70 leading-relaxed">We would love to hear from you. Call, WhatsApp or fill in the form below and we will be in touch within 2 hours.</p>
+            <p className="font-sans text-lg text-white/70 leading-relaxed">
+              {whatsapp
+                ? "Call, WhatsApp or fill in the form below and we'll be in touch within 2 hours."
+                : "Call or fill in the form below and we'll be in touch within 2 hours."}
+            </p>
           </motion.div>
         </div>
       </section>
@@ -55,31 +63,34 @@ export default function Contact() {
 
             {/* Left — contact details */}
             <div className="lg:col-span-2 space-y-8">
+
               {/* Practice card */}
               <motion.div className="bg-brand-cream border border-brand-border rounded-xl p-6 space-y-4" {...fade(0)}>
-                <h2 className="font-serif text-xl text-brand-dark font-medium">Octavia Dental & Facial Aesthetics</h2>
+                <h2 className="font-serif text-xl text-brand-dark font-medium">{name}</h2>
 
-                <a href="tel:01483958205" className="flex items-start gap-3 group">
+                <a href={`tel:${phoneTel}`} className="flex items-start gap-3 group">
                   <Phone className="w-4 h-4 text-brand-green mt-0.5 flex-shrink-0" />
-                  <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors">01483 958205</span>
+                  <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors">{phone}</span>
                 </a>
 
-                <a href="mailto:info@octavia-dental.co.uk" className="flex items-start gap-3 group">
-                  <Mail className="w-4 h-4 text-brand-green mt-0.5 flex-shrink-0" />
-                  <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors break-all">info@octavia-dental.co.uk</span>
-                </a>
+                {practiceEmail && (
+                  <a href={`mailto:${practiceEmail}`} className="flex items-start gap-3 group">
+                    <Mail className="w-4 h-4 text-brand-green mt-0.5 flex-shrink-0" />
+                    <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors break-all">{practiceEmail}</span>
+                  </a>
+                )}
 
                 <address className="flex items-start gap-3 not-italic">
                   <MapPin className="w-4 h-4 text-brand-green mt-0.5 flex-shrink-0" />
-                  <span className="font-sans text-sm text-brand-dark">
-                    Seymour House<br />Lower South Street<br />Godalming, Surrey<br />GU7 1BZ
-                  </span>
+                  <span className="font-sans text-sm text-brand-dark">{address}</span>
                 </address>
 
-                <a href="https://wa.me/447584965468" target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 w-full justify-center bg-[#25D366] text-white font-sans font-medium text-sm rounded-full py-3 hover:opacity-90 transition-opacity mt-2">
-                  <MessageCircle className="w-4 h-4" /> WhatsApp us
-                </a>
+                {whatsapp && (
+                  <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-2 w-full justify-center bg-[#25D366] text-white font-sans font-medium text-sm rounded-full py-3 hover:opacity-90 transition-opacity mt-2">
+                    <MessageCircle className="w-4 h-4" /> WhatsApp us
+                  </a>
+                )}
               </motion.div>
 
               {/* Hours */}
@@ -89,24 +100,35 @@ export default function Contact() {
                   <h3 className="font-serif text-lg text-brand-dark font-medium">Opening hours</h3>
                 </div>
                 <ul className="space-y-2">
-                  {hours.map((h, i) => (
-                    <li key={i} className="flex justify-between font-sans text-sm">
-                      <span className="text-brand-muted">{h.day}</span>
-                      <span className={`font-medium ${h.closed ? 'text-brand-subtle' : 'text-brand-dark'}`}>
-                        {h.closed ? 'Closed' : h.hours}
-                      </span>
-                    </li>
-                  ))}
+                  {hours.map((h, i) => {
+                    const [mainHours, lunchNote] = h.closed ? [] : h.hours.split(' (')
+                    return (
+                      <li key={i} className="font-sans text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-brand-muted">{h.day}</span>
+                          <span className={`font-medium ${h.closed ? 'text-brand-subtle' : 'text-brand-dark'}`}>
+                            {h.closed ? 'Closed' : mainHours}
+                          </span>
+                        </div>
+                        {lunchNote && (
+                          <p className="text-brand-subtle text-xs text-right mt-0.5">({lunchNote}</p>
+                        )}
+                      </li>
+                    )
+                  })}
                 </ul>
                 <p className="mt-4 font-sans text-xs text-brand-subtle">Hours may vary on bank holidays. Please call to confirm.</p>
               </motion.div>
 
-              {/* Parking */}
-              <motion.div className="bg-brand-cream border border-brand-border rounded-xl p-6" {...fade(0.15)}>
-                <h3 className="font-serif text-lg text-brand-dark font-medium mb-3">Getting here</h3>
-                <p className="font-sans text-sm text-brand-muted leading-relaxed mb-2">Parking is available on Lower South Street (pay-and-display) and at Flambard Way car park, a 3-minute walk from the practice.</p>
-                <p className="font-sans text-sm text-brand-muted leading-relaxed">Godalming railway station is a 7-minute walk. Regular services from London Waterloo, Guildford and Haslemere.</p>
-              </motion.div>
+              {/* Getting here */}
+              {gettingHere.length > 0 && (
+                <motion.div className="bg-brand-cream border border-brand-border rounded-xl p-6" {...fade(0.15)}>
+                  <h3 className="font-serif text-lg text-brand-dark font-medium mb-3">Getting here</h3>
+                  {gettingHere.map((line, i) => (
+                    <p key={i} className={`font-sans text-sm text-brand-muted leading-relaxed ${i > 0 ? 'mt-2' : ''}`}>{line}</p>
+                  ))}
+                </motion.div>
+              )}
             </div>
 
             {/* Right — contact form */}
@@ -123,10 +145,10 @@ export default function Contact() {
       {/* Map */}
       <div className="w-full h-80 lg:h-96 bg-brand-border">
         <iframe
-          title="Octavia Dental & Facial Aesthetics — Godalming"
+          title={`${name} — map`}
           width="100%" height="100%" loading="lazy" referrerPolicy="no-referrer-when-downgrade"
-          src="https://maps.google.com/maps?q=Seymour+House,+Lower+South+Street,+Godalming,+GU7+1BZ&output=embed&z=16"
-          className="border-0" aria-label="Map showing Octavia Dental location"
+          src={mapSrc}
+          className="border-0" aria-label={`Map showing ${name} location`}
         />
       </div>
     </>

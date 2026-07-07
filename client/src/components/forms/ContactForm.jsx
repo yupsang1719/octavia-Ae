@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { CheckCircle } from 'lucide-react'
 import axios from 'axios'
 import FormField from './FormField'
+import { usePractice } from '../../contexts/PracticeContext'
 
 const schema = z.object({
   name:        z.string().min(2, 'Please enter your name'),
@@ -15,25 +16,27 @@ const schema = z.object({
   gdprConsent: z.literal(true, { errorMap: () => ({ message: 'You must consent to proceed' }) }),
 })
 
-const SERVICE_OPTIONS = [
-  { value: '',              label: 'Not sure yet' },
-  { value: 'implants',      label: 'Dental Implants' },
-  { value: 'invisalign',    label: 'Invisalign' },
-  { value: 'bonding',       label: 'Composite Bonding' },
-  { value: 'veneers',       label: 'Porcelain Veneers' },
-  { value: 'whitening',     label: 'Teeth Whitening' },
-  { value: 'sixmonthsmile', label: '6 Month Smile' },
-  { value: 'airflow',       label: 'Air Flow Hygiene' },
-  { value: 'botox',         label: 'Botox & Anti-Wrinkle' },
-  { value: 'general',       label: 'General Enquiry' },
-  { value: 'other',         label: 'Other' },
-]
-
 const inputClass = 'w-full border border-brand-border rounded-sm px-4 py-3 text-sm font-sans text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-green bg-white'
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false)
   const [apiError, setApiError]   = useState('')
+  const [serviceOptions, setServiceOptions] = useState([])
+  const { phone, name: practiceName } = usePractice()
+
+  useEffect(() => {
+    fetch('/api/treatments')
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data)) return
+        setServiceOptions([
+          ...data.map(t => ({ value: t.slug, label: t.name })),
+          { value: 'general', label: 'General Enquiry' },
+          { value: 'other',   label: 'Other' },
+        ])
+      })
+      .catch(() => {})
+  }, [])
 
   const {
     register, handleSubmit, formState: { errors, isSubmitting },
@@ -48,7 +51,7 @@ export default function ContactForm() {
       })
       setSubmitted(true)
     } catch {
-      setApiError('Something went wrong. Please call us on 01483 958205.')
+      setApiError(`Something went wrong. Please call us on ${phone}.`)
     }
   }
 
@@ -80,7 +83,8 @@ export default function ContactForm() {
 
       <FormField label="Treatment interested in" error={errors.service?.message}>
         <select className={inputClass} {...register('service')}>
-          {SERVICE_OPTIONS.map(opt => (
+          <option value="">Not sure yet</option>
+          {serviceOptions.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
@@ -100,7 +104,7 @@ export default function ContactForm() {
         <label className="flex items-start gap-3 cursor-pointer">
           <input type="checkbox" className="mt-0.5 w-4 h-4 accent-brand-green flex-shrink-0" {...register('gdprConsent')} />
           <span className="text-xs font-sans text-brand-muted leading-relaxed">
-            I consent to Octavia Dental & Facial Aesthetics storing my details to respond to this enquiry.{' '}
+            I consent to {practiceName} storing my details to respond to this enquiry.{' '}
             <a href="/privacy-policy" className="underline hover:text-brand-green" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
           </span>
         </label>
