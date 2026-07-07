@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useAdminPractice } from '../../contexts/AdminPracticeContext'
+import { usePractice } from '../../contexts/PracticeContext'
 
 const FIELD = ({ label, name, value, onChange, type = 'text', hint }) => (
   <div>
@@ -17,7 +17,7 @@ const FIELD = ({ label, name, value, onChange, type = 'text', hint }) => (
 )
 
 export default function AdminPracticeSettings() {
-  const { selectedSlug } = useAdminPractice()
+  const { slug: selectedSlug } = usePractice()
   const [form, setForm] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)

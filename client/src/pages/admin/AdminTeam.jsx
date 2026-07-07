@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { PlusCircle, Edit2, Trash2, Eye, EyeOff, Users } from 'lucide-react'
-import { useAdminPractice } from '../../contexts/AdminPracticeContext'
+import { usePractice } from '../../contexts/PracticeContext'
 
 const CATEGORIES = [
   { value: '', label: 'All' },
@@ -21,7 +21,7 @@ const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.slice(1).map(c => [c.value
 
 export default function AdminTeam() {
   const navigate = useNavigate()
-  const { selectedSlug } = useAdminPractice()
+  const { slug: selectedSlug } = usePractice()
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('')
