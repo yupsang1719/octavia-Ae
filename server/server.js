@@ -1,7 +1,4 @@
-import { config } from 'dotenv'
-import { resolve, dirname } from 'path'
-import { fileURLToPath } from 'url'
-config({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../.env') })
+import './env.js'
 import app from './app.js'
 import { connectDB } from './config/db.js'
 import { configureCloudinary } from './config/cloudinary.js'
