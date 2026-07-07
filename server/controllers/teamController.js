@@ -71,6 +71,17 @@ export async function toggleVisibility(req, res) {
   }
 }
 
+export async function reorderTeam(req, res) {
+  const { ids } = req.body
+  if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids must be an array' })
+  try {
+    await Promise.all(ids.map((id, i) => TeamMember.updateOne({ _id: id }, { $set: { order: i } })))
+    res.json({ success: true })
+  } catch {
+    res.status(500).json({ error: 'Failed to reorder team' })
+  }
+}
+
 export async function deleteTeamMember(req, res) {
   try {
     const member = await TeamMember.findById(req.params.id)

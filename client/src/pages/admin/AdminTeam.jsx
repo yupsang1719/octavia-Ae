@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { PlusCircle, Edit2, Trash2, Eye, EyeOff, Users } from 'lucide-react'
+import { PlusCircle, Edit2, Trash2, Eye, EyeOff, Users, GripVertical } from 'lucide-react'
 import { usePractice } from '../../contexts/PracticeContext'
 
 const CATEGORIES = [
@@ -26,6 +26,7 @@ export default function AdminTeam() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('')
   const [error, setError] = useState('')
+  const dragIdx = useRef(null)
 
   const fetchMembers = useCallback(async () => {
     setLoading(true)
@@ -40,6 +41,19 @@ export default function AdminTeam() {
   }, [])
 
   useEffect(() => { fetchMembers() }, [fetchMembers, selectedSlug])
+
+  function handleDragStart(i) { dragIdx.current = i }
+  function handleDragOver(e) { e.preventDefault() }
+  function handleDrop(i) {
+    const from = dragIdx.current
+    if (from === null || from === i) return
+    const next = [...members]
+    const [moved] = next.splice(from, 1)
+    next.splice(i, 0, moved)
+    setMembers(next)
+    dragIdx.current = null
+    axios.patch('/api/team/reorder', { ids: next.map(m => m._id) }).catch(() => {})
+  }
 
   async function toggleVisibility(member) {
     const isHidden = member.hiddenInPractices?.includes(selectedSlug)
@@ -122,6 +136,7 @@ export default function AdminTeam() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
+                <th className="w-8 px-2 py-3" />
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Name</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Role</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Category</th>
@@ -131,11 +146,21 @@ export default function AdminTeam() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {visible.map(member => {
+              {visible.map((member, i) => {
                 const isHidden = member.hiddenInPractices?.includes(selectedSlug)
                 const isShared = member.practices?.length > 1
                 return (
-                  <tr key={member._id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={member._id}
+                    className="hover:bg-gray-50 transition-colors"
+                    draggable={!filter}
+                    onDragStart={() => handleDragStart(i)}
+                    onDragOver={handleDragOver}
+                    onDrop={() => handleDrop(i)}
+                  >
+                    <td className={`px-2 py-3 text-gray-300 ${!filter ? 'cursor-grab active:cursor-grabbing hover:text-gray-400' : 'opacity-30'}`}>
+                      <GripVertical size={16} />
+                    </td>
                     <td className="px-4 py-3 font-medium text-gray-900">
                       {member.name}
                       {member.hasPage && (
@@ -197,6 +222,11 @@ export default function AdminTeam() {
               })}
             </tbody>
           </table>
+          {!filter && (
+            <p className="px-4 py-2.5 text-xs text-gray-400 border-t border-gray-100">
+              Drag rows to reorder — order determines how members appear on the public site.
+            </p>
+          )}
         </div>
       )}
     </div>

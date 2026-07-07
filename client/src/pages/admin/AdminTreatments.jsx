@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { PlusCircle, Eye, EyeOff, Edit2, Trash2, Stethoscope, X } from 'lucide-react'
+import { PlusCircle, Eye, EyeOff, Edit2, Trash2, Stethoscope, X, GripVertical } from 'lucide-react'
 
 function AddTreatmentModal({ onClose, onCreated }) {
   const [name, setName]   = useState('')
@@ -71,6 +71,7 @@ export default function AdminTreatments() {
   const [loading, setLoading]       = useState(true)
   const [error, setError]           = useState('')
   const [showAdd, setShowAdd]       = useState(false)
+  const dragIdx = useRef(null)
 
   const fetchTreatments = useCallback(async () => {
     setLoading(true)
@@ -85,6 +86,19 @@ export default function AdminTreatments() {
   }, [])
 
   useEffect(() => { fetchTreatments() }, [fetchTreatments])
+
+  function handleDragStart(i) { dragIdx.current = i }
+  function handleDragOver(e) { e.preventDefault() }
+  function handleDrop(i) {
+    const from = dragIdx.current
+    if (from === null || from === i) return
+    const next = [...treatments]
+    const [moved] = next.splice(from, 1)
+    next.splice(i, 0, moved)
+    setTreatments(next)
+    dragIdx.current = null
+    axios.patch('/api/treatments/admin/reorder', { slugs: next.map(t => t.slug) }).catch(() => {})
+  }
 
   async function togglePublished(t) {
     try {
@@ -144,6 +158,7 @@ export default function AdminTreatments() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
+                <th className="w-8 px-2 py-3" />
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Treatment</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Price</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
@@ -151,8 +166,18 @@ export default function AdminTreatments() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {treatments.map(t => (
-                <tr key={t.slug} className="hover:bg-gray-50 transition-colors">
+              {treatments.map((t, i) => (
+                <tr
+                  key={t.slug}
+                  className="hover:bg-gray-50 transition-colors"
+                  draggable
+                  onDragStart={() => handleDragStart(i)}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDrop(i)}
+                >
+                  <td className="px-2 py-3 cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-400">
+                    <GripVertical size={16} />
+                  </td>
                   <td className="px-4 py-3">
                     <p className="font-medium text-gray-900">{t.name}</p>
                     <p className="text-xs text-gray-400 mt-0.5">/treatments/{t.slug}</p>

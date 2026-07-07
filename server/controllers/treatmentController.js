@@ -96,6 +96,19 @@ export async function updateTreatment(req, res) {
   }
 }
 
+export async function reorderTreatments(req, res) {
+  const { slugs } = req.body
+  if (!Array.isArray(slugs)) return res.status(400).json({ error: 'slugs must be an array' })
+  try {
+    await Promise.all(slugs.map((slug, i) =>
+      Treatment.updateOne({ slug, practice: req.practiceSlug }, { $set: { order: i } })
+    ))
+    res.json({ success: true })
+  } catch {
+    res.status(500).json({ error: 'Failed to reorder treatments' })
+  }
+}
+
 export async function deleteTreatment(req, res) {
   try {
     const result = await Treatment.findOneAndDelete({ slug: req.params.slug, practice: req.practiceSlug })
