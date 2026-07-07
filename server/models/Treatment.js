@@ -29,6 +29,7 @@ const treatmentSchema = new mongoose.Schema({
   faq:       [faqSchema],
 
   specialists: [String],
+  published:   { type: Boolean, default: true },
   practice:    { type: String, default: 'octavia-aesthetic', index: true },
   gdcNote:    { type: Boolean, default: false },
   rxNote:     { type: Boolean, default: false },

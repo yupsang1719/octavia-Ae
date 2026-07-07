@@ -210,10 +210,12 @@ export default function AdminTreatmentEditor() {
     setError('')
     try {
       const { data } = await axios.patch(`/api/treatments/${slug}`, {
+        name:             form.name,
         tagline:          form.tagline,
         priceFrom:        form.priceFrom,
         priceNote:        form.priceNote,
         financeAvailable: form.financeAvailable,
+        published:        form.published,
         whatIsIt:         form.whatIsIt,
         benefits:         form.benefits,
         process:          form.process,
@@ -349,7 +351,30 @@ export default function AdminTreatmentEditor() {
         <FAQEditor faqs={form.faq || []} onChange={v => set('faq', v)} />
       </Section>
 
-      {/* Save */}
+      {/* Publish / Save */}
+      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-5 flex items-center justify-between gap-4">
+        <div>
+          <p className="font-sans text-sm font-medium text-gray-900">
+            Status: {form.published
+              ? <span className="text-green-600">Live</span>
+              : <span className="text-yellow-600">Draft</span>}
+          </p>
+          <p className="font-sans text-xs text-gray-400 mt-0.5">
+            {form.published ? 'Visible to patients on the public site.' : 'Not visible to patients yet.'}
+          </p>
+        </div>
+        <button
+          onClick={() => set('published', !form.published)}
+          className={`px-4 py-2 rounded-lg text-sm font-medium font-sans transition-colors ${
+            form.published
+              ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+              : 'bg-green-100 text-green-700 hover:bg-green-200'
+          }`}
+        >
+          {form.published ? 'Unpublish' : 'Publish'}
+        </button>
+      </div>
+
       <div className="flex items-center gap-3 mt-2 pb-8">
         <button onClick={handleSave} disabled={saving}
           className="px-6 py-2.5 bg-brand-green text-white font-sans text-sm font-medium rounded-lg hover:bg-brand-green/90 disabled:opacity-60 transition-colors">

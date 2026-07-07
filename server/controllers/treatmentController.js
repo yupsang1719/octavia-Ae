@@ -1,9 +1,26 @@
 import Treatment from '../models/Treatment.js'
 
+function toSlug(name) {
+  return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+}
+
+// Public — only published treatments
 export async function getTreatments(req, res) {
   try {
     const treatments = await Treatment
-      .find({ practice: req.practiceSlug }, 'slug name tagline priceFrom specialists order')
+      .find({ practice: req.practiceSlug, published: true }, 'slug name tagline priceFrom specialists order')
+      .sort({ order: 1 })
+    res.json(treatments)
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch treatments' })
+  }
+}
+
+// Admin — all treatments including drafts
+export async function getAllTreatmentsAdmin(req, res) {
+  try {
+    const treatments = await Treatment
+      .find({ practice: req.practiceSlug }, 'slug name tagline priceFrom published order')
       .sort({ order: 1 })
     res.json(treatments)
   } catch {
@@ -21,7 +38,30 @@ export async function getTreatmentBySlug(req, res) {
   }
 }
 
-const ALLOWED_FIELDS = ['tagline', 'priceFrom', 'priceNote', 'financeAvailable', 'whatIsIt', 'benefits', 'process', 'faq', 'specialists', 'nhsBand', 'nhsPrice']
+export async function createTreatment(req, res) {
+  const { name, slug: customSlug } = req.body
+  if (!name?.trim()) return res.status(400).json({ error: 'Name is required' })
+
+  const slug = customSlug?.trim() ? toSlug(customSlug) : toSlug(name)
+  try {
+    const treatment = await Treatment.create({
+      name: name.trim(),
+      slug,
+      practice: req.practiceSlug,
+      published: false,  // starts as draft
+    })
+    res.status(201).json(treatment)
+  } catch (err) {
+    if (err.code === 11000) return res.status(400).json({ error: 'A treatment with that slug already exists for this practice' })
+    res.status(400).json({ error: err.message })
+  }
+}
+
+const ALLOWED_FIELDS = [
+  'name', 'tagline', 'priceFrom', 'priceNote', 'financeAvailable',
+  'whatIsIt', 'benefits', 'process', 'faq', 'specialists',
+  'published', 'nhsBand', 'nhsPrice', 'h1', 'title', 'metaDesc', 'heroImage',
+]
 
 export async function updateTreatment(req, res) {
   const update = {}
@@ -38,5 +78,15 @@ export async function updateTreatment(req, res) {
     res.json(treatment)
   } catch {
     res.status(500).json({ error: 'Failed to update treatment' })
+  }
+}
+
+export async function deleteTreatment(req, res) {
+  try {
+    const result = await Treatment.findOneAndDelete({ slug: req.params.slug, practice: req.practiceSlug })
+    if (!result) return res.status(404).json({ error: 'Not found' })
+    res.json({ success: true })
+  } catch {
+    res.status(500).json({ error: 'Failed to delete treatment' })
   }
 }
