@@ -211,7 +211,7 @@ export default function USPSection() {
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 >
-                  {isPrivate ? 'Book free consultation' : 'Register as a patient'}
+                  {isPrivate ? 'Book free consultation' : 'Request appointment'}
                 </motion.button>
               </motion.div>
             </div>

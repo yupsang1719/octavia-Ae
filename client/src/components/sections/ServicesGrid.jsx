@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import GoldRule from '../ui/GoldRule'
 import { services as staticServices } from '../../data/services'
+import { usePractice } from '../../contexts/PracticeContext'
 
 /* ── Service icons ──────────────────────────────────────────────────────────── */
 function ServiceIcon({ id, className }) {
@@ -133,6 +134,7 @@ function ServiceRow({ service, index }) {
 
 /* ── Section ────────────────────────────────────────────────────────────────── */
 export default function ServicesGrid() {
+  const { type } = usePractice()
   const [services, setServices] = useState(staticServices)
 
   useEffect(() => {
@@ -218,7 +220,7 @@ export default function ServicesGrid() {
             to="/contact"
             className="inline-flex items-center gap-2 font-sans text-sm font-medium text-brand-gold hover:text-white transition-colors duration-200 group flex-shrink-0"
           >
-            Book a free consultation
+            {type === 'private' ? 'Book a free consultation' : 'Request appointment'}
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
           </Link>
         </motion.div>

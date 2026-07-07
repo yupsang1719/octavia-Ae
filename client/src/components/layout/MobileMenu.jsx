@@ -140,7 +140,7 @@ const MENU_ANIMATION = {
 
 export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments = FALLBACK_TREATMENTS }) {
   const [height, setHeight] = useState(0)
-  const { name, phone, phoneTel, whatsapp, slug } = usePractice()
+  const { name, phone, phoneTel, whatsapp, slug, type } = usePractice()
   const [logoTitle, logoSub]                = splitPracticeName(name)
 
   useEffect(() => {
@@ -225,7 +225,7 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments 
                 onClick={() => { onOpenBooking(); onClose() }}
                 className="btn-primary w-full text-sm"
               >
-                Book Free Consultation
+                {type === 'private' ? 'Book Free Consultation' : 'Request Appointment'}
               </button>
               <div className={`grid gap-2 ${whatsapp ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 <a href={`tel:${phoneTel}`} className="btn-secondary text-sm text-center flex items-center justify-center gap-1.5">

@@ -8,6 +8,7 @@ import axios from 'axios'
 import SchemaMarkup from '../components/ui/SchemaMarkup'
 import BookingModal from '../components/ui/BookingModal'
 import { useBookingModal } from '../hooks/useBookingModal'
+import { usePractice } from '../contexts/PracticeContext'
 import { blogPostSchema } from '../utils/schema'
 import { formatDate, readTime } from '../utils/formatters'
 import { SITE_URL } from '../utils/seo'
@@ -49,6 +50,8 @@ export default function BlogPost() {
   const [related, setRelated] = useState([])
   const [notFound, setNotFound] = useState(false)
   const { isOpen, open, close } = useBookingModal()
+  const { type } = usePractice()
+  const isPrivate = type === 'private'
 
   useEffect(() => {
     setPost(null); setNotFound(false); setRelated([])
@@ -158,9 +161,9 @@ export default function BlogPost() {
         {/* Inline CTA */}
         <div className="mt-12 bg-brand-green rounded-sm p-8 text-center">
           <h3 className="font-serif text-2xl text-white font-medium mb-3">Have a question?</h3>
-          <p className="font-sans text-white/70 mb-6 text-sm">Book a free consultation with Dr Ali or Dr Ana and get expert advice tailored to your situation.</p>
+          <p className="font-sans text-white/70 mb-6 text-sm">{isPrivate ? 'Book a free consultation with Dr Ali or Dr Ana and get expert advice tailored to your situation.' : 'Get in touch with our team for expert advice tailored to your situation.'}</p>
           <button onClick={() => open()} className="inline-flex items-center justify-center px-6 py-3 bg-white text-brand-green font-sans font-medium text-sm rounded-sm hover:bg-brand-cream transition-all">
-            Book free consultation
+            {isPrivate ? 'Book free consultation' : 'Request appointment'}
           </button>
         </div>
       </div>

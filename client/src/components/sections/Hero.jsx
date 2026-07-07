@@ -46,9 +46,10 @@ export default function Hero({
   const { isOpen, open, close } = useBookingModal()
   const { type } = usePractice()
 
+  const isPrivate = type === 'private'
   const resolvedHeadline = headline ?? 'Your smile.'
   const resolvedTags = tags ?? (
-    type === 'private'
+    isPrivate
       ? ['No waiting list', 'New patients welcome', 'Free consultations', 'Surrey & Hampshire']
       : ['NHS patients welcome', 'Private options available', 'New patients accepted', 'Surrey & Hampshire']
   )
@@ -165,7 +166,7 @@ export default function Hero({
                 onClick={() => open()}
                 className="btn-primary text-sm px-8 py-4"
               >
-                <TextScramble text="Book free consultation" />
+                <TextScramble text={isPrivate ? 'Book free consultation' : 'Request appointment'} />
               </button>
 
               <a

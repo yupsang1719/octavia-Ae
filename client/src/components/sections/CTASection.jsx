@@ -94,7 +94,7 @@ export default function CTASection() {
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               >
-                {isPrivate ? 'Book free consultation' : 'Book an appointment'}
+                {isPrivate ? 'Book free consultation' : 'Request appointment'}
               </motion.button>
 
               {whatsapp && (

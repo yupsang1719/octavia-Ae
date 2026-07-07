@@ -110,7 +110,7 @@ export default function Navbar() {
   const [hoveredNav, setHoveredNav]     = useState(null)
   const [treatments, setTreatments]     = useState(FALLBACK_TREATMENTS)
   const { isOpen, open, close }         = useBookingModal()
-  const { phone, phoneTel, name, slug }  = usePractice()
+  const { phone, phoneTel, name, slug, type }  = usePractice()
   const [logoTitle, logoSub]            = splitPracticeName(name)
 
   useEffect(() => {
@@ -200,7 +200,7 @@ export default function Navbar() {
               onClick={() => open()}
               className="btn-primary text-sm"
             >
-              Book Free Consultation
+              {type === 'private' ? 'Book Free Consultation' : 'Request Appointment'}
             </button>
           </div>
 

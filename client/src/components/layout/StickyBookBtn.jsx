@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle } from 'lucide-react'
 import BookingModal from '../ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
+import { usePractice } from '../../contexts/PracticeContext'
 
 const CONSENT_COOKIE = 'octavia_cookie_consent'
 
@@ -14,6 +15,8 @@ export default function StickyBookBtn() {
   const [visible, setVisible]       = useState(false)
   const [hasConsent, setHasConsent] = useState(hasCookieConsent)
   const { isOpen, open, close }     = useBookingModal()
+  const { type }                    = usePractice()
+  const isPrivate                   = type === 'private'
 
   useEffect(() => {
     function onScroll() { setVisible(window.scrollY > 300) }
@@ -46,7 +49,7 @@ export default function StickyBookBtn() {
               className="flex items-center justify-center gap-2 w-full bg-brand-green text-white font-sans font-medium text-sm py-4 shadow-lg"
             >
               <MessageCircle className="w-4 h-4" />
-              Book Free Consultation
+              {isPrivate ? 'Book Free Consultation' : 'Request Appointment'}
             </button>
           </motion.div>
         )}

@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import axios from 'axios'
 import BookingModal from '../../components/ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
+import { usePractice } from '../../contexts/PracticeContext'
 import { SITE_URL } from '../../utils/seo'
 
 const ease = [0.22, 1, 0.36, 1]
@@ -28,6 +29,8 @@ const CATEGORY_ORDER = [
 
 export default function TeamMemberPage({ member }) {
   const { isOpen, open, close } = useBookingModal()
+  const { type } = usePractice()
+  const isPrivate = type === 'private'
   const firstName = member.name.replace(/^Dr\s+/, '').split(' ')[0]
 
   const [otherMembers, setOtherMembers] = useState([])
@@ -331,7 +334,7 @@ export default function TeamMemberPage({ member }) {
                     onClick={() => open()}
                     className="btn-primary"
                   >
-                    Book free consultation
+                    {isPrivate ? 'Book free consultation' : 'Request appointment'}
                   </button>
                 </motion.div>
               )}

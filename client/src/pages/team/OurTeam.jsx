@@ -6,6 +6,7 @@ import axios from 'axios'
 import TeamCard from '../../components/ui/TeamCard'
 import BookingModal from '../../components/ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
+import { usePractice } from '../../contexts/PracticeContext'
 import { SITE_URL } from '../../utils/seo'
 
 function fade(d = 0) {
@@ -44,6 +45,8 @@ const TRUST_POINTS = [
 
 export default function OurTeam() {
   const { isOpen, open, close } = useBookingModal()
+  const { type } = usePractice()
+  const isPrivate = type === 'private'
   const [members, setMembers] = useState([])
 
   useEffect(() => {
@@ -160,14 +163,16 @@ export default function OurTeam() {
           <motion.div {...fade(0)}>
             <h2 className="font-serif text-3xl lg:text-4xl text-white font-medium mb-4">Ready to meet the team?</h2>
             <p className="font-sans text-white/70 max-w-md mx-auto mb-8 text-sm leading-relaxed">
-              Book a free consultation and take the first step towards the smile you deserve.
+              {isPrivate
+                ? 'Book a free consultation and take the first step towards the smile you deserve.'
+                : 'Get in touch to book your appointment with our team.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => open()}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-green font-sans font-medium text-sm rounded-sm hover:bg-brand-cream transition-all"
               >
-                Book free consultation
+                {isPrivate ? 'Book free consultation' : 'Request appointment'}
               </button>
               <a
                 href="https://wa.me/447584965468"

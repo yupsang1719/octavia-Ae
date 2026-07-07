@@ -6,6 +6,7 @@ import BeforeAfterSlider from '../components/ui/BeforeAfterSlider'
 import FilterTabs from '../components/ui/FilterTabs'
 import BookingModal from '../components/ui/BookingModal'
 import { useBookingModal } from '../hooks/useBookingModal'
+import { usePractice } from '../contexts/PracticeContext'
 import { SITE_URL } from '../utils/seo'
 
 const FILTERS = ['All','Implants','Bonding','Veneers','Whitening','Invisalign','Aesthetics']
@@ -16,6 +17,8 @@ export default function Gallery() {
   const [filter, setFilter] = useState('All')
   const [items, setItems]   = useState([])
   const { isOpen, open, close } = useBookingModal()
+  const { type } = usePractice()
+  const isPrivate = type === 'private'
 
   useEffect(() => {
     axios.get('/api/gallery').then(({ data }) => {
@@ -93,9 +96,9 @@ export default function Gallery() {
         <div className="container-wide text-center">
           <motion.div {...fade(0)}>
             <h2 className="font-serif text-3xl text-white font-medium mb-4">Ready for your own transformation?</h2>
-            <p className="font-sans text-white/70 max-w-md mx-auto mb-8">Book a free consultation and let Dr Ali or Dr Ana show you what's possible for your smile.</p>
+            <p className="font-sans text-white/70 max-w-md mx-auto mb-8">{isPrivate ? 'Book a free consultation and let Dr Ali or Dr Ana show you what\'s possible for your smile.' : 'Get in touch to discuss your treatment options with our team.'}</p>
             <button onClick={() => open()} className="inline-flex items-center justify-center px-8 py-4 bg-white text-brand-green font-sans font-medium text-base rounded-full hover:bg-brand-cream transition-all">
-              Book free consultation
+              {isPrivate ? 'Book free consultation' : 'Request appointment'}
             </button>
           </motion.div>
         </div>
