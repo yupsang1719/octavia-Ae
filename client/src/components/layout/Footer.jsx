@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Phone, Mail, MapPin, Send } from 'lucide-react'
 import axios from 'axios'
+import { usePractice } from '../../contexts/PracticeContext'
 
 function InstagramIcon({ className }) {
   return (
@@ -70,6 +71,7 @@ export default function Footer() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
   const [hours, setHours] = useState(FALLBACK_HOURS)
+  const { phone, phoneTel, email: practiceEmail, address, instagram } = usePractice()
 
   useEffect(() => {
     axios.get('/api/settings/opening-hours')
@@ -141,39 +143,40 @@ export default function Footer() {
               </div>
             </div>
             <p className="font-sans text-[13px] text-white/55 mb-6 leading-relaxed">
-              Private dental & facial aesthetics in Godalming, Surrey. No waiting list. New patients welcome.
+              New patients welcome. No waiting list.
             </p>
             <ul className="space-y-3">
               <li>
-                <a href="tel:01483958205" className="flex items-start gap-2.5 text-[13px] text-white/55 hover:text-brand-gold transition-colors duration-200 font-sans">
+                <a href={`tel:${phoneTel}`} className="flex items-start gap-2.5 text-[13px] text-white/55 hover:text-brand-gold transition-colors duration-200 font-sans">
                   <Phone className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                  01483 958205
+                  {phone}
                 </a>
               </li>
               <li>
-                <a href="mailto:info@octavia-dental.co.uk" className="flex items-start gap-2.5 text-[13px] text-white/55 hover:text-brand-gold transition-colors duration-200 font-sans">
+                <a href={`mailto:${practiceEmail}`} className="flex items-start gap-2.5 text-[13px] text-white/55 hover:text-brand-gold transition-colors duration-200 font-sans">
                   <Mail className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                  info@octavia-dental.co.uk
+                  {practiceEmail}
                 </a>
               </li>
               <li>
                 <address className="flex items-start gap-2.5 text-[13px] text-white/55 not-italic font-sans">
                   <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                  Seymour House, Lower South Street,<br />
-                  Godalming, Surrey, GU7 1BZ
+                  {address}
                 </address>
               </li>
-              <li>
-                <a
-                  href="https://instagram.com/octaviadental"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 text-[13px] text-white/55 hover:text-brand-gold transition-colors duration-200 font-sans"
-                >
-                  <InstagramIcon className="w-3.5 h-3.5 flex-shrink-0" />
-                  @octaviadental
-                </a>
-              </li>
+              {instagram && (
+                <li>
+                  <a
+                    href={instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2.5 text-[13px] text-white/55 hover:text-brand-gold transition-colors duration-200 font-sans"
+                  >
+                    <InstagramIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                    {instagram.replace('https://instagram.com/', '@')}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 

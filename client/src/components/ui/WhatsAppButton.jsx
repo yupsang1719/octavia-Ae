@@ -1,10 +1,13 @@
 import { motion } from 'framer-motion'
 import { MessageCircle } from 'lucide-react'
+import { usePractice } from '../../contexts/PracticeContext'
 
 export default function WhatsAppButton() {
+  const { whatsapp } = usePractice()
+  if (!whatsapp) return null
   return (
     <motion.a
-      href="https://wa.me/447584965468"
+      href={`https://wa.me/${whatsapp}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with Octavia Dental on WhatsApp"

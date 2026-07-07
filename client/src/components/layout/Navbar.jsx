@@ -5,6 +5,7 @@ import { Menu, Phone, ChevronDown } from 'lucide-react'
 import MobileMenu from './MobileMenu'
 import BookingModal from '../ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
+import { usePractice } from '../../contexts/PracticeContext'
 
 const treatments = [
   { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
@@ -107,6 +108,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [hoveredNav, setHoveredNav] = useState(null)
   const { isOpen, open, close }     = useBookingModal()
+  const { phone, phoneTel }         = usePractice()
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 60) }
@@ -173,11 +175,11 @@ export default function Navbar() {
           {/* Desktop right */}
           <div className="hidden lg:flex items-center gap-5">
             <a
-              href="tel:01483958205"
+              href={`tel:${phoneTel}`}
               className={`flex items-center gap-1.5 text-sm font-sans font-medium transition-colors hover:text-brand-gold ${textColor}`}
             >
               <Phone className="w-3.5 h-3.5" />
-              01483 958205
+              {phone}
             </a>
             <button
               onClick={() => open()}

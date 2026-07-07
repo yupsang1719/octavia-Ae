@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, CheckCircle, ChevronRight } from 'lucide-react'
 import axios from 'axios'
 import FormField from '../forms/FormField'
+import { usePractice } from '../../contexts/PracticeContext'
 
 const schema = z.object({
   name:         z.string().min(2, 'Please enter your name'),
@@ -35,6 +36,7 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
   const [step, setStep]         = useState(1)
   const [submitted, setSubmitted] = useState(false)
   const [apiError, setApiError]   = useState('')
+  const { phone, phoneTel }       = usePractice()
 
   const {
     register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue,
@@ -66,7 +68,7 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
       })
       setSubmitted(true)
     } catch {
-      setApiError('Something went wrong. Please call us on 01483 958205.')
+      setApiError(`Something went wrong. Please call us on ${phone}.`)
     }
   }
 
@@ -230,8 +232,8 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
 
                     <p className="text-center text-xs text-brand-subtle">
                       Or call us now:{' '}
-                      <a href="tel:01483958205" className="font-medium text-brand-green hover:underline">
-                        01483 958205
+                      <a href={`tel:${phoneTel}`} className="font-medium text-brand-green hover:underline">
+                        {phone}
                       </a>
                     </p>
                   </div>

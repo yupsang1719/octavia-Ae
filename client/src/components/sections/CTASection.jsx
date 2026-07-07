@@ -4,9 +4,11 @@ import { useBookingModal } from '../../hooks/useBookingModal'
 import BookingModal from '../ui/BookingModal'
 import GoldRule from '../ui/GoldRule'
 import AnimatedHeading from '../ui/AnimatedHeading'
+import { usePractice } from '../../contexts/PracticeContext'
 
 export default function CTASection() {
   const { isOpen, open, close } = useBookingModal()
+  const { phone, phoneTel, whatsapp, address } = usePractice()
 
   return (
     <>
@@ -92,18 +94,20 @@ export default function CTASection() {
                 Book free consultation
               </motion.button>
 
-              <motion.a
-                href="https://wa.me/447584965468"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost-white text-sm px-8 py-4"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              >
-                <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                WhatsApp us
-              </motion.a>
+              {whatsapp && (
+                <motion.a
+                  href={`https://wa.me/${whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost-white text-sm px-8 py-4"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                >
+                  <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                  WhatsApp us
+                </motion.a>
+              )}
             </motion.div>
 
             <motion.div
@@ -114,15 +118,15 @@ export default function CTASection() {
               transition={{ delay: 0.45 }}
             >
               <a
-                href="tel:01483958205"
+                href={`tel:${phoneTel}`}
                 className="flex items-center gap-2 font-sans text-sm text-white/50 hover:text-white/80 transition-colors duration-200"
               >
                 <Phone className="w-4 h-4" />
-                01483 958205
+                {phone}
               </a>
               <span className="hidden sm:block w-px h-3 bg-white/15" />
               <p className="font-sans text-sm text-white/50">
-                Seymour House, Lower South Street, Godalming GU7 1BZ
+                {address}
               </p>
             </motion.div>
           </div>
