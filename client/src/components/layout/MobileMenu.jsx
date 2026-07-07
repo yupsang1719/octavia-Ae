@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
 
-const treatments = [
+const FALLBACK_TREATMENTS = [
   { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
   { label: 'Dental Implants',      href: '/treatments/dental-implants' },
   { label: 'Invisalign',           href: '/treatments/invisalign' },
@@ -138,7 +138,7 @@ const MENU_ANIMATION = {
   exit:    { x: 'calc(100% + 100px)', transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } },
 }
 
-export default function MobileMenu({ isOpen, onClose, onOpenBooking }) {
+export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments = FALLBACK_TREATMENTS }) {
   const [height, setHeight] = useState(0)
   const { name, phone, phoneTel, whatsapp } = usePractice()
   const [logoTitle, logoSub]                = splitPracticeName(name)

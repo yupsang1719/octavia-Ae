@@ -8,7 +8,7 @@ import { useBookingModal } from '../../hooks/useBookingModal'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
 
-const treatments = [
+const FALLBACK_TREATMENTS = [
   { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
   { label: 'Dental Implants',      href: '/treatments/dental-implants' },
   { label: 'Invisalign',           href: '/treatments/invisalign' },
@@ -105,17 +105,28 @@ function NavItem({ label, href, dropdown, transparent, onHover, onLeave, isHover
 }
 
 export default function Navbar() {
-  const [scrolled, setScrolled]     = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [hoveredNav, setHoveredNav] = useState(null)
-  const { isOpen, open, close }     = useBookingModal()
-  const { phone, phoneTel, name }   = usePractice()
-  const [logoTitle, logoSub]        = splitPracticeName(name)
+  const [scrolled, setScrolled]         = useState(false)
+  const [mobileOpen, setMobileOpen]     = useState(false)
+  const [hoveredNav, setHoveredNav]     = useState(null)
+  const [treatments, setTreatments]     = useState(FALLBACK_TREATMENTS)
+  const { isOpen, open, close }         = useBookingModal()
+  const { phone, phoneTel, name }       = usePractice()
+  const [logoTitle, logoSub]            = splitPracticeName(name)
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 60) }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/treatments')
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data) || !data.length) return
+        setTreatments(data.map(t => ({ label: t.name, href: `/treatments/${t.slug}` })))
+      })
+      .catch(() => {})
   }, [])
 
   const transparent = !scrolled
@@ -208,6 +219,7 @@ export default function Navbar() {
         isOpen={mobileOpen}
         onClose={() => setMobileOpen(false)}
         onOpenBooking={open}
+        treatments={treatments}
       />
 
       <BookingModal isOpen={isOpen} onClose={close} />
