@@ -30,7 +30,12 @@ export async function getTeamMemberBySlug(req, res) {
 
 export async function createTeamMember(req, res) {
   try {
-    const member = await TeamMember.create(req.body)
+    const body = { ...req.body }
+    // Ensure new member is linked to the current practice
+    if (!Array.isArray(body.practices) || body.practices.length === 0) {
+      body.practices = [req.practiceSlug]
+    }
+    const member = await TeamMember.create(body)
     res.status(201).json(member)
   } catch (err) {
     res.status(400).json({ error: err.message })
@@ -49,7 +54,17 @@ export async function updateTeamMember(req, res) {
 
 export async function deleteTeamMember(req, res) {
   try {
-    await TeamMember.findByIdAndDelete(req.params.id)
+    const member = await TeamMember.findById(req.params.id)
+    if (!member) return res.status(404).json({ error: 'Team member not found' })
+
+    const otherPractices = member.practices.filter(p => p !== req.practiceSlug)
+    if (otherPractices.length > 0) {
+      // Shared across practices — only unlink from this one
+      await TeamMember.findByIdAndUpdate(req.params.id, { practices: otherPractices })
+    } else {
+      // Only belongs to this practice — safe to fully delete
+      await TeamMember.findByIdAndDelete(req.params.id)
+    }
     res.json({ success: true })
   } catch {
     res.status(500).json({ error: 'Failed to delete team member' })
