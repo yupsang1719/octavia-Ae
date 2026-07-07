@@ -1,25 +1,27 @@
 import Treatment from '../models/Treatment.js'
 
-export async function getTreatments(_req, res) {
+export async function getTreatments(req, res) {
   try {
-    const treatments = await Treatment.find({}, 'slug name tagline priceFrom specialists order').sort({ order: 1 })
+    const treatments = await Treatment
+      .find({ practice: req.practiceSlug }, 'slug name tagline priceFrom specialists order')
+      .sort({ order: 1 })
     res.json(treatments)
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch treatments' })
   }
 }
 
 export async function getTreatmentBySlug(req, res) {
   try {
-    const treatment = await Treatment.findOne({ slug: req.params.slug })
+    const treatment = await Treatment.findOne({ slug: req.params.slug, practice: req.practiceSlug })
     if (!treatment) return res.status(404).json({ error: 'Not found' })
     res.json(treatment)
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch treatment' })
   }
 }
 
-const ALLOWED_FIELDS = ['tagline', 'priceFrom', 'priceNote', 'financeAvailable', 'whatIsIt', 'benefits', 'process', 'faq', 'specialists']
+const ALLOWED_FIELDS = ['tagline', 'priceFrom', 'priceNote', 'financeAvailable', 'whatIsIt', 'benefits', 'process', 'faq', 'specialists', 'nhsBand', 'nhsPrice']
 
 export async function updateTreatment(req, res) {
   const update = {}
@@ -28,13 +30,13 @@ export async function updateTreatment(req, res) {
   }
   try {
     const treatment = await Treatment.findOneAndUpdate(
-      { slug: req.params.slug },
+      { slug: req.params.slug, practice: req.practiceSlug },
       { $set: update },
       { new: true }
     )
     if (!treatment) return res.status(404).json({ error: 'Not found' })
     res.json(treatment)
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Failed to update treatment' })
   }
 }

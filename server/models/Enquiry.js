@@ -12,6 +12,7 @@ const enquirySchema = new mongoose.Schema({
   message:     { type: String },
   source:      { type: String },
   status:      { type: String, enum: ['new','contacted','booked','closed'], default: 'new' },
+  practice:    { type: String, default: 'octavia-aesthetic', index: true },
   gdprConsent: { type: Boolean, required: true },
   createdAt:   { type: Date, default: Date.now },
 })

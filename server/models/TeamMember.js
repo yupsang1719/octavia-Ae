@@ -30,6 +30,7 @@ const teamMemberSchema = new mongoose.Schema({
   hasPage:       { type: Boolean, default: false },
   metaTitle:     { type: String, default: '' },
   metaDesc:      { type: String, default: '' },
+  practices:     { type: [String], default: ['octavia-aesthetic'] },
   published:     { type: Boolean, default: false },
   order:         { type: Number, default: 0 },
   createdAt:     { type: Date, default: Date.now },

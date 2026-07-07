@@ -7,6 +7,7 @@ const galleryItemSchema = new mongoose.Schema({
   afterImg:    { type: String },
   description: { type: String },
   consentRef:  { type: String, required: true },
+  practice:    { type: String, default: 'octavia-aesthetic', index: true },
   published:   { type: Boolean, default: false },
   createdAt:   { type: Date, default: Date.now },
 })

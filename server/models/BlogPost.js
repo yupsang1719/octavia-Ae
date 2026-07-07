@@ -12,6 +12,7 @@ const blogPostSchema = new mongoose.Schema({
   seoTitle:    { type: String },
   seoDesc:     { type: String },
   location:    { type: String },
+  practice:    { type: String, default: 'octavia-aesthetic', index: true },
   published:   { type: Boolean, default: false },
   publishedAt: { type: Date },
   createdAt:   { type: Date, default: Date.now },

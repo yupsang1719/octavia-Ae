@@ -12,7 +12,7 @@ const openingHourSchema = new mongoose.Schema({
 }, { _id: false })
 
 const siteSettingsSchema = new mongoose.Schema({
-  key:          { type: String, default: 'main', unique: true },
+  practice:     { type: String, default: 'octavia-aesthetic', unique: true },
   trustBar:     { type: [trustStatSchema],   default: [] },
   openingHours: { type: [openingHourSchema], default: [] },
 }, { timestamps: true })

@@ -4,13 +4,10 @@ export async function getPosts(req, res) {
   try {
     const page  = Math.max(1, parseInt(req.query.page)  || 1)
     const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 9))
+    const filter = { published: true, practice: req.practiceSlug }
     const [posts, total] = await Promise.all([
-      BlogPost.find({ published: true })
-        .sort({ publishedAt: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .select('-body'),
-      BlogPost.countDocuments({ published: true }),
+      BlogPost.find(filter).sort({ publishedAt: -1 }).skip((page - 1) * limit).limit(limit).select('-body'),
+      BlogPost.countDocuments(filter),
     ])
     res.json({ posts, total, page, pages: Math.ceil(total / limit) })
   } catch {
@@ -20,7 +17,7 @@ export async function getPosts(req, res) {
 
 export async function getPostBySlug(req, res) {
   try {
-    const post = await BlogPost.findOne({ slug: req.params.slug, published: true })
+    const post = await BlogPost.findOne({ slug: req.params.slug, published: true, practice: req.practiceSlug })
     if (!post) return res.status(404).json({ error: 'Post not found' })
     res.json(post)
   } catch {
@@ -30,9 +27,8 @@ export async function getPostBySlug(req, res) {
 
 export async function getPostsByCategory(req, res) {
   try {
-    const posts = await BlogPost.find({ category: req.params.cat, published: true })
-      .sort({ publishedAt: -1 })
-      .select('-body')
+    const posts = await BlogPost.find({ category: req.params.cat, published: true, practice: req.practiceSlug })
+      .sort({ publishedAt: -1 }).select('-body')
     res.json(posts)
   } catch {
     res.status(500).json({ error: 'Failed to fetch posts' })
@@ -41,7 +37,7 @@ export async function getPostsByCategory(req, res) {
 
 export async function createPost(req, res) {
   try {
-    const post = await BlogPost.create(req.body)
+    const post = await BlogPost.create({ ...req.body, practice: req.practiceSlug })
     res.status(201).json(post)
   } catch (err) {
     res.status(400).json({ error: err.message })

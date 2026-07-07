@@ -7,6 +7,7 @@ const reviewSchema = new mongoose.Schema({
   rating:    { type: Number, min: 1, max: 5, required: true },
   text:      { type: String, default: '' },
   source:    { type: String, enum: ['google','website'], default: 'google' },
+  practice:  { type: String, default: 'octavia-aesthetic', index: true },
   published: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 })

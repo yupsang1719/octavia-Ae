@@ -3,7 +3,7 @@ import { cloudinary } from '../config/cloudinary.js'
 
 export async function getGallery(req, res) {
   try {
-    const items = await GalleryItem.find({ published: true }).sort({ createdAt: -1 })
+    const items = await GalleryItem.find({ published: true, practice: req.practiceSlug }).sort({ createdAt: -1 })
     res.json(items)
   } catch {
     res.status(500).json({ error: 'Failed to fetch gallery' })
@@ -12,7 +12,7 @@ export async function getGallery(req, res) {
 
 export async function getGalleryByTreatment(req, res) {
   try {
-    const items = await GalleryItem.find({ treatment: req.params.treatment, published: true })
+    const items = await GalleryItem.find({ treatment: req.params.treatment, published: true, practice: req.practiceSlug })
     res.json(items)
   } catch {
     res.status(500).json({ error: 'Failed to fetch gallery' })
@@ -21,7 +21,7 @@ export async function getGalleryByTreatment(req, res) {
 
 export async function createGalleryItem(req, res) {
   try {
-    const item = await GalleryItem.create(req.body)
+    const item = await GalleryItem.create({ ...req.body, practice: req.practiceSlug })
     res.status(201).json(item)
   } catch (err) {
     res.status(400).json({ error: err.message })

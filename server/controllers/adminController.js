@@ -60,13 +60,14 @@ export async function getAllGallery(_req, res) {
   }
 }
 
-export async function getDashboard(_req, res) {
+export async function getDashboard(req, res) {
   try {
+    const p = req.practiceSlug
     const [totalEnquiries, newEnquiries, totalPosts, publishedPosts] = await Promise.all([
-      Enquiry.countDocuments(),
-      Enquiry.countDocuments({ status: 'new' }),
-      BlogPost.countDocuments(),
-      BlogPost.countDocuments({ published: true }),
+      Enquiry.countDocuments({ practice: p }),
+      Enquiry.countDocuments({ practice: p, status: 'new' }),
+      BlogPost.countDocuments({ practice: p }),
+      BlogPost.countDocuments({ practice: p, published: true }),
     ])
     res.json({ totalEnquiries, newEnquiries, totalPosts, publishedPosts })
   } catch {

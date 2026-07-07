@@ -18,9 +18,9 @@ const DEFAULT_HOURS = [
   { day: 'Sunday',    hours: '',                   closed: true  },
 ]
 
-export async function getTrustBar(_req, res) {
+export async function getTrustBar(req, res) {
   try {
-    const settings = await SiteSettings.findOne({ key: 'main' })
+    const settings = await SiteSettings.findOne({ practice: req.practiceSlug })
     res.json(settings?.trustBar?.length ? settings.trustBar : DEFAULTS)
   } catch {
     res.json(DEFAULTS)
@@ -32,7 +32,7 @@ export async function updateTrustBar(req, res) {
     const { stats } = req.body
     if (!Array.isArray(stats)) return res.status(400).json({ error: 'stats must be an array' })
     const settings = await SiteSettings.findOneAndUpdate(
-      { key: 'main' },
+      { practice: req.practiceSlug },
       { trustBar: stats },
       { upsert: true, new: true }
     )
@@ -42,9 +42,9 @@ export async function updateTrustBar(req, res) {
   }
 }
 
-export async function getOpeningHours(_req, res) {
+export async function getOpeningHours(req, res) {
   try {
-    const settings = await SiteSettings.findOne({ key: 'main' })
+    const settings = await SiteSettings.findOne({ practice: req.practiceSlug })
     res.json(settings?.openingHours?.length ? settings.openingHours : DEFAULT_HOURS)
   } catch {
     res.json(DEFAULT_HOURS)
@@ -56,7 +56,7 @@ export async function updateOpeningHours(req, res) {
     const { hours } = req.body
     if (!Array.isArray(hours)) return res.status(400).json({ error: 'hours must be an array' })
     const settings = await SiteSettings.findOneAndUpdate(
-      { key: 'main' },
+      { practice: req.practiceSlug },
       { openingHours: hours },
       { upsert: true, new: true }
     )

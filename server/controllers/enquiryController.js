@@ -11,9 +11,9 @@ export async function createEnquiry(req, res) {
 
     const enquiry = await Enquiry.create({
       name, email, phone, service, location, message, source, gdprConsent,
+      practice: req.practiceSlug,
     })
 
-    // Fire email notifications — don't block the response
     Promise.all([
       sendEnquiryNotification({ ...enquiry.toObject(), preferredTime }),
       sendEnquiryConfirmation(enquiry),
@@ -32,7 +32,9 @@ export async function getEnquiries(req, res) {
     const rawStatus = req.query.status
     const page  = Math.max(1, parseInt(req.query.page)  || 1)
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20))
-    const filter = rawStatus && VALID_STATUSES.includes(rawStatus) ? { status: rawStatus } : {}
+
+    const filter = { practice: req.practiceSlug }
+    if (rawStatus && VALID_STATUSES.includes(rawStatus)) filter.status = rawStatus
 
     const [enquiries, total] = await Promise.all([
       Enquiry.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
@@ -40,7 +42,7 @@ export async function getEnquiries(req, res) {
     ])
 
     res.json({ enquiries, total, page, pages: Math.ceil(total / limit) })
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch enquiries' })
   }
 }
@@ -48,14 +50,10 @@ export async function getEnquiries(req, res) {
 export async function updateEnquiryStatus(req, res) {
   try {
     const { status } = req.body
-    const enquiry = await Enquiry.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true, runValidators: true }
-    )
+    const enquiry = await Enquiry.findByIdAndUpdate(req.params.id, { status }, { new: true, runValidators: true })
     if (!enquiry) return res.status(404).json({ error: 'Enquiry not found' })
     res.json(enquiry)
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Failed to update enquiry' })
   }
 }

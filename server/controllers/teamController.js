@@ -2,7 +2,7 @@ import TeamMember from '../models/TeamMember.js'
 
 export async function getTeam(req, res) {
   try {
-    const members = await TeamMember.find({ published: true }).sort({ order: 1, createdAt: 1 })
+    const members = await TeamMember.find({ published: true, practices: req.practiceSlug }).sort({ order: 1, createdAt: 1 })
     res.json(members)
   } catch {
     res.status(500).json({ error: 'Failed to fetch team' })
@@ -11,7 +11,7 @@ export async function getTeam(req, res) {
 
 export async function getTeamByCategory(req, res) {
   try {
-    const members = await TeamMember.find({ category: req.params.category, published: true }).sort({ order: 1 })
+    const members = await TeamMember.find({ category: req.params.category, published: true, practices: req.practiceSlug }).sort({ order: 1 })
     res.json(members)
   } catch {
     res.status(500).json({ error: 'Failed to fetch team' })
@@ -20,7 +20,7 @@ export async function getTeamByCategory(req, res) {
 
 export async function getTeamMemberBySlug(req, res) {
   try {
-    const member = await TeamMember.findOne({ slug: req.params.slug, published: true })
+    const member = await TeamMember.findOne({ slug: req.params.slug, published: true, practices: req.practiceSlug })
     if (!member) return res.status(404).json({ error: 'Team member not found' })
     res.json(member)
   } catch {
