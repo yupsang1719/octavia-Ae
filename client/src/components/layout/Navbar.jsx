@@ -108,7 +108,10 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [hoveredNav, setHoveredNav] = useState(null)
   const { isOpen, open, close }     = useBookingModal()
-  const { phone, phoneTel }         = usePractice()
+  const { phone, phoneTel, name }   = usePractice()
+  const [logoTitle, logoSub] = name.includes(' & ')
+    ? [name.split(' & ')[0], '& ' + name.split(' & ')[1]]
+    : [name, '']
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 60) }
@@ -141,11 +144,13 @@ export default function Navbar() {
             />
             <div className="leading-none">
               <span className={`font-serif text-[1.1rem] font-medium tracking-tight leading-none ${textColor}`}>
-                Octavia Dental
+                {logoTitle}
               </span>
-              <span className={`block font-sans text-[9px] uppercase tracking-[0.16em] mt-[3px] ${transparent ? 'text-white/50' : 'text-brand-muted'}`}>
-                & Facial Aesthetics
-              </span>
+              {logoSub && (
+                <span className={`block font-sans text-[9px] uppercase tracking-[0.16em] mt-[3px] ${transparent ? 'text-white/50' : 'text-brand-muted'}`}>
+                  {logoSub}
+                </span>
+              )}
             </div>
           </Link>
 

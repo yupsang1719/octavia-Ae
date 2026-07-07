@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronDown, Phone, MessageCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { usePractice } from '../../contexts/PracticeContext'
 
 const treatments = [
   { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
@@ -138,6 +139,10 @@ const MENU_ANIMATION = {
 
 export default function MobileMenu({ isOpen, onClose, onOpenBooking }) {
   const [height, setHeight] = useState(0)
+  const { name, phone, phoneTel, whatsapp } = usePractice()
+  const [logoTitle, logoSub] = name.includes(' & ')
+    ? [name.split(' & ')[0], '& ' + name.split(' & ')[1]]
+    : [name, '']
 
   useEffect(() => {
     const update = () => setHeight(window.innerHeight)
@@ -180,11 +185,13 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking }) {
                 />
                 <div className="leading-none">
                   <span className="font-serif text-[1.05rem] text-brand-dark font-medium tracking-tight leading-none block">
-                    Octavia Dental
+                    {logoTitle}
                   </span>
-                  <span className="font-sans text-[9px] uppercase tracking-[0.16em] text-brand-muted mt-[3px] block">
-                    & Facial Aesthetics
-                  </span>
+                  {logoSub && (
+                    <span className="font-sans text-[9px] uppercase tracking-[0.16em] text-brand-muted mt-[3px] block">
+                      {logoSub}
+                    </span>
+                  )}
                 </div>
               </Link>
               <button
@@ -221,20 +228,22 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking }) {
               >
                 Book Free Consultation
               </button>
-              <div className="grid grid-cols-2 gap-2">
-                <a href="tel:01483958205" className="btn-secondary text-sm text-center flex items-center justify-center gap-1.5">
+              <div className={`grid gap-2 ${whatsapp ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                <a href={`tel:${phoneTel}`} className="btn-secondary text-sm text-center flex items-center justify-center gap-1.5">
                   <Phone className="w-3.5 h-3.5" />
-                  Call us
+                  {phone}
                 </a>
-                <a
-                  href="https://wa.me/447584965468"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-3 bg-[#25D366]/10 text-[#1a9e50] border border-[#25D366]/30 rounded-full text-sm font-sans font-medium hover:bg-[#25D366]/20 transition-colors"
-                >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  WhatsApp
-                </a>
+                {whatsapp && (
+                  <a
+                    href={`https://wa.me/${whatsapp}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-3 bg-[#25D366]/10 text-[#1a9e50] border border-[#25D366]/30 rounded-full text-sm font-sans font-medium hover:bg-[#25D366]/20 transition-colors"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    WhatsApp
+                  </a>
+                )}
               </div>
             </div>
           </motion.div>

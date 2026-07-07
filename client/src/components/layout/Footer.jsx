@@ -71,7 +71,10 @@ export default function Footer() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
   const [hours, setHours] = useState(FALLBACK_HOURS)
-  const { phone, phoneTel, email: practiceEmail, address, instagram } = usePractice()
+  const { phone, phoneTel, email: practiceEmail, address, instagram, name } = usePractice()
+  const [logoTitle, logoSub] = name.includes(' & ')
+    ? [name.split(' & ')[0], '& ' + name.split(' & ')[1]]
+    : [name, '']
 
   useEffect(() => {
     axios.get('/api/settings/opening-hours')
@@ -95,7 +98,7 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row items-center gap-6 justify-between">
             <div>
               <p className="font-serif text-base text-white font-medium">Stay in the know</p>
-              <p className="font-sans text-[13px] text-white/45 mt-0.5">Tips, news and exclusive offers from Octavia Dental.</p>
+              <p className="font-sans text-[13px] text-white/45 mt-0.5">Tips, news and exclusive offers from {logoTitle}.</p>
             </div>
             {subscribed ? (
               <p className="font-sans text-sm text-brand-gold font-medium">Thank you — you're on the list.</p>
@@ -135,11 +138,13 @@ export default function Footer() {
               />
               <div className="leading-none">
                 <h2 className="font-serif text-lg text-white font-medium tracking-tight leading-none">
-                  Octavia Dental
+                  {logoTitle}
                 </h2>
-                <p className="font-sans text-[10px] uppercase tracking-[0.15em] text-brand-gold/60 mt-1.5 font-medium">
-                  & Facial Aesthetics
-                </p>
+                {logoSub && (
+                  <p className="font-sans text-[10px] uppercase tracking-[0.15em] text-brand-gold/60 mt-1.5 font-medium">
+                    {logoSub}
+                  </p>
+                )}
               </div>
             </div>
             <p className="font-sans text-[13px] text-white/55 mb-6 leading-relaxed">
@@ -238,7 +243,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/8">
         <div className="container-wide py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-sans text-white/30">
-          <p>© {new Date().getFullYear()} Octavia Dental & Facial Aesthetics. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {name}. All rights reserved.</p>
           <p>
             GDC registered clinicians.{' '}
             <Link to="/contact" className="underline hover:text-white/50 transition-colors duration-200">
