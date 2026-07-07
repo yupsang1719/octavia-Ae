@@ -5,6 +5,8 @@ import compression from 'compression'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { apiLimiter } from './middleware/rateLimiter.js'
+import { resolvePractice } from './middleware/practice.js'
+import practiceRoutes from './routes/practice.js'
 import enquiryRoutes from './routes/enquiries.js'
 import blogRoutes    from './routes/blog.js'
 import galleryRoutes from './routes/gallery.js'
@@ -42,10 +44,19 @@ app.use(helmet({
     },
   },
 }))
+const ALLOWED_ORIGINS = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:3000')
+  .split(',').map(s => s.trim())
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: (origin, cb) => {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true)
+    cb(new Error('Not allowed by CORS'))
+  },
   credentials: true,
 }))
+
+// Resolve which practice this request belongs to (based on hostname)
+app.use(resolvePractice)
 
 // Serve uploaded files
 app.use('/uploads', express.static(resolve(__dir, '../uploads')))
@@ -69,6 +80,7 @@ app.use('/api/upload',    uploadRoutes)
 app.use('/api/settings',        settingsRoutes)
 app.use('/api/treatments',      treatmentRoutes)
 app.use('/api/email-templates', emailTemplateRoutes)
+app.use('/api/practice',        practiceRoutes)
 
 // Sitemap — cached for 24h
 app.get('/sitemap.xml', async (req, res) => {
