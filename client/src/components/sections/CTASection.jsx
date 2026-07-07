@@ -8,7 +8,8 @@ import { usePractice } from '../../contexts/PracticeContext'
 
 export default function CTASection() {
   const { isOpen, open, close } = useBookingModal()
-  const { phone, phoneTel, whatsapp, address } = usePractice()
+  const { phone, phoneTel, whatsapp, address, type } = usePractice()
+  const isPrivate = type === 'private'
 
   return (
     <>
@@ -64,7 +65,7 @@ export default function CTASection() {
               className="font-serif text-4xl lg:text-5xl text-white font-medium mb-5 leading-tight tracking-tight"
               delay={0.1}
             >
-              Your consultation is free.
+              {isPrivate ? 'Your consultation is free.' : 'Book your appointment today.'}
             </AnimatedHeading>
 
             <motion.p
@@ -74,7 +75,9 @@ export default function CTASection() {
               viewport={{ once: true }}
               transition={{ delay: 0.25, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              Book a no-obligation consultation with Dr Ali or Dr Ana. We'll assess your needs, explain your options, and give you a transparent quote — all at no cost.
+              {isPrivate
+                ? 'Book a no-obligation consultation with Dr Ali or Dr Ana. We\'ll assess your needs, explain your options, and give you a transparent quote — all at no cost.'
+                : 'NHS and private patients are welcome. Call us or book online and we\'ll get you seen as soon as possible.'}
             </motion.p>
 
             <motion.div
@@ -91,7 +94,7 @@ export default function CTASection() {
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               >
-                Book free consultation
+                {isPrivate ? 'Book free consultation' : 'Book an appointment'}
               </motion.button>
 
               {whatsapp && (

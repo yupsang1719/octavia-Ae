@@ -12,26 +12,32 @@ import CTASection     from '../components/sections/CTASection'
 import SchemaMarkup   from '../components/ui/SchemaMarkup'
 import { dentalClinicSchema } from '../utils/schema'
 import { SITE_URL } from '../utils/seo'
+import { usePractice } from '../contexts/PracticeContext'
 
 export default function Home() {
+  const { metaTitle, metaDesc } = usePractice()
+
+  const title = metaTitle || 'Private Dentist Godalming | Octavia Dental & Facial Aesthetics'
+  const desc  = metaDesc  || 'Private dental & facial aesthetics clinic in Godalming, Surrey. Implants, Invisalign, composite bonding, Botox. No waiting list. New patients welcome.'
+
   return (
     <>
       <Helmet>
-        <title>Private Dentist Godalming | Octavia Dental &amp; Facial Aesthetics</title>
-        <meta name="description" content="Private dental & facial aesthetics clinic in Godalming, Surrey. Implants, Invisalign, composite bonding, Botox. No waiting list. New patients welcome." />
+        <title>{title}</title>
+        <meta name="description" content={desc} />
         <link rel="canonical" href={SITE_URL} />
 
         {/* Open Graph */}
         <meta property="og:type"        content="website" />
         <meta property="og:url"         content={SITE_URL} />
-        <meta property="og:title"       content="Private Dentist Godalming | Octavia Dental & Facial Aesthetics" />
-        <meta property="og:description" content="Private dental & facial aesthetics in Godalming, Surrey. Implants, Invisalign, composite bonding, Botox. No waiting list." />
+        <meta property="og:title"       content={title} />
+        <meta property="og:description" content={desc} />
         <meta property="og:image"       content={`${SITE_URL}/images/og-default.webp`} />
 
         {/* Twitter Card */}
         <meta name="twitter:card"        content="summary_large_image" />
-        <meta name="twitter:title"       content="Private Dentist Godalming | Octavia Dental & Facial Aesthetics" />
-        <meta name="twitter:description" content="Private dental & facial aesthetics in Godalming, Surrey. No waiting list. New patients welcome." />
+        <meta name="twitter:title"       content={title} />
+        <meta name="twitter:description" content={desc} />
         <meta name="twitter:image"       content={`${SITE_URL}/images/og-default.webp`} />
       </Helmet>
 

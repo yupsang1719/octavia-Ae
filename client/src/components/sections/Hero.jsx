@@ -4,6 +4,7 @@ import { MessageCircle } from 'lucide-react'
 import { useBookingModal } from '../../hooks/useBookingModal'
 import BookingModal from '../ui/BookingModal'
 import TextScramble from '../ui/TextScramble'
+import { usePractice } from '../../contexts/PracticeContext'
 
 const ROTATING_WORDS = ['confidence.', 'radiance.', 'perfection.', 'future.']
 
@@ -38,11 +39,19 @@ function SplitHeading({ text, className, baseDelay = 0 }) {
 }
 
 export default function Hero({
-  headline    = 'Your smile.',
-  tags        = ['No waiting list', 'New patients welcome', 'Free consultations', 'Surrey & Hampshire'],
-  heroImage   = 'https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1400&q=80',
+  headline,
+  tags,
+  heroImage = 'https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1400&q=80',
 }) {
   const { isOpen, open, close } = useBookingModal()
+  const { type } = usePractice()
+
+  const resolvedHeadline = headline ?? 'Your smile.'
+  const resolvedTags = tags ?? (
+    type === 'private'
+      ? ['No waiting list', 'New patients welcome', 'Free consultations', 'Surrey & Hampshire']
+      : ['NHS patients welcome', 'Private options available', 'New patients accepted', 'Surrey & Hampshire']
+  )
 
   const [wordIndex, setWordIndex] = useState(0)
 
@@ -103,7 +112,7 @@ export default function Hero({
 
             {/* Headline — word reveal */}
             <h1 className="font-display text-[3.5rem] sm:text-[4.5rem] lg:text-[5.5rem] text-white font-medium leading-[1.02] tracking-[-0.03em] mb-1">
-              <SplitHeading text={headline} className="text-white" baseDelay={0} />
+              <SplitHeading text={resolvedHeadline} className="text-white" baseDelay={0} />
             </h1>
 
             {/* Subheadline — "Your" + rotating word */}
@@ -177,7 +186,7 @@ export default function Hero({
               animate={{ opacity: 1 }}
               transition={{ delay: 1.1, duration: 0.6 }}
             >
-              {tags.map((tag, i) => (
+              {resolvedTags.map((tag, i) => (
                 <motion.span
                   key={tag}
                   className="text-xs font-sans font-normal px-3.5 py-1.5 rounded-full border border-white/15 text-white/60 bg-white/4 tracking-wide"
