@@ -2,6 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Practice colour themes ──────────────────────────────────────────────
+   All brand-* Tailwind colours reference these CSS variables so each
+   practice gets a distinct look with zero component changes.
+   Values are space-separated RGB channels (supports opacity modifiers).
+─────────────────────────────────────────────────────────────────────────── */
+
+/* Octavia Dental & Facial Aesthetics — charcoal black + forest green */
+:root,
+[data-practice="octavia-aesthetic"] {
+  --c-dark:      26 26 26;       /* #1A1A1A — near black                  */
+  --c-green:     45 90 30;       /* #2D5A1E — deep forest green            */
+  --c-green-mid: 91 138 125;     /* #5B8A7D                                */
+  --c-green-lt:  106 175 48;     /* #6AAF30                                */
+  --c-green-bg:  232 245 239;    /* #E8F5EF — light green tint             */
+  --c-gold:      200 169 110;    /* #C8A96E — warm gold                    */
+  --c-gold-dk:   212 175 55;     /* #D4AF37                                */
+  --c-gold-lt:   237 217 163;    /* #EDD9A3                                */
+  --c-cream:     250 250 247;    /* #FAFAF7 — warm off-white               */
+  --c-muted:     102 102 102;    /* #666666                                */
+  --c-subtle:    153 153 153;    /* #999999                                */
+  --c-border:    232 237 228;    /* #E8EDE4                                */
+}
+
+/* Octavia House Dental Practice — deep navy + slate teal */
+[data-practice="octavia-house"] {
+  --c-dark:      28 51 85;       /* #1C3355 — deep royal navy              */
+  --c-green:     29 106 138;     /* #1D6A8A — slate teal                   */
+  --c-green-mid: 77 142 164;     /* #4D8EA4                                */
+  --c-green-lt:  90 172 203;     /* #5AACCB                                */
+  --c-green-bg:  230 242 248;    /* #E6F2F8 — light blue tint              */
+  --c-gold:      191 144 64;     /* #BF9040 — slightly cooler gold         */
+  --c-gold-dk:   168 120 48;     /* #A87830                                */
+  --c-gold-lt:   223 191 128;    /* #DFBF80                                */
+  --c-cream:     247 249 251;    /* #F7F9FB — cool white                   */
+  --c-muted:     90 106 122;     /* #5A6A7A — blue-grey                    */
+  --c-subtle:    138 154 168;    /* #8A9AA8                                */
+  --c-border:    207 220 234;    /* #CFDCEA — blue-tinted                  */
+}
+
+/* New Octavia Dental Surgery — midnight forest + earthy gold */
+[data-practice="new-octavia"] {
+  --c-dark:      25 42 30;       /* #192A1E — midnight forest              */
+  --c-green:     46 107 62;      /* #2E6B3E — slightly brighter green      */
+  --c-green-mid: 77 143 96;      /* #4D8F60                                */
+  --c-green-lt:  93 184 112;     /* #5DB870                                */
+  --c-green-bg:  230 245 234;    /* #E6F5EA                                */
+  --c-gold:      184 144 80;     /* #B89050 — muted earthy gold            */
+  --c-gold-dk:   160 120 56;     /* #A07838                                */
+  --c-gold-lt:   216 184 128;    /* #D8B880                                */
+  --c-cream:     248 250 245;    /* #F8FAF5 — faint green-cream            */
+  --c-muted:     90 104 88;      /* #5A6858 — green-grey                   */
+  --c-subtle:    138 152 136;    /* #8A9888                                */
+  --c-border:    212 230 208;    /* #D4E6D0 — green-tinted                 */
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

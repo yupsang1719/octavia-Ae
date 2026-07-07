@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 const DEFAULTS = {
+  slug:          'octavia-aesthetic',
   name:          'Octavia Dental & Facial Aesthetics',
   phone:         '01483 958205',
   phoneTel:      '01483958205',
@@ -20,6 +21,13 @@ const PracticeContext = createContext(DEFAULTS)
 
 export function PracticeProvider({ children }) {
   const [practice, setPractice] = useState(DEFAULTS)
+
+  // Apply practice theme to <html> so CSS variable overrides take effect
+  useEffect(() => {
+    if (practice.slug) {
+      document.documentElement.dataset.practice = practice.slug
+    }
+  }, [practice.slug])
 
   useEffect(() => {
     fetch('/api/practice')
