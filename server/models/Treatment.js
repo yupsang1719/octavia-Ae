@@ -11,7 +11,7 @@ const faqSchema = new mongoose.Schema(
 )
 
 const treatmentSchema = new mongoose.Schema({
-  slug:             { type: String, required: true, unique: true },
+  slug:             { type: String, required: true },
   name:             String,
   tagline:          String,
   priceFrom:        String,
@@ -35,5 +35,7 @@ const treatmentSchema = new mongoose.Schema({
 
   order: { type: Number, default: 0 },
 }, { timestamps: true })
+
+treatmentSchema.index({ slug: 1, practice: 1 }, { unique: true })
 
 export default mongoose.model('Treatment', treatmentSchema)
