@@ -38,11 +38,6 @@ async function fetchRecentPatients(days = 30) {
     const data     = response.data
     const patients = data.patients || data.data || (Array.isArray(data) ? data : [])
 
-    // Log field names on first page so we can see what date fields exist
-    if (page === 1) {
-      console.log('[Dentally] Patient fields:', Object.keys(patients[0] || {}))
-    }
-
     all = all.concat(patients)
 
     const meta       = data.meta || data.pagination || {}
@@ -54,8 +49,6 @@ async function fetchRecentPatients(days = 30) {
     if (done) break
     page++
   }
-
-  console.log(`[Dentally] Raw patient count: ${all.length}`)
 
   const normalised = all.map(p => {
     // Grab any last-visit date field Dentally exposes
@@ -79,13 +72,9 @@ async function fetchRecentPatients(days = 30) {
   // If patients have a usable last-visit date, filter to the last N days
   const withDate = normalised.filter(p => p.lastVisit)
   if (withDate.length > 0) {
-    const recent = normalised.filter(p => !p.lastVisit || new Date(p.lastVisit) >= since)
-    console.log(`[Dentally] Filtered to ${recent.length} patients visited in last ${days} days`)
-    return recent
+    return normalised.filter(p => !p.lastVisit || new Date(p.lastVisit) >= since)
   }
 
-  // No date field available — return all (with email)
-  console.log(`[Dentally] No last-visit date field found; returning all ${normalised.length} patients with email`)
   return normalised
 }
 
@@ -124,7 +113,6 @@ export async function getMarketingPatients(_req, res) {
   }
   try {
     const patients = await fetchRecentPatients(30)
-    console.log(`[Dentally] Fetched ${patients.length} patients from last 30 days`)
     res.json({ patients, configured: true })
   } catch (err) {
     res.status(502).json({ error: err.message })

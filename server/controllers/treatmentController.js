@@ -2,7 +2,7 @@ import Treatment from '../models/Treatment.js'
 
 export async function getTreatments(_req, res) {
   try {
-    const treatments = await Treatment.find({}, 'slug name tagline priceFrom specialist order').sort({ order: 1 })
+    const treatments = await Treatment.find({}, 'slug name tagline priceFrom specialists order').sort({ order: 1 })
     res.json(treatments)
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch treatments' })

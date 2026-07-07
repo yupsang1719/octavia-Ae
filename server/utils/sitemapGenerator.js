@@ -12,6 +12,7 @@ const staticPages = [
   { url: '/treatments/six-month-smile',changefreq: 'monthly', priority: '0.8' },
   { url: '/treatments/air-flow-hygiene',changefreq:'monthly', priority: '0.7' },
   { url: '/treatments/botox-anti-wrinkle',changefreq:'monthly',priority:'0.8'},
+  { url: '/treatments/general-dentistry', changefreq: 'monthly', priority: '0.8' },
   { url: '/facial-aesthetics',         changefreq: 'monthly', priority: '0.8' },
   { url: '/dentist-godalming',         changefreq: 'monthly', priority: '0.9' },
   { url: '/dentist-guildford',         changefreq: 'monthly', priority: '0.8' },
