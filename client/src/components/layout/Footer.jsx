@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Phone, Mail, MapPin, Send } from 'lucide-react'
-import axios from 'axios'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
 
@@ -15,7 +14,7 @@ function InstagramIcon({ className }) {
   )
 }
 
-const treatments = [
+const FALLBACK_TREATMENTS = [
   { label: 'Dental Implants',      href: '/treatments/dental-implants' },
   { label: 'Invisalign',           href: '/treatments/invisalign' },
   { label: 'Composite Bonding',    href: '/treatments/composite-bonding' },
@@ -35,16 +34,6 @@ const locationLinks = [
   { label: 'Hampshire',   href: '/dentist-hampshire' },
 ]
 
-const practice = [
-  { label: 'Our Team',           href: '/our-team' },
-  { label: 'Gallery',            href: '/gallery' },
-  { label: 'Blog',               href: '/blog' },
-  { label: 'Contact',            href: '/contact' },
-  { label: 'NHS Alternative',    href: '/nhs-alternative-surrey' },
-  { label: 'Privacy Policy',     href: '/privacy-policy' },
-  { label: 'Cookie Policy',      href: '/cookie-policy' },
-]
-
 function FooterLink({ to, children }) {
   return (
     <li>
@@ -58,32 +47,38 @@ function FooterLink({ to, children }) {
   )
 }
 
-const FALLBACK_HOURS = [
-  { day: 'Monday',    hours: '8:30 am – 6:00 pm', closed: false },
-  { day: 'Tuesday',   hours: '8:30 am – 6:00 pm', closed: false },
-  { day: 'Wednesday', hours: '8:30 am – 6:00 pm', closed: false },
-  { day: 'Thursday',  hours: '8:30 am – 6:00 pm', closed: false },
-  { day: 'Friday',    hours: '8:30 am – 5:00 pm', closed: false },
-  { day: 'Saturday',  hours: '9:00 am – 2:00 pm', closed: false },
-  { day: 'Sunday',    hours: '',                   closed: true  },
-]
-
 export default function Footer() {
-  const [email, setEmail] = useState('')
+  const [emailVal, setEmailVal] = useState('')
   const [subscribed, setSubscribed] = useState(false)
-  const [hours, setHours] = useState(FALLBACK_HOURS)
-  const { phone, phoneTel, email: practiceEmail, address, instagram, name, type } = usePractice()
+  const [treatments, setTreatments] = useState(FALLBACK_TREATMENTS)
+  const { phone, phoneTel, email: practiceEmail, address, instagram, name, type, hours, slug } = usePractice()
   const [logoTitle, logoSub] = splitPracticeName(name)
 
+  // Fetch published treatments for this practice (same as navbar)
   useEffect(() => {
-    axios.get('/api/settings/opening-hours')
-      .then(({ data }) => { if (Array.isArray(data) && data.length) setHours(data) })
+    fetch('/api/treatments')
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data) || !data.length) return
+        setTreatments(data.map(t => ({ label: t.name, href: `/treatments/${t.slug}` })))
+      })
       .catch(() => {})
   }, [])
 
+  const practiceLinks = [
+    { label: 'Our Team',       href: '/our-team' },
+    { label: 'Gallery',        href: '/gallery' },
+    { label: 'Blog',           href: '/blog' },
+    { label: 'Contact',        href: '/contact' },
+    // Only show NHS Alternative link on the private practice site
+    ...(type === 'private' ? [{ label: 'NHS Alternative', href: '/nhs-alternative-surrey' }] : []),
+    { label: 'Privacy Policy', href: '/privacy-policy' },
+    { label: 'Cookie Policy',  href: '/cookie-policy' },
+  ]
+
   const handleSubscribe = (e) => {
     e.preventDefault()
-    if (email) { setSubscribed(true); setEmail('') }
+    if (emailVal) { setSubscribed(true); setEmailVal('') }
   }
 
   return (
@@ -105,8 +100,8 @@ export default function Footer() {
               <form onSubmit={handleSubscribe} className="relative flex items-center w-full sm:w-auto sm:min-w-[320px]">
                 <input
                   type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  value={emailVal}
+                  onChange={e => setEmailVal(e.target.value)}
                   placeholder="Your email address"
                   className="w-full bg-white/8 border border-white/12 rounded-full px-5 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-brand-gold/50 focus:bg-white/12 transition-all duration-200 pr-14"
                   required
@@ -131,7 +126,7 @@ export default function Footer() {
             <div className="mb-5 flex items-center gap-3">
               <img
                 src="/images/logo.png"
-                alt="Octavia Dental"
+                alt={name}
                 className="w-11 h-11 rounded-xl object-contain bg-white flex-shrink-0"
                 loading="lazy"
               />
@@ -158,12 +153,14 @@ export default function Footer() {
                   {phone}
                 </a>
               </li>
-              <li>
-                <a href={`mailto:${practiceEmail}`} className="flex items-start gap-2.5 text-[13px] text-white/55 hover:text-brand-gold transition-colors duration-200 font-sans">
-                  <Mail className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                  {practiceEmail}
-                </a>
-              </li>
+              {practiceEmail && (
+                <li>
+                  <a href={`mailto:${practiceEmail}`} className="flex items-start gap-2.5 text-[13px] text-white/55 hover:text-brand-gold transition-colors duration-200 font-sans">
+                    <Mail className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                    {practiceEmail}
+                  </a>
+                </li>
+              )}
               <li>
                 <address className="flex items-start gap-2.5 text-[13px] text-white/55 not-italic font-sans">
                   <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
@@ -186,7 +183,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Treatments */}
+          {/* Treatments — dynamic, only published for this practice */}
           <div>
             <h3 className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 mb-5">
               Treatments
@@ -210,32 +207,34 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Practice */}
+          {/* Practice links */}
           <div>
             <h3 className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 mb-5">
               Practice
             </h3>
             <ul className="space-y-2.5">
-              {practice.map(l => (
+              {practiceLinks.map(l => (
                 <FooterLink key={l.href} to={l.href}>{l.label}</FooterLink>
               ))}
             </ul>
           </div>
 
-          {/* Opening Hours */}
+          {/* Opening Hours — from practice context (set per-practice in DB) */}
           <div>
             <h3 className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 mb-5">
               Opening Hours
             </h3>
             <ul className="space-y-2">
-              {hours.map(h => (
+              {hours.length > 0 ? hours.map(h => (
                 <li key={h.day} className="flex justify-between gap-3 text-[12px] font-sans">
                   <span className="text-white/40">{h.day}</span>
                   <span className={h.closed ? 'text-white/25' : 'text-white/65'}>
                     {h.closed ? 'Closed' : h.hours}
                   </span>
                 </li>
-              ))}
+              )) : (
+                <li className="text-[12px] font-sans text-white/40">Mon–Fri 9 am – 5 pm</li>
+              )}
             </ul>
           </div>
         </div>
