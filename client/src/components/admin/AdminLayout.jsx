@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
+import { AdminPracticeProvider, useAdminPractice } from '../../contexts/AdminPracticeContext'
+import PracticeSwitcher from './PracticeSwitcher'
 
 const NAV = [
   { to: '/admin',           label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -18,8 +20,9 @@ const NAV = [
   { to: '/admin/email-templates',  label: 'Email Templates', icon: Mail },
 ]
 
-export default function AdminLayout() {
+function AdminLayoutInner() {
   const { logout } = useAuth()
+  const { selected } = useAdminPractice()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
@@ -36,12 +39,17 @@ export default function AdminLayout() {
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="px-5 py-6 border-b border-white/10">
-          <p className="font-serif text-white text-lg leading-tight">Octavia Dental</p>
-          <p className="text-white/40 text-xs font-sans mt-0.5 tracking-widest uppercase">Admin</p>
+        <div className="px-5 py-5 border-b border-white/10">
+          <p className="font-serif text-white text-lg leading-tight">Octavia</p>
+          <p className="text-white/40 text-xs font-sans mt-0.5 tracking-widest uppercase">Admin Portal</p>
         </div>
 
-        <nav className="flex-1 py-4 px-3 space-y-0.5">
+        {/* Practice switcher */}
+        <div className="pt-3 border-b border-white/10 pb-1">
+          <PracticeSwitcher />
+        </div>
+
+        <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
           {NAV.map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}
@@ -51,7 +59,7 @@ export default function AdminLayout() {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-sans transition-colors ${
                   isActive
-                    ? 'bg-brand-green text-white'
+                    ? 'bg-white/15 text-white'
                     : 'text-white/60 hover:text-white hover:bg-white/5'
                 }`
               }
@@ -93,7 +101,7 @@ export default function AdminLayout() {
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
           <span className="text-xs font-sans text-brand-muted ml-auto tracking-wide">
-            Octavia Dental Admin Portal
+            {selected?.name ?? 'Admin Portal'}
           </span>
         </header>
 
@@ -102,5 +110,13 @@ export default function AdminLayout() {
         </main>
       </div>
     </div>
+  )
+}
+
+export default function AdminLayout() {
+  return (
+    <AdminPracticeProvider>
+      <AdminLayoutInner />
+    </AdminPracticeProvider>
   )
 }
