@@ -4,11 +4,11 @@ function toSlug(name) {
   return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 }
 
-// Public — only published treatments
+// Public — only published treatments (treats missing `published` field as published for backward compat)
 export async function getTreatments(req, res) {
   try {
     const treatments = await Treatment
-      .find({ practice: req.practiceSlug, published: true }, 'slug name tagline priceFrom specialists order')
+      .find({ practice: req.practiceSlug, published: { $ne: false } }, 'slug name tagline priceFrom specialists order')
       .sort({ order: 1 })
     res.json(treatments)
   } catch {
