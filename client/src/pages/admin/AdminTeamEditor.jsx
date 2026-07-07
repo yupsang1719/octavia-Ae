@@ -38,6 +38,7 @@ export default function AdminTeamEditor() {
   const [loading, setLoading] = useState(!isNew)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [allTreatments, setAllTreatments] = useState([])
 
   // Array-input staging values
   const [specialism, setSpecialism] = useState('')
@@ -48,10 +49,14 @@ export default function AdminTeamEditor() {
 
   const loadMember = useCallback(async () => {
     try {
-      const { data } = await axios.get('/api/admin/team')
-      const member = data.find(m => m._id === id)
+      const [teamRes, treatRes] = await Promise.all([
+        axios.get('/api/admin/team'),
+        axios.get('/api/treatments'),
+      ])
+      const member = teamRes.data.find(m => m._id === id)
       if (member) setForm(member)
       else setError('Member not found')
+      setAllTreatments(treatRes.data)
     } catch {
       setError('Failed to load member')
     } finally {
@@ -60,7 +65,11 @@ export default function AdminTeamEditor() {
   }, [id])
 
   useEffect(() => {
-    if (!isNew) loadMember()
+    if (isNew) {
+      axios.get('/api/treatments').then(r => setAllTreatments(r.data)).catch(() => {})
+    } else {
+      loadMember()
+    }
   }, [isNew, loadMember])
 
   function set(field, value) {
@@ -244,20 +253,53 @@ export default function AdminTeamEditor() {
         </section>
 
         {/* Treatments */}
-        <section className="bg-white rounded-xl shadow-sm p-5 space-y-3">
+        <section className="bg-white rounded-xl shadow-sm p-5 space-y-4">
           <h2 className="font-medium text-gray-800 text-sm uppercase tracking-wide">Treatment links</h2>
-          <div className="space-y-2">
-            {form.treatments.map((t, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
+          <p className="text-xs text-gray-500">Treatments shown as quick links on this dentist's profile page.</p>
+
+          {/* Checkboxes from existing treatments */}
+          {allTreatments.length > 0 && (
+            <div className="space-y-2">
+              {allTreatments.map(t => {
+                const href = `/treatments/${t.slug}`
+                const checked = form.treatments.some(x => x.href === href)
+                return (
+                  <label key={t.slug} className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        if (checked) {
+                          setForm(prev => ({ ...prev, treatments: prev.treatments.filter(x => x.href !== href) }))
+                        } else {
+                          setForm(prev => ({ ...prev, treatments: [...prev.treatments, { label: t.name, href }] }))
+                        }
+                      }}
+                      className="w-4 h-4 accent-brand-green"
+                    />
+                    <span className="text-sm text-gray-700 group-hover:text-brand-green transition-colors">
+                      {t.name} <span className="text-gray-400 font-mono text-xs">{href}</span>
+                    </span>
+                  </label>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Custom / non-treatment links (e.g. /facial-aesthetics) */}
+          <div>
+            <p className="text-xs font-medium text-gray-500 mb-2">Custom links (e.g. /facial-aesthetics)</p>
+            {form.treatments.filter(t => !t.href.startsWith('/treatments/')).map((t, i) => (
+              <div key={i} className="flex items-center gap-2 text-sm text-gray-700 mb-1.5">
                 <span className="flex-1">{t.label} — <span className="text-gray-400 font-mono text-xs">{t.href}</span></span>
-                <button onClick={() => setForm(prev => ({ ...prev, treatments: prev.treatments.filter((_, j) => j !== i) }))} className="text-red-400 hover:text-red-600"><X size={13} /></button>
+                <button onClick={() => setForm(prev => ({ ...prev, treatments: prev.treatments.filter(x => x.href !== t.href) }))} className="text-red-400 hover:text-red-600"><X size={13} /></button>
               </div>
             ))}
-          </div>
-          <div className="flex gap-2">
-            <input value={treatmentLabel} onChange={e => setTreatmentLabel(e.target.value)} placeholder="Label" className="input flex-1 text-sm" />
-            <input value={treatmentHref} onChange={e => setTreatmentHref(e.target.value)} placeholder="/treatments/…" className="input flex-1 text-sm font-mono" />
-            <button onClick={addTreatment} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-sm"><Plus size={14} /></button>
+            <div className="flex gap-2 mt-1">
+              <input value={treatmentLabel} onChange={e => setTreatmentLabel(e.target.value)} placeholder="Label (e.g. Facial Aesthetics)" className="input flex-1 text-sm" />
+              <input value={treatmentHref} onChange={e => setTreatmentHref(e.target.value)} placeholder="/facial-aesthetics" className="input flex-1 text-sm font-mono" />
+              <button onClick={addTreatment} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-sm"><Plus size={14} /></button>
+            </div>
           </div>
         </section>
 
