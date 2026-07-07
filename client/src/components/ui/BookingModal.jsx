@@ -18,25 +18,34 @@ const schema = z.object({
   gdprConsent:  z.literal(true, { errorMap: () => ({ message: 'You must consent to proceed' }) }),
 })
 
-const SERVICE_OPTIONS = [
-  { value: '',               label: 'Select a treatment…' },
-  { value: 'implants',       label: 'Dental Implants' },
-  { value: 'invisalign',     label: 'Invisalign' },
-  { value: 'bonding',        label: 'Composite Bonding' },
-  { value: 'veneers',        label: 'Porcelain Veneers' },
-  { value: 'whitening',      label: 'Teeth Whitening' },
-  { value: 'sixmonthsmile',  label: '6 Month Smile' },
-  { value: 'airflow',        label: 'Air Flow Hygiene' },
-  { value: 'botox',          label: 'Botox & Anti-Wrinkle' },
-  { value: 'general',        label: 'General Enquiry' },
-  { value: 'other',          label: 'Other' },
+const STATIC_TAIL = [
+  { value: 'general', label: 'General Enquiry' },
+  { value: 'other',   label: 'Other' },
 ]
 
 export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
-  const [step, setStep]         = useState(1)
+  const [step, setStep]           = useState(1)
   const [submitted, setSubmitted] = useState(false)
   const [apiError, setApiError]   = useState('')
-  const { phone, phoneTel }       = usePractice()
+  const [serviceOptions, setServiceOptions] = useState([])
+  const { phone, phoneTel, type } = usePractice()
+  const isPrivate                 = type === 'private'
+
+  useEffect(() => {
+    fetch('/api/treatments')
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data) || !data.length) {
+          setServiceOptions(STATIC_TAIL)
+          return
+        }
+        setServiceOptions([
+          ...data.map(t => ({ value: t.slug, label: t.name })),
+          ...STATIC_TAIL,
+        ])
+      })
+      .catch(() => setServiceOptions(STATIC_TAIL))
+  }, [])
 
   const {
     register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue,
@@ -97,7 +106,7 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
           {/* Header */}
           <div className="bg-brand-green px-6 py-5 flex items-center justify-between">
             <div>
-              <h2 className="font-serif text-xl text-white font-medium">Book Your Free Consultation</h2>
+              <h2 className="font-serif text-xl text-white font-medium">{isPrivate ? 'Book Your Free Consultation' : 'Request an Appointment'}</h2>
               <p className="text-brand-green-bg text-sm mt-0.5 font-sans">We'll call you to confirm within 2 hours</p>
             </div>
             <button
@@ -132,7 +141,8 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
                       {...register('service')}
                       className="w-full border border-brand-border rounded-sm px-3 py-2.5 text-sm font-sans text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-green"
                     >
-                      {SERVICE_OPTIONS.map(opt => (
+                      <option value="">Select a treatment…</option>
+                      {serviceOptions.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
