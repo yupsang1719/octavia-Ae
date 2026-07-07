@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Phone, Mail, MapPin, Send } from 'lucide-react'
 import axios from 'axios'
 import { usePractice } from '../../contexts/PracticeContext'
+import { splitPracticeName } from '../../utils/splitPracticeName'
 
 function InstagramIcon({ className }) {
   return (
@@ -71,10 +72,8 @@ export default function Footer() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
   const [hours, setHours] = useState(FALLBACK_HOURS)
-  const { phone, phoneTel, email: practiceEmail, address, instagram, name } = usePractice()
-  const [logoTitle, logoSub] = name.includes(' & ')
-    ? [name.split(' & ')[0], '& ' + name.split(' & ')[1]]
-    : [name, '']
+  const { phone, phoneTel, email: practiceEmail, address, instagram, name, type } = usePractice()
+  const [logoTitle, logoSub] = splitPracticeName(name)
 
   useEffect(() => {
     axios.get('/api/settings/opening-hours')
@@ -148,7 +147,9 @@ export default function Footer() {
               </div>
             </div>
             <p className="font-sans text-[13px] text-white/55 mb-6 leading-relaxed">
-              New patients welcome. No waiting list.
+              {type === 'private'
+                ? 'New patients welcome. No waiting list.'
+                : 'NHS & private patients welcome. Waiting list may apply.'}
             </p>
             <ul className="space-y-3">
               <li>

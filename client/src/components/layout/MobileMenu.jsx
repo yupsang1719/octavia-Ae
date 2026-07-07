@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronDown, Phone, MessageCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { usePractice } from '../../contexts/PracticeContext'
+import { splitPracticeName } from '../../utils/splitPracticeName'
 
 const treatments = [
   { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
@@ -140,9 +141,7 @@ const MENU_ANIMATION = {
 export default function MobileMenu({ isOpen, onClose, onOpenBooking }) {
   const [height, setHeight] = useState(0)
   const { name, phone, phoneTel, whatsapp } = usePractice()
-  const [logoTitle, logoSub] = name.includes(' & ')
-    ? [name.split(' & ')[0], '& ' + name.split(' & ')[1]]
-    : [name, '']
+  const [logoTitle, logoSub]                = splitPracticeName(name)
 
   useEffect(() => {
     const update = () => setHeight(window.innerHeight)

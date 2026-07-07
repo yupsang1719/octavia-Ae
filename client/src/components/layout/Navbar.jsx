@@ -6,6 +6,7 @@ import MobileMenu from './MobileMenu'
 import BookingModal from '../ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
 import { usePractice } from '../../contexts/PracticeContext'
+import { splitPracticeName } from '../../utils/splitPracticeName'
 
 const treatments = [
   { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
@@ -109,9 +110,7 @@ export default function Navbar() {
   const [hoveredNav, setHoveredNav] = useState(null)
   const { isOpen, open, close }     = useBookingModal()
   const { phone, phoneTel, name }   = usePractice()
-  const [logoTitle, logoSub] = name.includes(' & ')
-    ? [name.split(' & ')[0], '& ' + name.split(' & ')[1]]
-    : [name, '']
+  const [logoTitle, logoSub]        = splitPracticeName(name)
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 60) }
