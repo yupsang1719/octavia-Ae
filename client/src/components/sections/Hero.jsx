@@ -116,9 +116,9 @@ export default function Hero({
               <SplitHeading text={resolvedHeadline} className="text-white" baseDelay={0} />
             </h1>
 
-            {/* Subheadline — "Your" + rotating word */}
-            <p className="font-display text-[3.5rem] sm:text-[4.5rem] lg:text-[5.5rem] text-brand-gold font-medium leading-[1.02] tracking-[-0.03em] mb-7 flex items-baseline flex-wrap" style={{ gap: '0.24em' }}>
-              <span className="inline-block overflow-hidden">
+            {/* Subheadline — "Your" on its own line, rotating word always below */}
+            <div className="font-display text-[3.5rem] sm:text-[4.5rem] lg:text-[5.5rem] text-brand-gold font-medium leading-[1.02] tracking-[-0.03em] mb-7">
+              <div className="overflow-hidden">
                 <motion.span
                   className="inline-block"
                   custom={1.5}
@@ -128,9 +128,8 @@ export default function Hero({
                 >
                   Your
                 </motion.span>
-              </span>
-
-              <span className="inline-block overflow-hidden">
+              </div>
+              <div className="overflow-hidden">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.span
                     key={ROTATING_WORDS[wordIndex]}
@@ -143,8 +142,8 @@ export default function Hero({
                     {ROTATING_WORDS[wordIndex]}
                   </motion.span>
                 </AnimatePresence>
-              </span>
-            </p>
+              </div>
+            </div>
 
             <motion.p
               className="font-sans text-base sm:text-lg text-white/65 mb-9 leading-relaxed max-w-sm"
