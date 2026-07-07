@@ -49,7 +49,11 @@ const ALLOWED_ORIGINS = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'h
 
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true)
+    if (!origin) return cb(null, true)
+    // Accept both www and non-www variants of any allowed origin
+    const stripped = origin.replace(/^(https?:\/\/)www\./, '$1')
+    const allowed = ALLOWED_ORIGINS.some(o => o === origin || o.replace(/^(https?:\/\/)www\./, '$1') === stripped)
+    if (allowed) return cb(null, true)
     cb(new Error('Not allowed by CORS'))
   },
   credentials: true,
