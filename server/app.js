@@ -106,6 +106,17 @@ app.use('/api/reviews', (req, res, next) => { if (req.method === 'GET') res.set(
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }))
 
+// Temporary debug — shows raw treatments from MongoDB, no filters
+app.get('/api/debug/treatments', async (req, res) => {
+  try {
+    const Treatment = (await import('./models/Treatment.js')).default
+    const docs = await Treatment.find({}, 'slug name practice published tagline priceFrom').lean()
+    res.json({ practiceSlug: req.practiceSlug, count: docs.length, docs })
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
 // Serve React build in production
 if (process.env.NODE_ENV === 'production') {
   const clientDist = resolve(__dir, '../client/dist')
