@@ -51,7 +51,7 @@ export default function Footer() {
   const [emailVal, setEmailVal] = useState('')
   const [subscribed, setSubscribed] = useState(false)
   const [treatments, setTreatments] = useState(FALLBACK_TREATMENTS)
-  const { phone, phoneTel, email: practiceEmail, address, instagram, name, type, hours, slug } = usePractice()
+  const { phone, phoneTel, email: practiceEmail, address, instagram, name, type, hours } = usePractice()
   const [logoTitle, logoSub] = splitPracticeName(name)
 
   // Fetch published treatments for this practice (same as navbar)
