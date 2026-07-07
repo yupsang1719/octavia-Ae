@@ -140,7 +140,7 @@ const MENU_ANIMATION = {
 
 export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments = FALLBACK_TREATMENTS }) {
   const [height, setHeight] = useState(0)
-  const { name, phone, phoneTel, whatsapp } = usePractice()
+  const { name, phone, phoneTel, whatsapp, slug } = usePractice()
   const [logoTitle, logoSub]                = splitPracticeName(name)
 
   useEffect(() => {
@@ -206,7 +206,7 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments 
             <nav className="flex-1 overflow-y-auto px-7 py-4 relative z-10">
               <SubGroup label="Treatments" items={treatments} onClose={onClose} />
 
-              {mainLinks.map((link, i) => (
+              {mainLinks.filter(l => l.href !== '/facial-aesthetics' || slug === 'octavia-aesthetic').map((link, i) => (
                 <StaggerLink
                   key={link.href}
                   href={link.href}

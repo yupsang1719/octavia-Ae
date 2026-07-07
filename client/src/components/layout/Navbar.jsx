@@ -110,7 +110,7 @@ export default function Navbar() {
   const [hoveredNav, setHoveredNav]     = useState(null)
   const [treatments, setTreatments]     = useState(FALLBACK_TREATMENTS)
   const { isOpen, open, close }         = useBookingModal()
-  const { phone, phoneTel, name }       = usePractice()
+  const { phone, phoneTel, name, slug }  = usePractice()
   const [logoTitle, logoSub]            = splitPracticeName(name)
 
   useEffect(() => {
@@ -168,12 +168,12 @@ export default function Navbar() {
           <nav className={`hidden lg:flex items-center gap-1 ${textColor}`} onMouseLeave={() => setHoveredNav(null)}>
             {[
               { id: 'treatments',  label: 'Treatments',       dropdown: treatments   },
-              { id: 'aesthetics',  label: 'Facial Aesthetics', href: '/facial-aesthetics' },
+              slug === 'octavia-aesthetic' && { id: 'aesthetics', label: 'Facial Aesthetics', href: '/facial-aesthetics' },
               { id: 'team',        label: 'Our Team',          href: '/our-team'     },
               { id: 'gallery',     label: 'Gallery',           href: '/gallery'      },
               { id: 'locations',   label: 'Locations',         dropdown: locationLinks},
               { id: 'blog',        label: 'Blog',              href: '/blog'         },
-            ].map(nav => (
+            ].filter(Boolean).map(nav => (
               <NavItem
                 key={nav.id}
                 label={nav.label}
