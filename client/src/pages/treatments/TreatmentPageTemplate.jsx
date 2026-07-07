@@ -300,46 +300,52 @@ function SpecialistSection({ member: members }) {
   return (
     <section className="section-padding bg-white">
       <div className="container-wide">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <motion.h2
             className="font-serif text-3xl lg:text-4xl text-brand-dark font-medium mb-8 leading-snug"
             {...fadeUp(0)}
           >
             {members.length === 1 ? 'Meet your specialist' : 'Meet your specialists'}
           </motion.h2>
-          <div className="space-y-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {members.map((m, i) => (
               <motion.div
                 key={m.slug || i}
-                className="flex flex-col sm:flex-row gap-6 bg-brand-cream border border-brand-border rounded-sm overflow-hidden"
+                className="bg-brand-cream border border-brand-border rounded-sm overflow-hidden"
                 {...fadeUp(i * 0.08)}
               >
-                <div className="sm:w-40 flex-shrink-0">
+                {/* Photo */}
+                <div className="h-44 bg-brand-green-bg">
                   {m.image ? (
                     <img
                       src={m.image}
                       alt={m.name}
-                      className="w-full h-40 sm:h-full object-cover"
+                      className="w-full h-full object-cover object-top"
                       loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-40 sm:h-full bg-brand-green-bg flex items-center justify-center">
-                      <span className="font-serif text-3xl text-brand-green/30">{m.initials || m.name[0]}</span>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="font-serif text-4xl text-brand-green/30">{m.initials || m.name[0]}</span>
                     </div>
                   )}
                 </div>
-                <div className="p-6">
-                  <p className="font-sans text-xs uppercase tracking-widest text-brand-gold font-semibold mb-1">Your specialist</p>
-                  <h3 className="font-serif text-2xl text-brand-dark font-medium">{m.name}</h3>
-                  <p className="font-sans text-sm text-brand-green font-medium mb-3">{m.role}</p>
-                  <p className="font-sans text-sm text-brand-muted leading-relaxed mb-4">{m.bio}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {m.specialisms?.map(s => (
-                      <span key={s} className="text-xs font-sans px-2.5 py-1 bg-white border border-brand-border text-brand-muted rounded-full">
-                        {s}
-                      </span>
-                    ))}
-                  </div>
+                {/* Content */}
+                <div className="p-4">
+                  <p className="font-sans text-[10px] uppercase tracking-widest text-brand-gold font-semibold mb-1">Your specialist</p>
+                  <h3 className="font-serif text-lg text-brand-dark font-medium leading-snug">{m.name}</h3>
+                  <p className="font-sans text-xs text-brand-green font-medium mb-2">{m.role}</p>
+                  {m.bio && (
+                    <p className="font-sans text-xs text-brand-muted leading-relaxed line-clamp-3 mb-3">{m.bio}</p>
+                  )}
+                  {m.specialisms?.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {m.specialisms.slice(0, 3).map(s => (
+                        <span key={s} className="text-[10px] font-sans px-2 py-0.5 bg-white border border-brand-border text-brand-muted rounded-full">
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}

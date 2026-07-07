@@ -59,6 +59,11 @@ export default function OurTeam() {
     members: members.filter(m => m.category === cat.key),
   })).filter(g => g.members.length > 0)
 
+  const dentistCount = members.filter(m => m.category === 'dentist').length
+  const dentistLabel = dentistCount > 0
+    ? `${dentistCount} ${dentistCount === 1 ? 'specialist dentist' : 'specialist dentists'}`
+    : 'Specialist dentists'
+
   return (
     <>
       <Helmet>
@@ -79,7 +84,7 @@ export default function OurTeam() {
               Specialists you can trust.
             </h1>
             <p className="font-sans text-lg text-white/70 leading-relaxed">
-              Two specialist dentists. One clinic. Everything under one roof in Godalming, Surrey.
+              {dentistLabel}. One clinic. Everything under one roof.
             </p>
           </motion.div>
         </div>
@@ -98,7 +103,7 @@ export default function OurTeam() {
             <motion.p className="font-sans text-brand-muted mb-10 text-sm" {...fade(0.08)}>
               {group.key === 'dentist' ? 'Click a card to read more about each clinician.' : 'GDC registered. Available on request.'}
             </motion.p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {group.members.map((member, i) => (
                 <motion.div key={member._id} {...fade(i * 0.1)}>
                   <TeamCard member={member} />
