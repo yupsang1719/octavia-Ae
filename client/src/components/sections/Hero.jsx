@@ -51,7 +51,7 @@ export default function Hero({
   const resolvedTags = tags ?? (
     isPrivate
       ? ['No waiting list', 'New patients welcome', 'Free consultations', 'Surrey & Hampshire']
-      : ['NHS patients welcome', 'Private options available', 'New patients accepted', 'Surrey & Hampshire']
+      : ['NHS patients welcome(Waiting list may apply)', 'Private options available', 'New patients accepted', 'Surrey & Hampshire']
   )
 
   const [wordIndex, setWordIndex] = useState(0)
