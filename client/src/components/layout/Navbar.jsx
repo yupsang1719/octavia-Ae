@@ -214,12 +214,15 @@ export default function Navbar() {
               <Phone className="w-3.5 h-3.5" />
               {phone}
             </a>
-            <button
-              onClick={() => open()}
-              className="btn-primary text-sm"
-            >
-              {type === 'private' ? 'Book Free Consultation' : 'Request Appointment'}
-            </button>
+            {type === 'private' ? (
+              <button onClick={() => open()} className="btn-primary text-sm">
+                Book Free Consultation
+              </button>
+            ) : (
+              <Link to="/contact" className="btn-primary text-sm">
+                Contact Us
+              </Link>
+            )}
           </div>
 
           {/* Mobile hamburger */}

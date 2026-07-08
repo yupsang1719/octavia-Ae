@@ -239,12 +239,18 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments 
 
             {/* Bottom CTAs */}
             <div className="px-7 py-6 border-t border-brand-border/40 space-y-3 relative z-10 bg-white">
-              <button
-                onClick={() => { onOpenBooking(); onClose() }}
-                className="btn-primary w-full text-sm"
-              >
-                {type === 'private' ? 'Book Free Consultation' : 'Request Appointment'}
-              </button>
+              {type === 'private' ? (
+                <button
+                  onClick={() => { onOpenBooking(); onClose() }}
+                  className="btn-primary w-full text-sm"
+                >
+                  Book Free Consultation
+                </button>
+              ) : (
+                <Link to="/contact" onClick={onClose} className="btn-primary w-full text-sm text-center">
+                  Contact Us
+                </Link>
+              )}
               <div className={`grid gap-2 ${whatsapp ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 <a href={`tel:${phoneTel}`} className="btn-secondary text-sm text-center flex items-center justify-center gap-1.5">
                   <Phone className="w-3.5 h-3.5" />

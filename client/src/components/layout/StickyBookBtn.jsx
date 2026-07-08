@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import BookingModal from '../ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
 import { usePractice } from '../../contexts/PracticeContext'
@@ -44,13 +45,23 @@ export default function StickyBookBtn() {
             exit={{ y: 80 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
-            <button
-              onClick={() => open()}
-              className="flex items-center justify-center gap-2 w-full bg-brand-green text-white font-sans font-medium text-sm py-4 shadow-lg"
-            >
-              <MessageCircle className="w-4 h-4" />
-              {isPrivate ? 'Book Free Consultation' : 'Request Appointment'}
-            </button>
+            {isPrivate ? (
+              <button
+                onClick={() => open()}
+                className="flex items-center justify-center gap-2 w-full bg-brand-green text-white font-sans font-medium text-sm py-4 shadow-lg"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Book Free Consultation
+              </button>
+            ) : (
+              <Link
+                to="/contact"
+                className="flex items-center justify-center gap-2 w-full bg-brand-green text-white font-sans font-medium text-sm py-4 shadow-lg"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Contact Us
+              </Link>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

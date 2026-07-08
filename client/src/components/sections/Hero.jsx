@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useBookingModal } from '../../hooks/useBookingModal'
 import BookingModal from '../ui/BookingModal'
 import TextScramble from '../ui/TextScramble'
@@ -161,12 +162,15 @@ export default function Hero({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.98, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              <button
-                onClick={() => open()}
-                className="btn-primary text-sm px-8 py-4"
-              >
-                <TextScramble text={isPrivate ? 'Book free consultation' : 'Request appointment'} />
-              </button>
+              {isPrivate ? (
+                <button onClick={() => open()} className="btn-primary text-sm px-8 py-4">
+                  <TextScramble text="Book free consultation" />
+                </button>
+              ) : (
+                <Link to="/contact" className="btn-primary text-sm px-8 py-4">
+                  Contact us
+                </Link>
+              )}
 
               {whatsapp && (
                 <a
