@@ -89,7 +89,7 @@ app.use('/api/practice',        practiceRoutes)
 // Sitemap — cached for 24h
 app.get('/sitemap.xml', async (req, res) => {
   try {
-    const xml = await generateSitemap()
+    const xml = await generateSitemap(req.practiceSlug)
     res.set('Content-Type', 'application/xml')
     res.set('Cache-Control', 'public, max-age=86400')
     res.send(xml)

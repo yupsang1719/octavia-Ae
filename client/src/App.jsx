@@ -28,6 +28,10 @@ const Farnham          = lazy(() => import('./pages/locations/Farnham'))
 const Cranleigh        = lazy(() => import('./pages/locations/Cranleigh'))
 const Hampshire        = lazy(() => import('./pages/locations/Hampshire'))
 const NHSAlternative   = lazy(() => import('./pages/locations/NHSAlternative'))
+const Hindhead         = lazy(() => import('./pages/locations/Hindhead'))
+const Liphook          = lazy(() => import('./pages/locations/Liphook'))
+const Grayshott        = lazy(() => import('./pages/locations/Grayshott'))
+const Bordon           = lazy(() => import('./pages/locations/Bordon'))
 const OurTeam          = lazy(() => import('./pages/team/OurTeam'))
 const TeamMemberSlug   = lazy(() => import('./pages/team/TeamMemberSlug'))
 const Gallery          = lazy(() => import('./pages/Gallery'))
@@ -133,6 +137,10 @@ export default function App() {
             <Route path="/dentist-cranleigh"             element={<Cranleigh />} />
             <Route path="/dentist-hampshire"             element={<Hampshire />} />
             <Route path="/nhs-alternative-surrey"        element={<NHSAlternative />} />
+            <Route path="/dentist-hindhead"              element={<Hindhead />} />
+            <Route path="/dentist-liphook"               element={<Liphook />} />
+            <Route path="/dentist-grayshott"             element={<Grayshott />} />
+            <Route path="/dentist-bordon"                element={<Bordon />} />
             <Route path="/our-team"                      element={<OurTeam />} />
             <Route path="/our-team/:slug"                element={<TeamMemberSlug />} />
             <Route path="/gallery"                       element={<Gallery />} />
