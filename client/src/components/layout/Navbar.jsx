@@ -20,6 +20,12 @@ const FALLBACK_TREATMENTS = [
   { label: 'Botox & Anti-Wrinkle', href: '/treatments/botox-anti-wrinkle' },
 ]
 
+const NHS_BAND_LINKS = [
+  { label: 'Band 1 — £27.90 · Examination & Prevention', href: '/nhs/band-1' },
+  { label: 'Band 2 — £76.60 · Fillings & Extractions',   href: '/nhs/band-2' },
+  { label: 'Band 3 — £332.10 · Crowns & Dentures',       href: '/nhs/band-3' },
+]
+
 const LOCATION_LINKS_BY_PRACTICE = {
   'octavia-aesthetic': [
     { label: 'Godalming',       href: '/dentist-godalming' },
@@ -128,6 +134,7 @@ export default function Navbar() {
   const [treatments, setTreatments]     = useState(FALLBACK_TREATMENTS)
   const { isOpen, open, close }         = useBookingModal()
   const { phone, phoneTel, name, slug, type }  = usePractice()
+  const isPrivate     = type === 'private'
   const locationLinks = LOCATION_LINKS_BY_PRACTICE[slug] ?? LOCATION_LINKS_BY_PRACTICE['octavia-aesthetic']
   const [logoTitle, logoSub]            = splitPracticeName(name)
 
@@ -185,7 +192,7 @@ export default function Navbar() {
           {/* Desktop nav */}
           <nav className={`hidden lg:flex items-center gap-1 ${textColor}`} onMouseLeave={() => setHoveredNav(null)}>
             {[
-              { id: 'treatments',  label: 'Treatments',       dropdown: treatments   },
+              { id: 'treatments',  label: isPrivate ? 'Treatments' : 'NHS Treatments', dropdown: isPrivate ? treatments : NHS_BAND_LINKS },
               slug === 'octavia-aesthetic' && { id: 'aesthetics', label: 'Facial Aesthetics', href: '/facial-aesthetics' },
               { id: 'team',        label: 'Our Team',          href: '/our-team'     },
               { id: 'gallery',     label: 'Gallery',           href: '/gallery'      },

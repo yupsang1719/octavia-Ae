@@ -28,6 +28,9 @@ const Farnham          = lazy(() => import('./pages/locations/Farnham'))
 const Cranleigh        = lazy(() => import('./pages/locations/Cranleigh'))
 const Hampshire        = lazy(() => import('./pages/locations/Hampshire'))
 const NHSAlternative   = lazy(() => import('./pages/locations/NHSAlternative'))
+const NHSBand1         = lazy(() => import('./pages/nhs/Band1'))
+const NHSBand2         = lazy(() => import('./pages/nhs/Band2'))
+const NHSBand3         = lazy(() => import('./pages/nhs/Band3'))
 const Hindhead         = lazy(() => import('./pages/locations/Hindhead'))
 const Liphook          = lazy(() => import('./pages/locations/Liphook'))
 const Grayshott        = lazy(() => import('./pages/locations/Grayshott'))
@@ -137,6 +140,9 @@ export default function App() {
             <Route path="/dentist-cranleigh"             element={<Cranleigh />} />
             <Route path="/dentist-hampshire"             element={<Hampshire />} />
             <Route path="/nhs-alternative-surrey"        element={<NHSAlternative />} />
+            <Route path="/nhs/band-1"                    element={<NHSBand1 />} />
+            <Route path="/nhs/band-2"                    element={<NHSBand2 />} />
+            <Route path="/nhs/band-3"                    element={<NHSBand3 />} />
             <Route path="/dentist-hindhead"              element={<Hindhead />} />
             <Route path="/dentist-liphook"               element={<Liphook />} />
             <Route path="/dentist-grayshott"             element={<Grayshott />} />

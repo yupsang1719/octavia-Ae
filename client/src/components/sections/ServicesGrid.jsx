@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, CheckCircle } from 'lucide-react'
 import GoldRule from '../ui/GoldRule'
 import { services as staticServices } from '../../data/services'
+import { NHS_BANDS } from '../../data/nhsBands'
 import { usePractice } from '../../contexts/PracticeContext'
 
 /* ── Service icons ──────────────────────────────────────────────────────────── */
@@ -132,18 +133,75 @@ function ServiceRow({ service, index }) {
   )
 }
 
+/* ── NHS Bands Section ──────────────────────────────────────────────────────── */
+function NHSBandRow({ band, index }) {
+  const [hovered, setHovered] = useState(false)
+  const num = String(index + 1).padStart(2, '0')
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <Link
+        to={`/nhs/${band.slug}`}
+        className="group relative flex items-center gap-4 sm:gap-8 py-5 sm:py-6 border-b border-white/10 overflow-hidden cursor-pointer"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <motion.div
+          className="absolute inset-0 bg-white/4 pointer-events-none"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: hovered ? 1 : 0 }}
+          style={{ originX: 0 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <span className="font-sans text-[10px] font-medium text-brand-gold/40 tracking-[0.22em] flex-shrink-0 w-6 select-none relative z-10">
+          {num}
+        </span>
+        <div className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center flex-shrink-0 relative z-10 transition-all duration-300 group-hover:border-brand-gold/50 group-hover:bg-brand-gold/8">
+          <CheckCircle className="w-4 h-4 text-white/60 group-hover:text-brand-gold transition-colors duration-300" />
+        </div>
+        <div className="flex-1 min-w-0 relative z-10">
+          <h3 className="font-serif text-xl sm:text-2xl text-white font-light tracking-tight leading-tight transition-colors duration-200 group-hover:text-brand-gold/90">
+            {band.name}
+          </h3>
+          <p className="font-sans text-[12px] text-white/40 mt-0.5 leading-relaxed hidden sm:block">
+            {band.tagline}
+          </p>
+        </div>
+        <div className="flex-shrink-0 relative z-10 hidden md:block">
+          <span className="font-sans text-[11px] font-medium text-brand-gold/80 bg-brand-gold/8 border border-brand-gold/20 px-3 py-1.5 rounded-full whitespace-nowrap">
+            {band.price}
+          </span>
+        </div>
+        <motion.div
+          className="flex-shrink-0 relative z-10 w-7 h-7 rounded-full border border-white/10 flex items-center justify-center group-hover:border-brand-gold/40 group-hover:bg-brand-gold/8 transition-all duration-300"
+          animate={{ x: hovered ? 2 : 0 }}
+          transition={{ duration: 0.25 }}
+        >
+          <ArrowRight className="w-3.5 h-3.5 text-white/30 group-hover:text-brand-gold transition-colors duration-300" />
+        </motion.div>
+      </Link>
+    </motion.div>
+  )
+}
+
 /* ── Section ────────────────────────────────────────────────────────────────── */
 export default function ServicesGrid() {
   const { type } = usePractice()
+  const isPrivate = type === 'private'
   const [services, setServices] = useState(staticServices)
 
   useEffect(() => {
+    if (!isPrivate) return
     fetch('/api/treatments')
       .then(r => r.json())
       .then(data => {
         if (!Array.isArray(data) || !data.length) return
         const bySlug = Object.fromEntries(data.map(t => [t.slug, t]))
-        // Only show treatments the API returns — drafts/hidden won't be in bySlug
         const visible = staticServices.filter(s => bySlug[s.href.replace('/treatments/', '')])
         if (!visible.length) return
         setServices(visible.map(s => {
@@ -153,11 +211,10 @@ export default function ServicesGrid() {
         }))
       })
       .catch(() => {})
-  }, [])
+  }, [isPrivate])
 
   return (
     <section className="section-padding bg-brand-green relative overflow-hidden">
-      {/* Subtle decorative rings */}
       <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full border border-white/4 pointer-events-none" />
       <div className="absolute -bottom-32 -left-24 w-72 h-72 rounded-full border border-white/3 pointer-events-none" />
 
@@ -173,7 +230,7 @@ export default function ServicesGrid() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
             >
-              Our treatments
+              {isPrivate ? 'Our treatments' : 'NHS treatment bands'}
             </motion.span>
             <GoldRule delay={0.2} />
             <motion.h2
@@ -183,7 +240,7 @@ export default function ServicesGrid() {
               viewport={{ once: true }}
               transition={{ delay: 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              Everything under one roof.
+              {isPrivate ? 'Everything under one roof.' : 'Simple, transparent NHS costs.'}
             </motion.h2>
           </div>
 
@@ -194,15 +251,18 @@ export default function ServicesGrid() {
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            Smile transformations to subtle facial aesthetics — our specialist team delivers results that last.
+            {isPrivate
+              ? 'Smile transformations to subtle facial aesthetics — our specialist team delivers results that last.'
+              : 'NHS dental charges are set by the government. You pay one charge per course of treatment — the highest band reached.'}
           </motion.p>
         </div>
 
-        {/* Services list */}
+        {/* List */}
         <div className="border-t border-white/10">
-          {services.map((service, i) => (
-            <ServiceRow key={service.id} service={service} index={i} />
-          ))}
+          {isPrivate
+            ? services.map((service, i) => <ServiceRow key={service.id} service={service} index={i} />)
+            : NHS_BANDS.map((band, i) => <NHSBandRow key={band.slug} band={band} index={i} />)
+          }
         </div>
 
         {/* Footer */}
@@ -214,13 +274,15 @@ export default function ServicesGrid() {
           transition={{ delay: 0.4 }}
         >
           <p className="font-sans text-[11px] text-white/25 max-w-xs leading-relaxed">
-            Prices are indicative and confirmed at consultation. Individual results may vary.
+            {isPrivate
+              ? 'Prices are indicative and confirmed at consultation. Individual results may vary.'
+              : 'Charges from 1 April 2026. Some patients are exempt — check eligibility at nhsbsa.nhs.uk.'}
           </p>
           <Link
-            to="/contact"
+            to={isPrivate ? '/contact' : '/nhs/band-1'}
             className="inline-flex items-center gap-2 font-sans text-sm font-medium text-brand-gold hover:text-white transition-colors duration-200 group flex-shrink-0"
           >
-            {type === 'private' ? 'Book a free consultation' : 'Request appointment'}
+            {isPrivate ? 'Book a free consultation' : 'Learn about NHS charges'}
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
           </Link>
         </motion.div>

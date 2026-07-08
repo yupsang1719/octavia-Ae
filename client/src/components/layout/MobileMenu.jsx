@@ -17,6 +17,12 @@ const FALLBACK_TREATMENTS = [
   { label: 'Botox & Anti-Wrinkle', href: '/treatments/botox-anti-wrinkle' },
 ]
 
+const NHS_BAND_LINKS = [
+  { label: 'Band 1 — £27.90 · Examination & Prevention', href: '/nhs/band-1' },
+  { label: 'Band 2 — £76.60 · Fillings & Extractions',   href: '/nhs/band-2' },
+  { label: 'Band 3 — £332.10 · Crowns & Dentures',       href: '/nhs/band-3' },
+]
+
 const LOCATION_LINKS_BY_PRACTICE = {
   'octavia-aesthetic': [
     { label: 'Godalming',       href: '/dentist-godalming' },
@@ -158,7 +164,9 @@ const MENU_ANIMATION = {
 export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments = FALLBACK_TREATMENTS }) {
   const [height, setHeight] = useState(0)
   const { name, phone, phoneTel, whatsapp, slug, type } = usePractice()
+  const isPrivate     = type === 'private'
   const locationLinks = LOCATION_LINKS_BY_PRACTICE[slug] ?? LOCATION_LINKS_BY_PRACTICE['octavia-aesthetic']
+  const treatmentLinks = isPrivate ? treatments : NHS_BAND_LINKS
   const [logoTitle, logoSub]                = splitPracticeName(name)
 
   useEffect(() => {
@@ -222,7 +230,7 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments 
 
             {/* Navigation */}
             <nav className="flex-1 overflow-y-auto px-7 py-4 relative z-10">
-              <SubGroup label="Treatments" items={treatments} onClose={onClose} />
+              <SubGroup label={isPrivate ? 'Treatments' : 'NHS Treatments'} items={treatmentLinks} onClose={onClose} />
 
               {mainLinks.filter(l => l.href !== '/facial-aesthetics' || slug === 'octavia-aesthetic').map((link, i) => (
                 <StaggerLink
