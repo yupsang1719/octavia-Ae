@@ -4,11 +4,11 @@ function toSlug(name) {
   return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 }
 
-// Public — only published treatments (treats missing `published` field as published for backward compat)
+// Public — only published treatments (never returns nhs-band records)
 export async function getTreatments(req, res) {
   try {
     const treatments = await Treatment
-      .find({ practice: req.practiceSlug, published: { $ne: false } }, 'slug name tagline priceFrom specialists order')
+      .find({ practice: req.practiceSlug, published: { $ne: false }, type: { $ne: 'nhs-band' } }, 'slug name tagline priceFrom specialists order')
       .sort({ order: 1 })
     res.json(treatments)
   } catch {
@@ -16,15 +16,39 @@ export async function getTreatments(req, res) {
   }
 }
 
-// Admin — all treatments including drafts
+// Public — NHS bands only (for octavia-house band pages)
+export async function getNHSBands(req, res) {
+  try {
+    const bands = await Treatment
+      .find({ practice: req.practiceSlug, type: 'nhs-band', published: { $ne: false } })
+      .sort({ order: 1 })
+    res.json(bands)
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch NHS bands' })
+  }
+}
+
+// Admin — treatments only (never returns nhs-band records)
 export async function getAllTreatmentsAdmin(req, res) {
   try {
     const treatments = await Treatment
-      .find({ practice: req.practiceSlug }, 'slug name tagline priceFrom published order')
+      .find({ practice: req.practiceSlug, type: { $ne: 'nhs-band' } }, 'slug name tagline priceFrom published order')
       .sort({ order: 1 })
     res.json(treatments)
   } catch {
     res.status(500).json({ error: 'Failed to fetch treatments' })
+  }
+}
+
+// Admin — NHS bands only
+export async function getAllNHSBandsAdmin(req, res) {
+  try {
+    const bands = await Treatment
+      .find({ practice: req.practiceSlug, type: 'nhs-band' }, 'slug name priceFrom published order')
+      .sort({ order: 1 })
+    res.json(bands)
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch NHS bands' })
   }
 }
 
@@ -74,8 +98,8 @@ export async function createTreatment(req, res) {
 
 const ALLOWED_FIELDS = [
   'name', 'tagline', 'priceFrom', 'priceNote', 'financeAvailable',
-  'whatIsIt', 'benefits', 'process', 'faq', 'specialists',
-  'published', 'nhsBand', 'nhsPrice', 'h1', 'title', 'metaDesc', 'heroImage',
+  'whatIsIt', 'benefits', 'notCovers', 'process', 'faq', 'specialists',
+  'published', 'h1', 'title', 'metaDesc', 'heroImage',
 ]
 
 export async function updateTreatment(req, res) {

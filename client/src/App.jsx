@@ -60,6 +60,7 @@ const AdminOpeningHours         = lazy(() => import('./pages/admin/AdminOpeningH
 const AdminReviewRequest        = lazy(() => import('./pages/admin/AdminReviewRequest'))
 const AdminTreatments           = lazy(() => import('./pages/admin/AdminTreatments'))
 const AdminTreatmentEditor      = lazy(() => import('./pages/admin/AdminTreatmentEditor'))
+const AdminNHSBands             = lazy(() => import('./pages/admin/AdminNHSBands'))
 const AdminPatients             = lazy(() => import('./pages/admin/AdminPatients'))
 const AdminEmailTemplates       = lazy(() => import('./pages/admin/AdminEmailTemplates'))
 const AdminEmailTemplateEditor  = lazy(() => import('./pages/admin/AdminEmailTemplateEditor'))
@@ -177,6 +178,7 @@ export default function App() {
             <Route path="opening-hours"    element={<AdminOpeningHours />} />
             <Route path="review-request"       element={<AdminReviewRequest />} />
             <Route path="treatments"                    element={<AdminTreatments />} />
+            <Route path="nhs-bands"                     element={<AdminNHSBands />} />
             <Route path="treatments/:slug"             element={<AdminTreatmentEditor />} />
             <Route path="patients"                     element={<AdminPatients />} />
             <Route path="email-templates"              element={<AdminEmailTemplates />} />

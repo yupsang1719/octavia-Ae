@@ -29,6 +29,8 @@ const treatmentSchema = new mongoose.Schema({
   faq:       [faqSchema],
 
   specialists: [String],
+  notCovers:   [String],
+  type:        { type: String, enum: ['treatment', 'nhs-band'], default: 'treatment' },
   published:   { type: Boolean, default: true },
   practice:    { type: String, default: 'octavia-aesthetic', index: true },
   gdcNote:    { type: Boolean, default: false },

@@ -24,7 +24,15 @@ const BAND_COLOURS = {
   3: { bg: 'bg-[#4a1a1a]',   badge: 'bg-red-900/40 text-red-300 border-red-700/40' },
 }
 
-export default function NHSBandPage({ band }) {
+export default function NHSBandPage({ band: rawBand }) {
+  // Normalise field names — hardcoded data uses intro/covers/notCovers,
+  // DB records use whatIsIt/benefits/notCovers
+  const band = {
+    ...rawBand,
+    intro:     rawBand.intro     ?? rawBand.whatIsIt ?? [],
+    covers:    rawBand.covers    ?? rawBand.benefits  ?? [],
+    notCovers: rawBand.notCovers ?? [],
+  }
   const { name, phone, phoneTel, address } = usePractice()
   const colours = BAND_COLOURS[band.number] || BAND_COLOURS[1]
   const canonical = `${SITE_URL}/nhs/${band.slug}`
