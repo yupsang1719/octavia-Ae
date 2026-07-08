@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
@@ -9,7 +10,6 @@ import { useBookingModal } from '../../hooks/useBookingModal'
 import { usePractice } from '../../contexts/PracticeContext'
 import { localBusinessSchema, faqSchema, breadcrumbSchema } from '../../utils/schema'
 import { SITE_URL } from '../../utils/seo'
-import { services } from '../../data/services'
 
 function fade(delay = 0) {
   return {
@@ -58,7 +58,7 @@ function LocationHero({ location, onBook, phone, phoneTel, isPrivate }) {
           <p className="mt-5 font-sans text-sm text-white/40">
             {isPrivate
               ? 'No waiting list · No referral needed · New patients welcome this week'
-              : 'NHS & private patients welcome · New patients accepted'}
+              : 'NHS waiting list in place · Private patients seen promptly · Call us today'}
           </p>
         </motion.div>
       </div>
@@ -107,7 +107,8 @@ function Intro({ paragraphs }) {
 }
 
 // ── Services Grid ─────────────────────────────────────────────────────────────
-function ServicesAvailable() {
+function ServicesAvailable({ treatments }) {
+  if (!treatments.length) return null
   return (
     <section className="section-padding bg-brand-cream">
       <div className="container-wide">
@@ -115,15 +116,15 @@ function ServicesAvailable() {
           Treatments available
         </motion.h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {services.map((service, i) => (
-            <motion.div key={service.id} {...fade(i * 0.05)}>
+          {treatments.map((t, i) => (
+            <motion.div key={t.slug} {...fade(i * 0.05)}>
               <Link
-                to={service.href}
+                to={`/treatments/${t.slug}`}
                 className="group flex items-center gap-3 bg-white border border-brand-border rounded-sm px-4 py-3 transition-all duration-200 hover:border-brand-green/30 hover:shadow-sm"
               >
                 <CheckCircle className="w-4 h-4 text-brand-green flex-shrink-0" />
                 <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors duration-200">
-                  {service.name}
+                  {t.name}
                 </span>
                 <ArrowRight className="w-3.5 h-3.5 text-brand-border ml-auto group-hover:text-brand-green transition-colors duration-200" />
               </Link>
@@ -145,10 +146,10 @@ function WhyChoose({ locationName, practiceName, isPrivate }) {
         { title: 'Modern, purpose-built clinic', body: 'Our clinic is equipped with the latest digital scanning, imaging and treatment technology — delivering results that rival London practices at a fraction of the cost.' },
       ]
     : [
-        { title: 'NHS & private care',      body: `We offer both NHS and private dental care to patients from ${locationName}. New NHS patients are welcome — no long waits to register.` },
-        { title: 'Experienced team',         body: 'Our experienced dental team takes time to know each patient properly. We combine NHS accessibility with the highest standard of private care.' },
-        { title: 'Prevention first',         body: 'Our philosophy centres on prevention. Great oral health, maintained well, lasts a lifetime — and we help you get there.' },
-        { title: 'CQC registered',           body: 'We are registered with the Care Quality Commission and all clinicians hold current GDC registration. Numbers are available on request.' },
+        { title: 'NHS & private care',       body: `We offer both NHS and private dental care to patients from ${locationName}. Please note there is currently an NHS waiting list for new patients — contact us to be added. Private dental care is available without a wait.` },
+        { title: 'Experienced team',         body: 'Our experienced dental team takes time to know each patient properly. We combine NHS accessibility with the highest standard of care — whether you are with us on NHS or private terms.' },
+        { title: 'Prevention first',         body: 'Our philosophy centres on prevention. Great oral health, maintained well, lasts a lifetime — and we help you get there, step by step.' },
+        { title: 'CQC registered',           body: 'We are registered with the Care Quality Commission and all clinicians hold current GDC registration. GDC numbers are available on request.' },
       ]
 
   return (
@@ -313,7 +314,7 @@ function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address,
       <div className="container-wide text-center">
         <motion.div {...fade(0)}>
           <h2 className="font-serif text-3xl lg:text-4xl text-white font-medium mb-4">
-            {isPrivate ? 'Ready to book your free consultation?' : 'Ready to book your appointment?'}
+            {isPrivate ? 'Ready to book your free consultation?' : 'Get in touch today'}
           </h2>
           <p className="font-sans text-white/70 max-w-md mx-auto mb-8">
             {isPrivate
@@ -321,8 +322,8 @@ function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address,
                   ? `We welcome patients from ${locationName} — book today and be seen within the week.`
                   : 'No referral, no waiting list. Contact us today and we can see you within days.')
               : (locationName
-                  ? `We welcome NHS and private patients from ${locationName}. Get in touch to book.`
-                  : 'NHS and private patients welcome. Contact us to book your appointment.')}
+                  ? `NHS patients from ${locationName}: contact us to join our waiting list. Private patients can be seen without a wait.`
+                  : 'NHS waiting list available — contact us to be added. Private patients seen without a wait.')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -356,6 +357,14 @@ export default function LocationPageTemplate({ location }) {
   const { isOpen, open, close } = useBookingModal()
   const { name, phone, phoneTel, whatsapp, address, type } = usePractice()
   const isPrivate = type === 'private'
+
+  const [treatments, setTreatments] = useState([])
+  useEffect(() => {
+    fetch('/api/treatments')
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setTreatments(data) })
+      .catch(() => {})
+  }, [])
 
   const canonical = `${SITE_URL}/${
     location.slug === 'nhs-alternative' ? 'nhs-alternative-surrey' : `dentist-${location.slug}`
@@ -396,7 +405,7 @@ export default function LocationPageTemplate({ location }) {
 
       {location.intro?.length > 0 && <Intro paragraphs={location.intro} />}
 
-      {!isNHSPage && <ServicesAvailable />}
+      {!isNHSPage && <ServicesAvailable treatments={treatments} />}
 
       <WhyChoose
         locationName={location.slug === 'nhs-alternative' ? 'patients across Surrey & Hampshire' : location.name}
