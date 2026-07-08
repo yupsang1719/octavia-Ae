@@ -25,6 +25,12 @@ const FALLBACK_TREATMENTS = [
   { label: 'Botox & Anti-Wrinkle', href: '/treatments/botox-anti-wrinkle' },
 ]
 
+const NHS_BAND_LINKS = [
+  { label: 'Band 1 — £27.90', href: '/nhs/band-1' },
+  { label: 'Band 2 — £76.60', href: '/nhs/band-2' },
+  { label: 'Band 3 — £332.10', href: '/nhs/band-3' },
+]
+
 const locationLinks = [
   { label: 'Godalming',   href: '/dentist-godalming' },
   { label: 'Guildford',   href: '/dentist-guildford' },
@@ -51,17 +57,28 @@ export default function Footer() {
   const [emailVal, setEmailVal] = useState('')
   const [subscribed, setSubscribed] = useState(false)
   const [treatments, setTreatments] = useState(FALLBACK_TREATMENTS)
-  const { phone, phoneTel, email: practiceEmail, address, instagram, name, type, hours, slug } = usePractice()
+  const [openingHours, setOpeningHours] = useState([])
+  const { phone, phoneTel, email: practiceEmail, address, instagram, name, type, slug } = usePractice()
   const [logoTitle, logoSub] = splitPracticeName(name)
+  const isPrivate = type === 'private'
 
   // Fetch published treatments for this practice (same as navbar)
   useEffect(() => {
+    if (!isPrivate) return
     fetch('/api/treatments')
       .then(r => r.json())
       .then(data => {
         if (!Array.isArray(data) || !data.length) return
         setTreatments(data.map(t => ({ label: t.name, href: `/treatments/${t.slug}` })))
       })
+      .catch(() => {})
+  }, [isPrivate])
+
+  // Fetch opening hours from CMS (stored in SiteSettings, separate from Practice model)
+  useEffect(() => {
+    fetch('/api/settings/opening-hours')
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setOpeningHours(data) })
       .catch(() => {})
   }, [])
 
@@ -183,13 +200,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Treatments — dynamic, only published for this practice */}
+          {/* Treatments / NHS Bands */}
           <div>
             <h3 className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 mb-5">
-              Treatments
+              {isPrivate ? 'Treatments' : 'NHS Bands'}
             </h3>
             <ul className="space-y-2.5">
-              {treatments.map(t => (
+              {(isPrivate ? treatments : NHS_BAND_LINKS).map(t => (
                 <FooterLink key={t.href} to={t.href}>{t.label}</FooterLink>
               ))}
             </ul>
@@ -221,13 +238,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Opening Hours — from practice context (set per-practice in DB) */}
+          {/* Opening Hours — fetched from CMS (SiteSettings) */}
           <div>
             <h3 className="font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30 mb-5">
               Opening Hours
             </h3>
             <ul className="space-y-2">
-              {hours.length > 0 ? hours.map(h => {
+              {openingHours.map(h => {
                 const [mainHours, lunchNote] = h.closed ? [] : h.hours.split(' (')
                 return (
                   <li key={h.day} className="text-[12px] font-sans">
@@ -244,9 +261,7 @@ export default function Footer() {
                     )}
                   </li>
                 )
-              }) : (
-                <li className="text-[12px] font-sans text-white/40">Mon–Fri 9 am – 5 pm</li>
-              )}
+              })}
             </ul>
           </div>
         </div>
