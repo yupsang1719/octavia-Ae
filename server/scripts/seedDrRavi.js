@@ -66,6 +66,7 @@ async function seed() {
       metaTitle: 'Dr Ravi Pant — Principal Dentist | Octavia Dental Godalming',
       metaDesc:  'Dr Ravi Pant is principal dentist at Octavia Dental, Godalming. GDC No. 116967. MSc Prosthetic Dentistry, Six Month Smiles provider, orthodontics and comprehensive dental care.',
 
+      practices: ['octavia-aesthetic', 'octavia-house'],
       published: true,
       order: 1,
     },

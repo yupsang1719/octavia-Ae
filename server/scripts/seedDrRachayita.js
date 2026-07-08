@@ -62,6 +62,7 @@ async function seed() {
       metaTitle: 'Dr Rachayita Pant — Principal Dentist | Octavia Dental Godalming',
       metaDesc:  'Dr Rachayita Pant is a principal dentist at Octavia Dental, Godalming. GDC No. 157860. Special interest in cosmetic dentistry and periodontics. MFDS RCS Edinburgh.',
 
+      practices: ['octavia-aesthetic', 'octavia-house'],
       published: true,
       order: 2,
     },

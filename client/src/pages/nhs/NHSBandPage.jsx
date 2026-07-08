@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
@@ -25,8 +26,6 @@ const BAND_COLOURS = {
 }
 
 export default function NHSBandPage({ band: rawBand }) {
-  // Normalise field names — hardcoded data uses intro/covers/notCovers,
-  // DB records use whatIsIt/benefits/notCovers
   const band = {
     ...rawBand,
     intro:     rawBand.intro     ?? rawBand.whatIsIt ?? [],
@@ -34,6 +33,16 @@ export default function NHSBandPage({ band: rawBand }) {
     notCovers: rawBand.notCovers ?? [],
   }
   const { name, phone, phoneTel, address } = usePractice()
+
+  const [dentists, setDentists] = useState([])
+  useEffect(() => {
+    fetch('/api/team')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) setDentists(data.filter(m => m.category === 'dentist'))
+      })
+      .catch(() => {})
+  }, [])
   const colours = BAND_COLOURS[band.number] || BAND_COLOURS[1]
   const canonical = `${SITE_URL}/nhs/${band.slug}`
 
@@ -180,8 +189,57 @@ export default function NHSBandPage({ band: rawBand }) {
         </div>
       </section>
 
+      {/* ── Team ── */}
+      {dentists.length > 0 && (
+        <section className="section-padding bg-brand-cream">
+          <div className="container-wide">
+            <motion.h2 className="font-serif text-3xl text-brand-dark font-medium mb-8" {...fade(0)}>
+              Meet your dentists
+            </motion.h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl">
+              {dentists.map((m, i) => (
+                <motion.div
+                  key={m.slug || i}
+                  className="bg-white border border-brand-border rounded-sm overflow-hidden"
+                  {...fade(i * 0.08)}
+                >
+                  <div className="h-44 bg-brand-green-bg">
+                    {m.image ? (
+                      <img src={m.image} alt={m.name} className="w-full h-full object-cover object-top" loading="lazy" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="font-serif text-4xl text-brand-green/30">{m.initials || m.name[0]}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-serif text-lg text-brand-dark font-medium leading-snug">{m.name}</h3>
+                    <p className="font-sans text-xs text-brand-green font-medium mb-2">{m.role}</p>
+                    {m.bio && (
+                      <p className="font-sans text-xs text-brand-muted leading-relaxed line-clamp-3 mb-3">{m.bio}</p>
+                    )}
+                    {m.specialisms?.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {m.specialisms.slice(0, 3).map(s => (
+                          <span key={s} className="text-[10px] font-sans px-2 py-0.5 bg-brand-cream border border-brand-border text-brand-muted rounded-full">{s}</span>
+                        ))}
+                      </div>
+                    )}
+                    {m.hasPage && (
+                      <Link to={`/our-team/${m.slug}`} className="inline-flex items-center gap-1 mt-3 font-sans text-xs font-medium text-brand-green hover:underline">
+                        View profile <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── All bands comparison ── */}
-      <section className="section-padding bg-brand-cream">
+      <section className="section-padding bg-white">
         <div className="container-wide">
           <motion.h2 className="font-serif text-3xl text-brand-dark font-medium mb-8" {...fade(0)}>
             NHS charge bands — April 2026
@@ -215,7 +273,7 @@ export default function NHSBandPage({ band: rawBand }) {
 
       {/* ── FAQ ── */}
       {band.faq?.length > 0 && (
-        <section className="section-padding bg-white">
+        <section className="section-padding bg-brand-cream">
           <div className="container-wide">
             <div className="max-w-3xl mx-auto">
               <motion.h2 className="font-serif text-3xl text-brand-dark font-medium mb-8" {...fade(0)}>
