@@ -1,4 +1,5 @@
 import Enquiry from '../models/Enquiry.js'
+import Practice from '../models/Practice.js'
 import { sendEnquiryNotification, sendEnquiryConfirmation } from '../utils/email.js'
 
 export async function createEnquiry(req, res) {
@@ -9,14 +10,17 @@ export async function createEnquiry(req, res) {
       return res.status(422).json({ error: 'GDPR consent is required' })
     }
 
-    const enquiry = await Enquiry.create({
-      name, email, phone, service, location, message, source, gdprConsent,
-      practice: req.practiceSlug,
-    })
+    const [enquiry, practice] = await Promise.all([
+      Enquiry.create({
+        name, email, phone, service, location, message, source, gdprConsent,
+        practice: req.practiceSlug,
+      }),
+      Practice.findOne({ slug: req.practiceSlug }).lean(),
+    ])
 
     Promise.all([
-      sendEnquiryNotification({ ...enquiry.toObject(), preferredTime }),
-      sendEnquiryConfirmation(enquiry),
+      sendEnquiryNotification({ ...enquiry.toObject(), preferredTime }, practice),
+      sendEnquiryConfirmation(enquiry, practice),
     ]).catch(err => console.error('Email error:', err.message))
 
     res.status(201).json({ success: true, id: enquiry._id })

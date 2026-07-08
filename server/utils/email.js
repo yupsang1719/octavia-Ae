@@ -13,21 +13,23 @@ function safeSubject(str) {
   return String(str ?? '').replace(/[\r\n\t]/g, ' ').trim()
 }
 
-const FROM = 'Octavia Dental & Facial Aesthetics <info@octavia-dental.co.uk>'
-const TO   = process.env.EMAIL_TO || 'info@octavia-dental.co.uk'
+const FROM = 'Octavia Dental <info@octavia-dental.co.uk>'
 
-export async function sendEnquiryNotification(enquiry) {
+export async function sendEnquiryNotification(enquiry, practice) {
   if (!process.env.RESEND_API_KEY) {
     console.log('RESEND_API_KEY not set — skipping notification')
     return
   }
 
+  const toEmail     = practice?.email || process.env.EMAIL_TO || 'info@octavia-dental.co.uk'
+  const practiceName = practice?.name || 'Octavia Dental'
+
   const { error } = await getClient().emails.send({
     from:    FROM,
-    to:      TO,
-    subject: safeSubject(`New enquiry: ${enquiry.name} — ${enquiry.service || 'General'}`),
+    to:      toEmail,
+    subject: safeSubject(`[${practiceName}] New enquiry: ${enquiry.name} — ${enquiry.service || 'General'}`),
     html: `
-      <h2>New Enquiry — Octavia Dental</h2>
+      <h2>New Enquiry — ${esc(practiceName)}</h2>
       <table style="border-collapse:collapse;width:100%">
         <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Name</td><td style="padding:8px;border:1px solid #ddd">${esc(enquiry.name)}</td></tr>
         <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Email</td><td style="padding:8px;border:1px solid #ddd">${esc(enquiry.email)}</td></tr>
@@ -44,20 +46,27 @@ export async function sendEnquiryNotification(enquiry) {
   if (error) throw new Error(error.message)
 }
 
-export async function sendEnquiryConfirmation(enquiry) {
+export async function sendEnquiryConfirmation(enquiry, practice) {
   if (!process.env.RESEND_API_KEY) return
 
+  const practiceName = practice?.name    || 'Octavia Dental'
+  const practicePhone = practice?.phone  || '01483 958205'
+  const practicePhoneTel = (practicePhone).replace(/\s/g, '')
+  const practiceAddress = practice?.address || 'Seymour House, Lower South Street, Godalming, Surrey GU7 1BZ'
+  const replyTo = practice?.email || 'info@octavia-dental.co.uk'
+
   const { error } = await getClient().emails.send({
-    from:    FROM,
-    to:      enquiry.email,
-    subject: "We've received your enquiry — Octavia Dental",
+    from:     FROM,
+    to:       enquiry.email,
+    replyTo:  replyTo,
+    subject:  safeSubject(`We've received your enquiry — ${practiceName}`),
     html: `
       <p>Dear ${esc(enquiry.name)},</p>
-      <p>Thank you for contacting Octavia Dental & Facial Aesthetics. We've received your enquiry and a member of our team will be in touch within 2 hours during opening hours.</p>
-      <p>If your query is urgent, please call us on <strong><a href="tel:01483958205">01483 958205</a></strong>.</p>
-      <p>Best regards,<br/>The Octavia Dental team</p>
+      <p>Thank you for contacting ${esc(practiceName)}. We've received your enquiry and a member of our team will be in touch within 2 hours during opening hours.</p>
+      <p>If your query is urgent, please call us on <strong><a href="tel:${esc(practicePhoneTel)}">${esc(practicePhone)}</a></strong>.</p>
+      <p>Best regards,<br/>The ${esc(practiceName)} team</p>
       <hr/>
-      <p style="font-size:12px;color:#999">Octavia Dental & Facial Aesthetics · Seymour House, Lower South Street, Godalming, Surrey GU7 1BZ</p>
+      <p style="font-size:12px;color:#999">${esc(practiceName)} · ${esc(practiceAddress)}</p>
     `,
   })
 
