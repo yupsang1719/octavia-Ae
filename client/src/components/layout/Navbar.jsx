@@ -20,14 +20,32 @@ const FALLBACK_TREATMENTS = [
   { label: 'Botox & Anti-Wrinkle', href: '/treatments/botox-anti-wrinkle' },
 ]
 
-const BASE_LOCATION_LINKS = [
-  { label: 'Godalming',   href: '/dentist-godalming' },
-  { label: 'Guildford',   href: '/dentist-guildford' },
-  { label: 'Haslemere',   href: '/dentist-haslemere' },
-  { label: 'Farnham',     href: '/dentist-farnham' },
-  { label: 'Cranleigh',   href: '/dentist-cranleigh' },
-  { label: 'Hampshire',   href: '/dentist-hampshire' },
-]
+const LOCATION_LINKS_BY_PRACTICE = {
+  'octavia-aesthetic': [
+    { label: 'Godalming',       href: '/dentist-godalming' },
+    { label: 'Guildford',       href: '/dentist-guildford' },
+    { label: 'Haslemere',       href: '/dentist-haslemere' },
+    { label: 'Farnham',         href: '/dentist-farnham' },
+    { label: 'Cranleigh',       href: '/dentist-cranleigh' },
+    { label: 'Hampshire',       href: '/dentist-hampshire' },
+    { label: 'NHS Alternative', href: '/nhs-alternative-surrey' },
+  ],
+  'octavia-house': [
+    { label: 'Godalming',  href: '/dentist-godalming' },
+    { label: 'Guildford',  href: '/dentist-guildford' },
+    { label: 'Haslemere',  href: '/dentist-haslemere' },
+    { label: 'Farnham',    href: '/dentist-farnham' },
+    { label: 'Cranleigh',  href: '/dentist-cranleigh' },
+  ],
+  'new-octavia': [
+    { label: 'Hindhead',  href: '/dentist-hindhead' },
+    { label: 'Grayshott', href: '/dentist-grayshott' },
+    { label: 'Haslemere', href: '/dentist-haslemere' },
+    { label: 'Liphook',   href: '/dentist-liphook' },
+    { label: 'Bordon',    href: '/dentist-bordon' },
+    { label: 'Hampshire', href: '/dentist-hampshire' },
+  ],
+}
 
 function DropdownMenu({ items }) {
   return (
@@ -110,10 +128,7 @@ export default function Navbar() {
   const [treatments, setTreatments]     = useState(FALLBACK_TREATMENTS)
   const { isOpen, open, close }         = useBookingModal()
   const { phone, phoneTel, name, slug, type }  = usePractice()
-  const locationLinks = [
-    ...BASE_LOCATION_LINKS,
-    ...(slug === 'octavia-aesthetic' ? [{ label: 'NHS Alternative', href: '/nhs-alternative-surrey' }] : []),
-  ]
+  const locationLinks = LOCATION_LINKS_BY_PRACTICE[slug] ?? LOCATION_LINKS_BY_PRACTICE['octavia-aesthetic']
   const [logoTitle, logoSub]            = splitPracticeName(name)
 
   useEffect(() => {
