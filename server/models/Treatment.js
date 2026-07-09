@@ -36,6 +36,7 @@ const treatmentSchema = new mongoose.Schema({
   gdcNote:    { type: Boolean, default: false },
   rxNote:     { type: Boolean, default: false },
 
+  category: { type: String, default: '' },
   order: { type: Number, default: 0 },
 }, { timestamps: true })
 

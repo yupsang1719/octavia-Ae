@@ -8,7 +8,7 @@ function toSlug(name) {
 export async function getTreatments(req, res) {
   try {
     const treatments = await Treatment
-      .find({ practice: req.practiceSlug, published: { $ne: false }, type: { $ne: 'nhs-band' } }, 'slug name tagline priceFrom specialists order')
+      .find({ practice: req.practiceSlug, published: { $ne: false }, type: { $ne: 'nhs-band' } }, 'slug name tagline priceFrom specialists order category')
       .sort({ order: 1 })
     res.json(treatments)
   } catch {

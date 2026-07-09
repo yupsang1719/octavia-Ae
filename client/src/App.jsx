@@ -20,6 +20,10 @@ const SixMonthSmile    = lazy(() => import('./pages/treatments/SixMonthSmile'))
 const AirFlowHygiene   = lazy(() => import('./pages/treatments/AirFlowHygiene'))
 const Botox              = lazy(() => import('./pages/treatments/Botox'))
 const GeneralDentistry   = lazy(() => import('./pages/treatments/GeneralDentistry'))
+const RootCanal          = lazy(() => import('./pages/treatments/RootCanal'))
+const Fillings           = lazy(() => import('./pages/treatments/Fillings'))
+const Crowns             = lazy(() => import('./pages/treatments/Crowns'))
+const Bridges            = lazy(() => import('./pages/treatments/Bridges'))
 const FacialAesthetics = lazy(() => import('./pages/aesthetics/FacialAesthetics'))
 const Godalming        = lazy(() => import('./pages/locations/Godalming'))
 const Guildford        = lazy(() => import('./pages/locations/Guildford'))
@@ -133,6 +137,10 @@ export default function App() {
             <Route path="/treatments/air-flow-hygiene"   element={<AirFlowHygiene />} />
             <Route path="/treatments/botox-anti-wrinkle"    element={<Botox />} />
             <Route path="/treatments/general-dentistry"    element={<GeneralDentistry />} />
+            <Route path="/treatments/root-canal"         element={<RootCanal />} />
+            <Route path="/treatments/fillings"           element={<Fillings />} />
+            <Route path="/treatments/crowns"             element={<Crowns />} />
+            <Route path="/treatments/bridges"            element={<Bridges />} />
             <Route path="/facial-aesthetics"             element={<FacialAesthetics />} />
             <Route path="/dentist-godalming"             element={<Godalming />} />
             <Route path="/dentist-guildford"             element={<Guildford />} />

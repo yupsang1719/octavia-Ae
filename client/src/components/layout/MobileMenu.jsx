@@ -137,16 +137,25 @@ function SubGroup({ label, items, onClose }) {
             className="overflow-hidden"
           >
             <div className="pb-4 space-y-1 pl-11">
-              {items.map(item => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  onClick={onClose}
-                  className="block py-2 font-sans text-sm text-brand-muted hover:text-brand-green transition-colors duration-150"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {items.map((item, i) =>
+                item.isHeader ? (
+                  <p
+                    key={`hdr-${i}`}
+                    className="pt-3 pb-1 text-[10px] uppercase tracking-widest text-brand-gold font-sans font-semibold"
+                  >
+                    {item.label}
+                  </p>
+                ) : (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    onClick={onClose}
+                    className="block py-2 font-sans text-sm text-brand-muted hover:text-brand-green transition-colors duration-150"
+                  >
+                    {item.label}
+                  </Link>
+                )
+              )}
             </div>
           </motion.div>
         )}

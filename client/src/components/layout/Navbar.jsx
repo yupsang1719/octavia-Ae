@@ -56,22 +56,31 @@ const LOCATION_LINKS_BY_PRACTICE = {
 function DropdownMenu({ items }) {
   return (
     <motion.div
-      className="absolute top-full left-0 mt-2 w-56 bg-white/95 backdrop-blur-sm border border-brand-border/60 shadow-xl shadow-brand-dark/8 rounded-lg py-2 z-50"
+      className="absolute top-full left-0 mt-2 w-60 bg-white/95 backdrop-blur-sm border border-brand-border/60 shadow-xl shadow-brand-dark/8 rounded-lg py-2 z-50"
       initial={{ opacity: 0, y: -6, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -6, scale: 0.97 }}
       transition={{ duration: 0.18, ease: 'easeOut' }}
     >
-      {items.map((item, i) => (
-        <Link
-          key={item.href}
-          to={item.href}
-          className="block px-4 py-2.5 text-sm font-sans text-brand-dark hover:bg-brand-green-bg hover:text-brand-green transition-colors duration-150"
-          style={{ transitionDelay: `${i * 15}ms` }}
-        >
-          {item.label}
-        </Link>
-      ))}
+      {items.map((item, i) =>
+        item.isHeader ? (
+          <p
+            key={`hdr-${i}`}
+            className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-brand-gold font-sans font-semibold"
+          >
+            {item.label}
+          </p>
+        ) : (
+          <Link
+            key={item.href}
+            to={item.href}
+            className="block px-4 py-2.5 text-sm font-sans text-brand-dark hover:bg-brand-green-bg hover:text-brand-green transition-colors duration-150"
+            style={{ transitionDelay: `${i * 15}ms` }}
+          >
+            {item.label}
+          </Link>
+        )
+      )}
       <div className="absolute top-0 left-5 w-8 h-0.5 bg-brand-gold rounded-full" />
     </motion.div>
   )
@@ -149,7 +158,17 @@ export default function Navbar() {
       .then(r => r.json())
       .then(data => {
         if (!Array.isArray(data) || !data.length) return
-        setTreatments(data.map(t => ({ label: t.name, href: `/treatments/${t.slug}` })))
+        const items = []
+        let lastCat = null
+        for (const t of data) {
+          const cat = t.category || ''
+          if (cat && cat !== lastCat) {
+            items.push({ isHeader: true, label: cat, href: '' })
+          }
+          lastCat = cat || null
+          items.push({ label: t.name, href: `/treatments/${t.slug}` })
+        }
+        setTreatments(items)
       })
       .catch(() => {})
   }, [])
