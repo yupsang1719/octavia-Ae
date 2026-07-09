@@ -139,18 +139,18 @@ Dr Ali's postgraduate training and extensive clinical experience with complex ca
   },
   {
     slug: 'why-dentist-botox-safer',
-    title: 'Why Having Botox at a Dental Practice Is Safer Than a Beauty Salon',
+    title: 'Why Having Anti-Wrinkle Injections at a Dental Practice Is Safer Than a Beauty Salon',
     excerpt: 'Dentists have the deepest understanding of facial anatomy. Dr Ana explains why the expertise matters and what to look for when choosing a provider.',
     category: 'aesthetics',
     author: 'Dr Ana',
     publishedAt: new Date('2026-04-22'),
     featuredImg: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
-    seoTitle: 'Botox at a Dental Practice vs Beauty Salon | Dr Ana, Godalming',
-    seoDesc: 'Dr Ana explains why dentist-led Botox is safer than beauty salon treatments, and what to look for when choosing a facial aesthetics provider.',
+    seoTitle: 'Anti-Wrinkle Injections at a Dental Practice vs Beauty Salon | Dr Ana, Godalming',
+    seoDesc: 'Dr Ana explains why dentist-led anti-wrinkle injections are safer than beauty salon treatments, and what to look for when choosing a facial aesthetics provider.',
     published: true,
-    body: `## The question I'm asked most often: "Why see a dentist for Botox?"
+    body: `## The question I'm asked most often: "Why see a dentist for anti-wrinkle injections?"
 
-It's a fair question. Botox clinics are everywhere — beauty salons, pop-up clinics, even shopping centres. So why drive to a dental practice for anti-wrinkle injections?
+It's a fair question. Aesthetic clinics are everywhere — beauty salons, pop-up clinics, even shopping centres. So why drive to a dental practice for anti-wrinkle injections?
 
 The answer comes down to one thing: **anatomy**.
 
@@ -158,7 +158,7 @@ The answer comes down to one thing: **anatomy**.
 
 Dentistry requires one of the most rigorous anatomy educations of any healthcare profession. Dentists spend years learning the precise location of every muscle, nerve, blood vessel and bone in the head and neck — because getting it wrong has immediate, serious consequences.
 
-When I qualified as a dentist, I could tell you the exact depth and trajectory of the inferior alveolar nerve, the location of the facial artery, the attachments of the orbicularis oris. Most beauticians who deliver Botox have completed a weekend course.
+When I qualified as a dentist, I could tell you the exact depth and trajectory of the inferior alveolar nerve, the location of the facial artery, the attachments of the orbicularis oris. Most beauticians who deliver these injections have completed a weekend course.
 
 I don't say that to be unkind. I say it because it matters enormously when you're injecting close to the orbicularis oculi (the muscle around the eye), the frontalis (the forehead), or the zygomaticus (around the cheek). A poorly placed injection can cause drooping, asymmetry, difficulty blinking, or worse.
 
@@ -168,7 +168,7 @@ In the UK, Botox (botulinum toxin) is a prescription-only medicine. This means i
 
 Dentists are trained prescribers. We assess patients clinically before every treatment. We document the assessment. We know the contraindications. We carry appropriate indemnity insurance for medical procedures.
 
-Many beauty therapists who advertise Botox are operating in a grey area — using prescriptions obtained by telephone or online without a proper face-to-face assessment, or working under prescribers who have never seen the patient.
+Many beauty therapists who advertise anti-wrinkle injections are operating in a grey area — using prescriptions obtained by telephone or online without a proper face-to-face assessment, or working under prescribers who have never seen the patient.
 
 This is changing — the UK government has introduced stricter regulations — but the reality today is that not all practitioners are equal.
 

@@ -111,7 +111,7 @@ export default function App() {
         defaultTitle="Octavia Dental & Facial Aesthetics | Godalming, Surrey"
         titleTemplate="%s"
       >
-        <meta name="description"       content="Private dental & facial aesthetics clinic in Godalming, Surrey. Implants, Invisalign, composite bonding, Botox. No waiting list. New patients welcome." />
+        <meta name="description"       content="Private dental & facial aesthetics clinic in Godalming, Surrey. Implants, Invisalign, composite bonding, anti-wrinkle injections. No waiting list. New patients welcome." />
         <link rel="canonical"          href="https://octavia-dental.co.uk" />
         <meta name="robots"            content="index, follow" />
         <meta name="author"            content="Octavia Dental & Facial Aesthetics" />

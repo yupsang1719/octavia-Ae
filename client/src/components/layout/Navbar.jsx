@@ -17,7 +17,7 @@ const FALLBACK_TREATMENTS = [
   { label: 'Teeth Whitening',      href: '/treatments/teeth-whitening' },
   { label: '6 Month Smile',        href: '/treatments/six-month-smile' },
   { label: 'Air Flow Hygiene',     href: '/treatments/air-flow-hygiene' },
-  { label: 'Botox & Anti-Wrinkle', href: '/treatments/botox-anti-wrinkle' },
+  { label: 'Anti-Wrinkle Injections', href: '/treatments/botox-anti-wrinkle' },
 ]
 
 const NHS_BAND_LINKS = [

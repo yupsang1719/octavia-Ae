@@ -18,7 +18,7 @@ export default function Home() {
   const { metaTitle, metaDesc } = usePractice()
 
   const title = metaTitle || 'Private Dentist Godalming | Octavia Dental & Facial Aesthetics'
-  const desc  = metaDesc  || 'Private dental & facial aesthetics clinic in Godalming, Surrey. Implants, Invisalign, composite bonding, Botox. No waiting list. New patients welcome.'
+  const desc  = metaDesc  || 'Private dental & facial aesthetics clinic in Godalming, Surrey. Implants, Invisalign, composite bonding, anti-wrinkle injections. No waiting list. New patients welcome.'
 
   return (
     <>

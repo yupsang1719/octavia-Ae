@@ -6,7 +6,7 @@ const AESTHETIC_LOCATIONS = [
     zone: 1,
     h1: 'Your Private Dentist in Godalming',
     metaTitle: 'Private Dentist Godalming GU7 | Octavia Dental & Facial Aesthetics',
-    metaDesc: 'Private dental & facial aesthetics clinic in Godalming, Surrey GU7. Implants, Invisalign, Botox. No waiting list. New patients welcome this week.',
+    metaDesc: 'Private dental & facial aesthetics clinic in Godalming, Surrey GU7. Implants, Invisalign, anti-wrinkle injections. No waiting list. New patients welcome this week.',
     distance: 'We are based in the heart of Godalming, just off the High Street.',
     nhs_note: false,
     intro: [
@@ -21,7 +21,7 @@ const AESTHETIC_LOCATIONS = [
     faq: [
       { q: 'Where exactly are you located in Godalming?', a: 'We are at Seymour House, Lower South Street, Godalming, GU7 1BZ — a short walk south from the town centre clock tower. The entrance is on Lower South Street, with parking available directly outside.' },
       { q: 'Are you accepting new patients in Godalming?', a: 'Yes. We actively welcome new patients from Godalming and the surrounding GU7 area. There is no waiting list — contact us today and we can typically see you within a week for a free initial consultation.' },
-      { q: 'Which treatments do you offer in Godalming?', a: 'We offer a comprehensive range of private dental and facial aesthetics treatments including dental implants, Invisalign, composite bonding, porcelain veneers, teeth whitening, 6 Month Smile, Air Flow hygiene, and Botox and anti-wrinkle injections — all from our Godalming clinic.' },
+      { q: 'Which treatments do you offer in Godalming?', a: 'We offer a comprehensive range of private dental and facial aesthetics treatments including dental implants, Invisalign, composite bonding, porcelain veneers, teeth whitening, 6 Month Smile, Air Flow hygiene, and anti-wrinkle injections — all from our Godalming clinic.' },
       { q: 'Do you offer payment plans in Godalming?', a: 'Yes. Flexible payment plans are available for larger treatments such as dental implants, Invisalign and porcelain veneers. Ask at your free consultation and we will find an arrangement that works for you.' },
     ],
   },
@@ -31,7 +31,7 @@ const AESTHETIC_LOCATIONS = [
     zone: 2,
     h1: 'Cosmetic Dentist serving Guildford',
     metaTitle: 'Cosmetic Dentist near Guildford Surrey | Octavia Dental',
-    metaDesc: 'Serving patients from Guildford for dental implants, Invisalign, composite bonding and Botox. Just 10 minutes from Guildford town centre. Free consultations.',
+    metaDesc: 'Serving patients from Guildford for dental implants, Invisalign, composite bonding and anti-wrinkle injections. Just 10 minutes from Guildford town centre. Free consultations.',
     distance: '10 minutes from Guildford town centre via the A3100.',
     nhs_note: true,
     intro: [
@@ -56,7 +56,7 @@ const AESTHETIC_LOCATIONS = [
     zone: 3,
     h1: 'Cosmetic Dentist serving Haslemere & Surrey Hills',
     metaTitle: 'Dentist near Haslemere Surrey Hills | Octavia Dental Godalming',
-    metaDesc: 'Serving Haslemere and the Surrey Hills for private dental and facial aesthetics. Just 15 minutes from Haslemere. Implants, Invisalign, Botox. Free consultation.',
+    metaDesc: 'Serving Haslemere and the Surrey Hills for private dental and facial aesthetics. Just 15 minutes from Haslemere. Implants, Invisalign, anti-wrinkle injections. Free consultation.',
     distance: '15 minutes from Haslemere via the A286.',
     nhs_note: true,
     intro: [
@@ -81,13 +81,13 @@ const AESTHETIC_LOCATIONS = [
     zone: 4,
     h1: 'Cosmetic Dentist serving Farnham, Surrey',
     metaTitle: 'Cosmetic Dentist near Farnham GU9 | Octavia Dental',
-    metaDesc: 'Serving Farnham patients for dental implants, veneers, Invisalign and Botox. 20 minutes from Farnham. Private dentist accepting new patients now.',
+    metaDesc: 'Serving Farnham patients for dental implants, veneers, Invisalign and anti-wrinkle injections. 20 minutes from Farnham. Private dentist accepting new patients now.',
     distance: '20 minutes from Farnham via the A31.',
     nhs_note: true,
     intro: [
       'Octavia Dental & Facial Aesthetics in Godalming is just 20 minutes from Farnham — accessible via the A31 east to Guildford, then the A3100 south into Godalming. For Farnham residents looking for a specialist private dentist who offers the full range of modern treatments, we are a straightforward and worthwhile drive.',
       'Farnham is a thriving town with a sophisticated patient base, and the demand for quality private dental and cosmetic treatments continues to grow. Yet access to genuine specialists — particularly for dental implants, Invisalign and facial aesthetics — can require travelling beyond the immediate area. Octavia Dental is the natural destination for Farnham patients who want specialist expertise without going to London.',
-      'Dr Ali is one of Surrey\'s most experienced implant dentists, with extensive postgraduate training in implantology and complex restorative cases. Dr Ana leads cosmetic dentistry and facial aesthetics — offering composite bonding, Invisalign, porcelain veneers, teeth whitening and Botox to patients who care deeply about both their dental health and their appearance.',
+      'Dr Ali is one of Surrey\'s most experienced implant dentists, with extensive postgraduate training in implantology and complex restorative cases. Dr Ana leads cosmetic dentistry and facial aesthetics — offering composite bonding, Invisalign, porcelain veneers, teeth whitening and anti-wrinkle injections to patients who care deeply about both their dental health and their appearance.',
       'We are proud to have built a loyal patient base from the Farnham, Aldershot, Fleet and Bordon areas. Patients from Farnham often comment that the journey takes no longer than the wait time at their previous dental practice — and that the quality of care more than justifies the trip.',
     ],
     directions: 'From Farnham, take the A31 east towards Guildford. At the Guildford junction, join the A3100 south into Godalming. We are at Seymour House, Lower South Street — approximately 20 minutes by car.',
@@ -96,7 +96,7 @@ const AESTHETIC_LOCATIONS = [
     faq: [
       { q: 'How long does it take to drive from Farnham to Octavia Dental?', a: 'Approximately 20 minutes via the A31 east to Guildford, then the A3100 south to Godalming.' },
       { q: 'Is there a comparable private dentist closer to Farnham?', a: 'There are general private dental practices in the Farnham area, but for specialist implant work with Dr Ali, or cosmetic dentistry and facial aesthetics with Dr Ana, our Godalming clinic offers a level of expertise that is genuinely difficult to match locally.' },
-      { q: 'Which treatments do you offer for Farnham patients?', a: 'All of our treatments are available to Farnham patients: dental implants, Invisalign, composite bonding, porcelain veneers, teeth whitening, 6 Month Smile, Air Flow hygiene, and Botox and anti-wrinkle injections.' },
+      { q: 'Which treatments do you offer for Farnham patients?', a: 'All of our treatments are available to Farnham patients: dental implants, Invisalign, composite bonding, porcelain veneers, teeth whitening, 6 Month Smile, Air Flow hygiene, and anti-wrinkle injections.' },
       { q: 'Do you offer flexible payment plans for Farnham patients?', a: 'Yes. We offer payment plan options for larger treatments including dental implants, Invisalign and veneers. Details are discussed at your free consultation so you can make a fully informed decision.' },
     ],
   },
@@ -113,7 +113,7 @@ const AESTHETIC_LOCATIONS = [
       'Cranleigh and the wider Waverley district are well served by Octavia Dental in Godalming — just 20 minutes away via the B2128. For Cranleigh residents who have struggled to access quality private dental care locally, or who need specialist treatments not available at their current practice, we offer a full-service private clinic with no waiting list.',
       'Cranleigh is the largest village in England, with a thriving community and growing demand for private dental and aesthetic treatments. The village has strong road connections to Godalming, and many Cranleigh patients find the drive to Lower South Street a quick and easy one.',
       'At Octavia Dental, we see many Waverley patients who come to us for treatments they cannot access locally: complex dental implant cases with Dr Ali, or full smile makeovers combining Invisalign and composite bonding with Dr Ana.',
-      'We are also the natural choice for Cranleigh patients seeking facial aesthetics treatments — particularly Botox and anti-wrinkle injections administered by Dr Ana, whose dental background gives her an unmatched understanding of facial anatomy.',
+      'We are also the natural choice for Cranleigh patients seeking facial aesthetics treatments — particularly anti-wrinkle injections administered by Dr Ana, whose dental background gives her an unmatched understanding of facial anatomy.',
     ],
     directions: 'From Cranleigh, take the B2128 north-west towards Bramley. Continue to the A281 and follow signs into Godalming town centre. We are at Seymour House, Lower South Street — approximately 20 minutes by car.',
     parking: 'Free parking on Lower South Street and at Flambard Way car park (3-minute walk).',
@@ -121,7 +121,7 @@ const AESTHETIC_LOCATIONS = [
     faq: [
       { q: 'How do I get from Cranleigh to Octavia Dental?', a: 'Take the B2128 north-west towards Bramley, then follow the A281 into Godalming town centre. We are on Lower South Street at Seymour House. The journey is approximately 20 minutes by car.' },
       { q: 'Do you see patients from the wider Waverley area?', a: 'Yes. We welcome patients from across the Waverley district, including Cranleigh, Ewhurst, Alfold, Bramley and the surrounding villages. All our treatments are available to new Waverley patients and there is no waiting list.' },
-      { q: 'Can I get Botox near Cranleigh at Octavia Dental?', a: 'Yes. Dr Ana offers Botox and anti-wrinkle injections at our Godalming clinic, just 20 minutes from Cranleigh. As a GDC-registered dentist with specialist facial anatomy training, Dr Ana provides a standard of care that cannot be matched by beauty salons.' },
+      { q: 'Can I get anti-wrinkle injections near Cranleigh at Octavia Dental?', a: 'Yes. Dr Ana offers anti-wrinkle injections at our Godalming clinic, just 20 minutes from Cranleigh. As a GDC-registered dentist with specialist facial anatomy training, Dr Ana provides a standard of care that cannot be matched by beauty salons.' },
       { q: 'How quickly can I be seen as a patient from Cranleigh?', a: 'New patients from Cranleigh can typically be seen within one week of contacting us. We have no NHS waiting list and no registration delays. Call us or book online and we will find you an early appointment.' },
     ],
   },

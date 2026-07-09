@@ -64,7 +64,7 @@ export const services = [
   },
   {
     id: 'botox',
-    name: 'Botox & Anti-Wrinkle',
+    name: 'Anti-Wrinkle Injections',
     tagline: 'Precision aesthetics by a dental specialist.',
     priceFrom: '£200',
     href: '/treatments/botox-anti-wrinkle',
@@ -88,6 +88,6 @@ export const taglines = {
   main:       'Your smile. Your confidence. Under one roof.',
   short:      'Private dental & facial aesthetics in Godalming, Surrey.',
   nhs:        'No waiting list. New patients welcome this week.',
-  aesthetics: 'Dental Botox — safer, more precise, longer-lasting.',
+  aesthetics: 'Anti-wrinkle injections — safer, more precise, longer-lasting.',
   implants:   'Permanent tooth replacement by our specialist, Dr Ali.',
 }

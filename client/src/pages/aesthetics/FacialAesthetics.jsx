@@ -12,7 +12,7 @@ import { SITE_URL } from '../../utils/seo'
 function fade(d=0){return{initial:{opacity:0,y:18},whileInView:{opacity:1,y:0},viewport:{once:true},transition:{duration:0.45,delay:d,ease:'easeOut'}}}
 
 const treatments = [
-  { name:'Botox & Anti-Wrinkle Injections', desc:'Softens frown lines, forehead lines and crow\'s feet with precision injections from Dr Ana.', href:'/treatments/botox-anti-wrinkle', from:'£200' },
+  { name:'Anti-Wrinkle Injections', desc:'Softens frown lines, forehead lines and crow\'s feet with precision injections from Dr Ana.', href:'/treatments/botox-anti-wrinkle', from:'£200' },
 ]
 const benefits = [
   'Administered by a GDC-registered dentist with deep facial anatomy training',
@@ -32,8 +32,8 @@ export default function FacialAesthetics() {
   return (
     <>
       <Helmet>
-        <title>Facial Aesthetics Godalming Surrey | Botox | Octavia Dental</title>
-        <meta name="description" content="Facial aesthetics treatments in Godalming by dentist-trained Dr Ana. Anti-wrinkle injections, Botox. Safer and more precise than beauty salons. Free consultation." />
+        <title>Facial Aesthetics Godalming Surrey | Anti-Wrinkle Injections | Octavia Dental</title>
+        <meta name="description" content="Facial aesthetics treatments in Godalming by dentist-trained Dr Ana. Anti-wrinkle injections. Safer and more precise than beauty salons. Free consultation." />
         <link rel="canonical" href={`${SITE_URL}/facial-aesthetics`} />
       </Helmet>
 
