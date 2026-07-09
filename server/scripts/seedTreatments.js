@@ -6,6 +6,8 @@ config({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../../.env') })
 import mongoose from 'mongoose'
 import Treatment from '../models/Treatment.js'
 
+const PRACTICE = 'octavia-aesthetic'
+
 const treatments = [
   {
     slug: 'dental-implants',
@@ -597,7 +599,11 @@ async function seed() {
   console.log('Connected to MongoDB')
 
   for (const t of treatments) {
-    await Treatment.findOneAndUpdate({ slug: t.slug }, t, { upsert: true, new: true })
+    await Treatment.findOneAndUpdate(
+      { slug: t.slug, practice: PRACTICE },
+      { ...t, practice: PRACTICE },
+      { upsert: true, new: true }
+    )
     console.log(`Seeded: ${t.name}`)
   }
 

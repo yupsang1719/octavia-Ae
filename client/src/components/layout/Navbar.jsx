@@ -158,15 +158,18 @@ export default function Navbar() {
       .then(r => r.json())
       .then(data => {
         if (!Array.isArray(data) || !data.length) return
+        const uncategorized = data.filter(t => !t.category)
+        const categorized   = data.filter(t => t.category)
+        const categories    = [...new Set(categorized.map(t => t.category))]
         const items = []
-        let lastCat = null
-        for (const t of data) {
-          const cat = t.category || ''
-          if (cat && cat !== lastCat) {
-            items.push({ isHeader: true, label: cat, href: '' })
-          }
-          lastCat = cat || null
+        for (const t of uncategorized) {
           items.push({ label: t.name, href: `/treatments/${t.slug}` })
+        }
+        for (const cat of categories) {
+          items.push({ isHeader: true, label: cat, href: '' })
+          categorized.filter(t => t.category === cat).forEach(t => {
+            items.push({ label: t.name, href: `/treatments/${t.slug}` })
+          })
         }
         setTreatments(items)
       })
