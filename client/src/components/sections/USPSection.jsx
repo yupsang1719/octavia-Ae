@@ -64,7 +64,7 @@ const NHS_USPS = [
 export default function USPSection() {
   const [active, setActive] = useState(0)
   const { isOpen, open, close } = useBookingModal()
-  const { type } = usePractice()
+  const { type, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
   const usps = isPrivate ? PRIVATE_USPS : NHS_USPS
 
@@ -163,7 +163,7 @@ export default function USPSection() {
                     whileTap={{ scale: 0.97 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                   >
-                    Book free consultation
+                    {bookingLabel}
                   </motion.button>
                 ) : (
                   <Link to="/contact" className="btn-primary inline-flex items-center gap-2">

@@ -211,6 +211,7 @@ export default function AdminTreatmentEditor() {
     try {
       const { data } = await axios.patch(`/api/treatments/${slug}`, {
         name:             form.name,
+        category:         form.category,
         tagline:          form.tagline,
         priceFrom:        form.priceFrom,
         priceNote:        form.priceNote,
@@ -288,6 +289,13 @@ export default function AdminTreatmentEditor() {
             placeholder="Single implant from £2,500. Full cost at consultation."
             className="input text-sm" />
         </div>
+      </Section>
+
+      {/* Category */}
+      <Section title="Category">
+        <p className="font-sans text-xs text-brand-muted mb-3">Groups this treatment under a heading in the nav dropdown (e.g. "Restorative Dentistry"). Leave blank for no grouping.</p>
+        <input type="text" value={form.category || ''} onChange={e => set('category', e.target.value)}
+          placeholder="Restorative Dentistry" className="input text-sm" />
       </Section>
 
       {/* Tagline */}

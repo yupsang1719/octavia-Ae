@@ -142,7 +142,7 @@ export default function Navbar() {
   const [hoveredNav, setHoveredNav]     = useState(null)
   const [treatments, setTreatments]     = useState(FALLBACK_TREATMENTS)
   const { isOpen, open, close }         = useBookingModal()
-  const { phone, phoneTel, name, slug, type }  = usePractice()
+  const { phone, phoneTel, name, slug, type, bookingLabel }  = usePractice()
   const isPrivate     = type === 'private'
   const locationLinks = LOCATION_LINKS_BY_PRACTICE[slug] ?? LOCATION_LINKS_BY_PRACTICE['octavia-aesthetic']
   const [logoTitle, logoSub]            = splitPracticeName(name)
@@ -242,7 +242,7 @@ export default function Navbar() {
             </a>
             {type === 'private' ? (
               <button onClick={() => open()} className="btn-primary text-sm">
-                Book Free Consultation
+                {bookingLabel}
               </button>
             ) : (
               <Link to="/contact" className="btn-primary text-sm">

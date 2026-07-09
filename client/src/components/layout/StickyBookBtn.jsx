@@ -16,7 +16,7 @@ export default function StickyBookBtn() {
   const [visible, setVisible]       = useState(false)
   const [hasConsent, setHasConsent] = useState(hasCookieConsent)
   const { isOpen, open, close }     = useBookingModal()
-  const { type }                    = usePractice()
+  const { type, bookingLabel }      = usePractice()
   const isPrivate                   = type === 'private'
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function StickyBookBtn() {
                 className="flex items-center justify-center gap-2 w-full bg-brand-green text-white font-sans font-medium text-sm py-4 shadow-lg"
               >
                 <MessageCircle className="w-4 h-4" />
-                Book Free Consultation
+                {bookingLabel}
               </button>
             ) : (
               <Link

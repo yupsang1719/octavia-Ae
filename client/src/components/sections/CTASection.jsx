@@ -9,7 +9,7 @@ import { usePractice } from '../../contexts/PracticeContext'
 
 export default function CTASection() {
   const { isOpen, open, close } = useBookingModal()
-  const { phone, phoneTel, whatsapp, address, type } = usePractice()
+  const { phone, phoneTel, whatsapp, address, type, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
 
   return (
@@ -96,7 +96,7 @@ export default function CTASection() {
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 >
-                  Book free consultation
+                  {bookingLabel}
                 </motion.button>
               ) : (
                 <Link

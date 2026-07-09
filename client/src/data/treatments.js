@@ -526,6 +526,46 @@ export const treatments = [
       { q: 'How do I clean under a dental bridge?', a: 'You cannot floss between bridge teeth in the conventional way. Instead, you use a floss threader or interdental brushes to clean under the pontic (artificial tooth). We will show you exactly how to do this at your fitting appointment.' },
     ],
   },
+  {
+    id: 'dentures',
+    slug: 'dentures',
+    title: 'Dentures Hindhead Surrey | Comfortable & Natural-Looking | New Octavia Dental Surgery',
+    metaDesc: 'Custom dentures in Hindhead, Surrey. Full and partial dentures that look and feel natural. New Octavia Dental Surgery. New patients welcome.',
+    h1: 'Dentures in Hindhead',
+    tagline: 'Comfortable, natural-looking dentures.',
+    specialists: [],
+    priceFrom: '£600',
+    priceNote: 'Partial dentures from £600. Full dentures from £900. Exact cost confirmed at consultation.',
+    financeAvailable: false,
+    heroImage: 'https://images.unsplash.com/photo-1571772996211-2f02c9727629?auto=format&fit=crop&w=1200&q=80',
+    whatIsIt: [
+      'Dentures are removable dental appliances used to replace missing teeth and the surrounding gum tissue. They come in two main types: full dentures (replacing all teeth on the upper or lower jaw) and partial dentures (replacing one or more missing teeth while the remaining natural teeth are still present).',
+      'Modern dentures are made from high-quality acrylic and, in some cases, a lightweight metal framework. They are custom-crafted to fit the contours of your mouth precisely, providing a comfortable fit and a natural appearance that restores your smile and ability to eat and speak with confidence.',
+      'At New Octavia Dental Surgery, we take time with each denture patient to ensure the fit, bite, and aesthetics meet your expectations. Properly fitted dentures should feel stable and secure, and should not cause discomfort or difficulty speaking.',
+    ],
+    benefits: [
+      'Restores the ability to eat a wider range of foods',
+      'Improves speech and confidence',
+      'Supports the facial muscles, preventing a sunken appearance',
+      'Custom-made for a precise, comfortable fit',
+      'Full and partial options available',
+      'A well-established, affordable tooth replacement solution',
+    ],
+    process: [
+      { step: 1, title: 'Consultation & assessment', body: 'We assess your mouth, discuss your options and explain the full process. A transparent quote is provided before any treatment begins.' },
+      { step: 2, title: 'Impressions', body: 'Precise impressions of your gums and any remaining teeth are taken. These are sent to our dental laboratory to create a custom-fitting denture.' },
+      { step: 3, title: 'Try-in appointment', body: 'A wax try-in is provided so you can assess the fit, appearance and bite before the final denture is fabricated. Adjustments are made at this stage.' },
+      { step: 4, title: 'Fitting', body: 'The completed denture is fitted. We check the bite, comfort and appearance and make any necessary adjustments.' },
+      { step: 5, title: 'Review & aftercare', body: 'A review appointment ensures you are comfortable. We provide guidance on cleaning and caring for your denture.' },
+    ],
+    faq: [
+      { q: 'Do dentures feel uncomfortable at first?', a: 'It is normal to experience some initial soreness and adjustment as your mouth adapts. Most patients find their dentures feel natural within a few weeks. Any persistent discomfort should be addressed at a review appointment.' },
+      { q: 'How do I clean my dentures?', a: 'Remove and brush your dentures daily with a soft brush and denture cleaner or mild soap. Do not use regular toothpaste, which can be too abrasive. Remove dentures overnight to give your gums a rest.' },
+      { q: 'How much do dentures cost?', a: 'Partial dentures at New Octavia Dental Surgery start from £600. Full dentures start from £900. We provide a clear written quote at consultation.' },
+      { q: 'How long do dentures last?', a: 'Dentures typically last 5–7 years with good care. Over time, as your gum and bone shape changes, they may need relining or replacing to maintain a good fit.' },
+      { q: 'Are there alternatives to dentures for missing teeth?', a: 'Dental implants and bridges are fixed alternatives that do not need to be removed. We will discuss all options at your consultation so you can make an informed choice for your situation.' },
+    ],
+  },
 ]
 
 export function getTreatmentById(id) {

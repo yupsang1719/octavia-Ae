@@ -17,7 +17,7 @@ export default function Gallery() {
   const [filter, setFilter] = useState('All')
   const [items, setItems]   = useState([])
   const { isOpen, open, close } = useBookingModal()
-  const { type } = usePractice()
+  const { type, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function Gallery() {
             <h2 className="font-serif text-3xl text-white font-medium mb-4">Ready for your own transformation?</h2>
             <p className="font-sans text-white/70 max-w-md mx-auto mb-8">{isPrivate ? 'Book a free consultation and let Dr Ali or Dr Ana show you what\'s possible for your smile.' : 'Get in touch to discuss your treatment options with our team.'}</p>
             <button onClick={() => open()} className="inline-flex items-center justify-center px-8 py-4 bg-white text-brand-green font-sans font-medium text-base rounded-full hover:bg-brand-cream transition-all">
-              {isPrivate ? 'Book free consultation' : 'Request appointment'}
+              {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
             </button>
           </motion.div>
         </div>

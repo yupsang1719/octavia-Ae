@@ -45,7 +45,7 @@ const TRUST_POINTS = [
 
 export default function OurTeam() {
   const { isOpen, open, close } = useBookingModal()
-  const { type, phone, phoneTel, email: practiceEmail, whatsapp } = usePractice()
+  const { type, phone, phoneTel, email: practiceEmail, whatsapp, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
   const [members, setMembers] = useState([])
 
@@ -177,7 +177,7 @@ export default function OurTeam() {
                 onClick={() => open()}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-green font-sans font-medium text-sm rounded-sm hover:bg-brand-cream transition-all"
               >
-                {isPrivate ? 'Book free consultation' : 'Request appointment'}
+                {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
               </button>
               {whatsapp && (
                 <a

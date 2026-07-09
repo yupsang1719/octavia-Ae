@@ -45,7 +45,7 @@ function LocationHero({ location, onBook, phone, phoneTel, isPrivate }) {
           )}
           <div className="flex flex-col sm:flex-row gap-3">
             <button onClick={onBook} className="btn-primary bg-white text-brand-green hover:bg-brand-cream px-8 py-4 text-base">
-              {isPrivate ? 'Book free consultation' : 'Request appointment'}
+              {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
             </button>
             <a
               href={`tel:${phoneTel}`}
@@ -336,7 +336,7 @@ function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address,
               onClick={onBook}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-green font-sans font-medium text-base rounded-sm transition-all hover:bg-brand-cream"
             >
-              {isPrivate ? 'Book free consultation' : 'Request appointment'}
+              {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
             </button>
             {whatsapp && (
               <a
@@ -361,7 +361,7 @@ function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address,
 // ── Main Template ─────────────────────────────────────────────────────────────
 export default function LocationPageTemplate({ location }) {
   const { isOpen, open, close } = useBookingModal()
-  const { name, phone, phoneTel, whatsapp, address, type, slug } = usePractice()
+  const { name, phone, phoneTel, whatsapp, address, type, slug, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
 
   const [treatments, setTreatments] = useState([])

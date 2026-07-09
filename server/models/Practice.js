@@ -24,6 +24,8 @@ const practiceSchema = new mongoose.Schema({
   metaTitle: String,
   metaDesc:  String,
 
+  freeConsultation: { type: Boolean, default: true },
+
   hours: [hourSchema],
 }, { timestamps: true })
 

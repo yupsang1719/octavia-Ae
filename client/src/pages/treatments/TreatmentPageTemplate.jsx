@@ -24,7 +24,7 @@ function fadeUp(delay = 0) {
 }
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
-function TreatmentHero({ treatment, member, onBook, isPrivate }) {
+function TreatmentHero({ treatment, member, onBook, isPrivate, bookingLabel }) {
   const { phone, phoneTel } = usePractice()
   return (
     <section className="relative min-h-[60vh] lg:min-h-[70vh] flex items-center bg-brand-dark overflow-hidden">
@@ -59,7 +59,7 @@ function TreatmentHero({ treatment, member, onBook, isPrivate }) {
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <button onClick={onBook} className="btn-primary px-8 py-4 text-base">
-              {isPrivate ? 'Book free consultation' : 'Request appointment'}
+              {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
             </button>
             <a
               href={`tel:${phoneTel}`}
@@ -371,7 +371,7 @@ function GDCNotes({ gdcNote, rxNote }) {
 }
 
 // ── Final CTA ─────────────────────────────────────────────────────────────────
-function TreatmentCTA({ member, onBook, isPrivate }) {
+function TreatmentCTA({ member, onBook, isPrivate, bookingLabel }) {
   const { phone, whatsapp, address } = usePractice()
   return (
     <section className="section-padding bg-brand-green">
@@ -382,7 +382,9 @@ function TreatmentCTA({ member, onBook, isPrivate }) {
           </h2>
           <p className="font-sans text-white/70 max-w-md mx-auto mb-8">
             {isPrivate
-              ? `Book a free consultation with ${member?.length ? member.map(m => m.name).join(' or ') : 'our specialist'} to discuss your options and receive a transparent, personalised quote.`
+              ? bookingLabel === 'Book free consultation'
+                ? `Book a free consultation with ${member?.length ? member.map(m => m.name).join(' or ') : 'our specialist'} to discuss your options and receive a transparent, personalised quote.`
+                : 'Request an appointment to discuss your treatment options with our team.'
               : 'Get in touch to book your appointment. NHS and private patients are both welcome.'}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -390,7 +392,7 @@ function TreatmentCTA({ member, onBook, isPrivate }) {
               onClick={onBook}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-dark font-sans font-medium text-base rounded-full transition-all duration-300 hover:bg-brand-cream"
             >
-              {isPrivate ? 'Book free consultation' : 'Request appointment'}
+              {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
             </button>
             {whatsapp && (
               <a
@@ -415,7 +417,7 @@ function TreatmentCTA({ member, onBook, isPrivate }) {
 // ── Main Template ─────────────────────────────────────────────────────────────
 export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }) {
   const { isOpen, open, close } = useBookingModal()
-  const { type } = usePractice()
+  const { type, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
   const [treatment, setTreatment] = useState(treatmentProp || (slug ? getTreatmentById(slug) : null))
   const [member, setMember] = useState(null)
@@ -470,7 +472,7 @@ export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }
 
       {/* pt-16 offsets the fixed navbar */}
       <div className="pt-16">
-        <TreatmentHero treatment={treatment} member={member} onBook={open} isPrivate={isPrivate} />
+        <TreatmentHero treatment={treatment} member={member} onBook={open} isPrivate={isPrivate} bookingLabel={bookingLabel} />
         <WhatIsIt paragraphs={treatment.whatIsIt} />
         <Benefits benefits={treatment.benefits} />
         <Process steps={treatment.process} />
@@ -479,7 +481,7 @@ export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }
         <FAQSection faqs={treatment.faq} />
         <GDCNotes gdcNote={treatment.gdcNote} rxNote={treatment.rxNote} />
         <SpecialistSection member={member} />
-        <TreatmentCTA member={member} onBook={open} isPrivate={isPrivate} />
+        <TreatmentCTA member={member} onBook={open} isPrivate={isPrivate} bookingLabel={bookingLabel} />
       </div>
 
       <BookingModal isOpen={isOpen} onClose={close} defaultService={treatment.id} />

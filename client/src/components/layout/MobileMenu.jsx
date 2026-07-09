@@ -172,7 +172,7 @@ const MENU_ANIMATION = {
 
 export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments = FALLBACK_TREATMENTS }) {
   const [height, setHeight] = useState(0)
-  const { name, phone, phoneTel, whatsapp, slug, type } = usePractice()
+  const { name, phone, phoneTel, whatsapp, slug, type, bookingLabel } = usePractice()
   const isPrivate     = type === 'private'
   const locationLinks = LOCATION_LINKS_BY_PRACTICE[slug] ?? LOCATION_LINKS_BY_PRACTICE['octavia-aesthetic']
   const treatmentLinks = isPrivate ? treatments : NHS_BAND_LINKS
@@ -261,7 +261,7 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments 
                   onClick={() => { onOpenBooking(); onClose() }}
                   className="btn-primary w-full text-sm"
                 >
-                  Book Free Consultation
+                  {bookingLabel}
                 </button>
               ) : (
                 <Link to="/contact" onClick={onClose} className="btn-primary w-full text-sm text-center">

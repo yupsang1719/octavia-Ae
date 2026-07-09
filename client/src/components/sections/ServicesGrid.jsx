@@ -191,7 +191,7 @@ function NHSBandRow({ band, index }) {
 
 /* ── Section ────────────────────────────────────────────────────────────────── */
 export default function ServicesGrid() {
-  const { type } = usePractice()
+  const { type, slug, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
   const [services, setServices] = useState(staticServices)
 
@@ -252,7 +252,9 @@ export default function ServicesGrid() {
             transition={{ delay: 0.3, duration: 0.5 }}
           >
             {isPrivate
-              ? 'Smile transformations to subtle facial aesthetics — our specialist team delivers results that last.'
+              ? slug === 'octavia-aesthetic'
+                ? 'Smile transformations to subtle facial aesthetics — our specialist team delivers results that last.'
+                : 'From routine care to specialist dentistry — our team delivers results that last.'
               : 'NHS dental charges are set by the government. You pay one charge per course of treatment — the highest band reached.'}
           </motion.p>
         </div>
@@ -282,7 +284,7 @@ export default function ServicesGrid() {
             to={isPrivate ? '/contact' : '/nhs/band-1'}
             className="inline-flex items-center gap-2 font-sans text-sm font-medium text-brand-gold hover:text-white transition-colors duration-200 group flex-shrink-0"
           >
-            {isPrivate ? 'Book a free consultation' : 'Learn about NHS charges'}
+            {isPrivate ? bookingLabel : 'Learn about NHS charges'}
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
           </Link>
         </motion.div>

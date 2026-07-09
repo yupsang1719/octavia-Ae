@@ -50,7 +50,7 @@ export default function BlogPost() {
   const [related, setRelated] = useState([])
   const [notFound, setNotFound] = useState(false)
   const { isOpen, open, close } = useBookingModal()
-  const { type } = usePractice()
+  const { type, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
 
   useEffect(() => {
@@ -163,7 +163,7 @@ export default function BlogPost() {
           <h3 className="font-serif text-2xl text-white font-medium mb-3">Have a question?</h3>
           <p className="font-sans text-white/70 mb-6 text-sm">{isPrivate ? 'Book a free consultation with Dr Ali or Dr Ana and get expert advice tailored to your situation.' : 'Get in touch with our team for expert advice tailored to your situation.'}</p>
           <button onClick={() => open()} className="inline-flex items-center justify-center px-6 py-3 bg-white text-brand-green font-sans font-medium text-sm rounded-sm hover:bg-brand-cream transition-all">
-            {isPrivate ? 'Book free consultation' : 'Request appointment'}
+            {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
           </button>
         </div>
       </div>

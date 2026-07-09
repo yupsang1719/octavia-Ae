@@ -45,7 +45,7 @@ export default function Hero({
   heroImage = 'https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1400&q=80',
 }) {
   const { isOpen, open, close } = useBookingModal()
-  const { type, whatsapp, address } = usePractice()
+  const { type, whatsapp, address, bookingLabel } = usePractice()
 
   const isPrivate = type === 'private'
   const resolvedHeadline = headline ?? 'Your smile.'
@@ -164,7 +164,7 @@ export default function Hero({
             >
               {isPrivate ? (
                 <button onClick={() => open()} className="btn-primary text-sm px-8 py-4">
-                  <TextScramble text="Book free consultation" />
+                  <TextScramble text={bookingLabel} />
                 </button>
               ) : (
                 <Link to="/contact" className="btn-primary text-sm px-8 py-4">
