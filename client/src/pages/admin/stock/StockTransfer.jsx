@@ -21,17 +21,17 @@ export default function StockTransfer() {
   const [history, setHistory] = useState([])
 
   useEffect(() => {
-    axios.get('/api/stock/items', { params: { active: true } }).then(({ data }) => setItems(data)).catch(console.error)
+    axios.get('/api/stock/items', { params: { active: true } }).then(({ data }) => setItems(Array.isArray(data) ? data : [])).catch(console.error)
     axios.get('/api/stock/dashboard').then(({ data }) => {
       const map = {}
-      for (const i of data.items) map[i._id] = i.stock[CENTRAL_PRACTICE]
+      for (const i of data.items || []) map[i._id] = i.stock[CENTRAL_PRACTICE]
       setCentralStock(map)
     }).catch(console.error)
     loadHistory()
   }, [])
 
   function loadHistory() {
-    axios.get('/api/stock/transfers').then(({ data }) => setHistory(data)).catch(console.error)
+    axios.get('/api/stock/transfers').then(({ data }) => setHistory(Array.isArray(data) ? data : [])).catch(console.error)
   }
 
   function updateLine(idx, field, value) {

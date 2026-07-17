@@ -21,12 +21,12 @@ export default function StockGoodsIn() {
   const [history, setHistory] = useState([])
 
   useEffect(() => {
-    axios.get('/api/stock/items', { params: { active: true } }).then(({ data }) => setItems(data)).catch(console.error)
+    axios.get('/api/stock/items', { params: { active: true } }).then(({ data }) => setItems(Array.isArray(data) ? data : [])).catch(console.error)
     loadHistory()
   }, [])
 
   function loadHistory() {
-    axios.get('/api/stock/goods-in').then(({ data }) => setHistory(data)).catch(console.error)
+    axios.get('/api/stock/goods-in').then(({ data }) => setHistory(Array.isArray(data) ? data : [])).catch(console.error)
   }
 
   function itemFor(itemId) {

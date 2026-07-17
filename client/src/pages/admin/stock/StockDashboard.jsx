@@ -32,8 +32,8 @@ export default function StockDashboard() {
     if (category !== 'all') params.category = category
     if (supplier !== 'all') params.supplier = supplier
     axios.get('/api/stock/dashboard', { params })
-      .then(({ data }) => { setItems(data.items); setStockValue(data.stockValue) })
-      .catch(console.error)
+      .then(({ data }) => { setItems(Array.isArray(data.items) ? data.items : []); setStockValue(data.stockValue || 0) })
+      .catch(err => { console.error(err); setItems([]) })
       .finally(() => setLoading(false))
   }, [status, category, supplier])
 
@@ -168,15 +168,15 @@ function MovementHistoryView() {
   const [filters, setFilters] = useState({ itemId: '', location: '', type: '', from: '', to: '' })
 
   useEffect(() => {
-    axios.get('/api/stock/items').then(({ data }) => setItems(data)).catch(console.error)
+    axios.get('/api/stock/items').then(({ data }) => setItems(Array.isArray(data) ? data : [])).catch(console.error)
   }, [])
 
   useEffect(() => {
     setLoading(true)
     const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
     axios.get('/api/stock/movements', { params: { ...params, limit: 100 } })
-      .then(({ data }) => setMovements(data.movements))
-      .catch(console.error)
+      .then(({ data }) => setMovements(Array.isArray(data.movements) ? data.movements : []))
+      .catch(err => { console.error(err); setMovements([]) })
       .finally(() => setLoading(false))
   }, [filters])
 
@@ -330,8 +330,8 @@ function StaffStockView({ practice, setPractice }) {
   useEffect(() => {
     setLoading(true)
     axios.get('/api/stock/dashboard')
-      .then(({ data }) => setItems(data.items))
-      .catch(console.error)
+      .then(({ data }) => setItems(Array.isArray(data.items) ? data.items : []))
+      .catch(err => { console.error(err); setItems([]) })
       .finally(() => setLoading(false))
   }, [])
 

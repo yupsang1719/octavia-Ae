@@ -20,7 +20,7 @@ export default function StockItems() {
 
   function load() {
     setLoading(true)
-    axios.get('/api/stock/items').then(({ data }) => setItems(data)).catch(console.error).finally(() => setLoading(false))
+    axios.get('/api/stock/items').then(({ data }) => setItems(Array.isArray(data) ? data : [])).catch(console.error).finally(() => setLoading(false))
   }
 
   const visible = items.filter(i => showInactive || i.active)

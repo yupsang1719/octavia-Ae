@@ -18,8 +18,8 @@ export default function StockCount() {
     setValues({})
     setResult(null)
     axios.get('/api/stock/count/items', { params: { practice, tier } })
-      .then(({ data }) => setItems(data))
-      .catch(() => setError('Failed to load count sheet'))
+      .then(({ data }) => setItems(Array.isArray(data) ? data : []))
+      .catch(() => { setError('Failed to load count sheet'); setItems([]) })
       .finally(() => setLoading(false))
   }, [practice, tier])
 

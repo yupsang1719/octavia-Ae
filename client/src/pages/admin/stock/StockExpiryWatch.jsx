@@ -21,7 +21,7 @@ export default function StockExpiryWatch() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios.get('/api/stock/expiry').then(({ data }) => setRows(data)).catch(console.error).finally(() => setLoading(false))
+    axios.get('/api/stock/expiry').then(({ data }) => setRows(Array.isArray(data) ? data : [])).catch(console.error).finally(() => setLoading(false))
   }, [])
 
   return (

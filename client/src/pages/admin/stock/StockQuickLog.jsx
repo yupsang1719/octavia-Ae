@@ -16,7 +16,7 @@ export default function StockQuickLog() {
   const [done, setDone] = useState(false)
 
   useEffect(() => {
-    axios.get('/api/stock/items', { params: { active: true } }).then(({ data }) => setItems(data)).catch(console.error)
+    axios.get('/api/stock/items', { params: { active: true } }).then(({ data }) => setItems(Array.isArray(data) ? data : [])).catch(console.error)
   }, [])
 
   function reset() {
