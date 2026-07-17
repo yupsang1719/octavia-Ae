@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Outlet, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Outlet, useLocation, Navigate } from 'react-router-dom'
 import { Suspense, lazy, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import Navbar        from './components/layout/Navbar'
@@ -7,7 +7,9 @@ import WhatsAppButton from './components/ui/WhatsAppButton'
 import StickyBookBtn from './components/layout/StickyBookBtn'
 import ConsentBanner from './components/ui/ConsentBanner'
 import ProtectedRoute from './components/admin/ProtectedRoute'
+import ManagerRoute   from './components/admin/ManagerRoute'
 import AdminLayout   from './components/admin/AdminLayout'
+import { useAuth } from './contexts/AuthContext'
 
 // ── Public pages ──────────────────────────────────────────────────────────────
 const Home             = lazy(() => import('./pages/Home'))
@@ -71,6 +73,15 @@ const AdminEmailTemplates       = lazy(() => import('./pages/admin/AdminEmailTem
 const AdminEmailTemplateEditor  = lazy(() => import('./pages/admin/AdminEmailTemplateEditor'))
 const AdminPracticeSettings     = lazy(() => import('./pages/admin/AdminPracticeSettings'))
 
+// ── Stock pages ───────────────────────────────────────────────────────────────
+const StockDashboard    = lazy(() => import('./pages/admin/stock/StockDashboard'))
+const StockGoodsIn      = lazy(() => import('./pages/admin/stock/StockGoodsIn'))
+const StockTransfer     = lazy(() => import('./pages/admin/stock/StockTransfer'))
+const StockCount        = lazy(() => import('./pages/admin/stock/StockCount'))
+const StockQuickLog     = lazy(() => import('./pages/admin/stock/StockQuickLog'))
+const StockExpiryWatch  = lazy(() => import('./pages/admin/stock/StockExpiryWatch'))
+const StockItems        = lazy(() => import('./pages/admin/stock/StockItems'))
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -86,6 +97,13 @@ function PageLoader() {
       <div className="w-8 h-8 border-2 border-brand-green border-t-transparent rounded-full animate-spin" />
     </div>
   )
+}
+
+// Staff accounts have no use for the general CMS dashboard — send them
+// straight to their Stock landing page instead.
+function AdminIndex() {
+  const { role } = useAuth()
+  return role === 'manager' ? <AdminDashboard /> : <Navigate to="/admin/stock" replace />
 }
 
 function PublicLayout() {
@@ -175,25 +193,34 @@ export default function App() {
             path="/admin"
             element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}
           >
-            <Route index                  element={<AdminDashboard />} />
-            <Route path="enquiries"       element={<AdminEnquiries />} />
-            <Route path="blog"            element={<AdminBlog />} />
-            <Route path="blog/new"        element={<AdminBlogEditor />} />
-            <Route path="blog/edit/:id"   element={<AdminBlogEditor />} />
-            <Route path="gallery"         element={<AdminGallery />} />
-            <Route path="team"            element={<AdminTeam />} />
-            <Route path="team/:id"        element={<AdminTeamEditor />} />
-            <Route path="reviews"          element={<AdminReviews />} />
-            <Route path="trust-bar"        element={<AdminTrustBar />} />
-            <Route path="opening-hours"    element={<AdminOpeningHours />} />
-            <Route path="review-request"       element={<AdminReviewRequest />} />
-            <Route path="treatments"                    element={<AdminTreatments />} />
-            <Route path="nhs-bands"                     element={<AdminNHSBands />} />
-            <Route path="treatments/:slug"             element={<AdminTreatmentEditor />} />
-            <Route path="patients"                     element={<AdminPatients />} />
-            <Route path="email-templates"              element={<AdminEmailTemplates />} />
-            <Route path="email-templates/:id"          element={<AdminEmailTemplateEditor />} />
-            <Route path="practice-settings"            element={<AdminPracticeSettings />} />
+            <Route index                  element={<AdminIndex />} />
+            <Route path="enquiries"       element={<ManagerRoute><AdminEnquiries /></ManagerRoute>} />
+            <Route path="blog"            element={<ManagerRoute><AdminBlog /></ManagerRoute>} />
+            <Route path="blog/new"        element={<ManagerRoute><AdminBlogEditor /></ManagerRoute>} />
+            <Route path="blog/edit/:id"   element={<ManagerRoute><AdminBlogEditor /></ManagerRoute>} />
+            <Route path="gallery"         element={<ManagerRoute><AdminGallery /></ManagerRoute>} />
+            <Route path="team"            element={<ManagerRoute><AdminTeam /></ManagerRoute>} />
+            <Route path="team/:id"        element={<ManagerRoute><AdminTeamEditor /></ManagerRoute>} />
+            <Route path="reviews"          element={<ManagerRoute><AdminReviews /></ManagerRoute>} />
+            <Route path="trust-bar"        element={<ManagerRoute><AdminTrustBar /></ManagerRoute>} />
+            <Route path="opening-hours"    element={<ManagerRoute><AdminOpeningHours /></ManagerRoute>} />
+            <Route path="review-request"       element={<ManagerRoute><AdminReviewRequest /></ManagerRoute>} />
+            <Route path="treatments"                    element={<ManagerRoute><AdminTreatments /></ManagerRoute>} />
+            <Route path="nhs-bands"                     element={<ManagerRoute><AdminNHSBands /></ManagerRoute>} />
+            <Route path="treatments/:slug"             element={<ManagerRoute><AdminTreatmentEditor /></ManagerRoute>} />
+            <Route path="patients"                     element={<ManagerRoute><AdminPatients /></ManagerRoute>} />
+            <Route path="email-templates"              element={<ManagerRoute><AdminEmailTemplates /></ManagerRoute>} />
+            <Route path="email-templates/:id"          element={<ManagerRoute><AdminEmailTemplateEditor /></ManagerRoute>} />
+            <Route path="practice-settings"            element={<ManagerRoute><AdminPracticeSettings /></ManagerRoute>} />
+
+            {/* Stock — Dashboard/Count/Quick Log open to manager + staff; the rest manager-only */}
+            <Route path="stock"                element={<StockDashboard />} />
+            <Route path="stock/count"          element={<StockCount />} />
+            <Route path="stock/quick-log"      element={<StockQuickLog />} />
+            <Route path="stock/goods-in"       element={<ManagerRoute><StockGoodsIn /></ManagerRoute>} />
+            <Route path="stock/transfer"       element={<ManagerRoute><StockTransfer /></ManagerRoute>} />
+            <Route path="stock/expiry-watch"   element={<ManagerRoute><StockExpiryWatch /></ManagerRoute>} />
+            <Route path="stock/items"          element={<ManagerRoute><StockItems /></ManagerRoute>} />
           </Route>
         </Routes>
       </Suspense>

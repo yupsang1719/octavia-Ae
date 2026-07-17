@@ -12,6 +12,14 @@ export function readTime(text) {
   return `${mins} min read`
 }
 
+export function formatDateShort(dateString) {
+  return new Date(dateString).toLocaleDateString('en-GB')
+}
+
+export function formatCurrency(amount) {
+  return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(amount || 0)
+}
+
 export function slugify(text) {
   return text
     .toLowerCase()

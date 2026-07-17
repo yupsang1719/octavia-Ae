@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity } from 'lucide-react'
+import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity, Package, Truck, ArrowRightLeft, ClipboardList, Zap, CalendarClock } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
 
+// roles omitted = manager only
 const NAV = [
-  { to: '/admin',                    label: 'Dashboard',       icon: LayoutDashboard, end: true },
+  { to: '/admin',                    label: 'Dashboard',       icon: LayoutDashboard, end: true, roles: ['manager'] },
   { to: '/admin/enquiries',          label: 'Enquiries',       icon: Inbox },
   { to: '/admin/blog',               label: 'Blog',            icon: FileText },
   { to: '/admin/gallery',            label: 'Gallery',         icon: Image },
@@ -20,6 +21,13 @@ const NAV = [
   { to: '/admin/patients',           label: 'Patients',        icon: UserCheck },
   { to: '/admin/email-templates',    label: 'Email Templates', icon: Mail },
   { to: '/admin/practice-settings',  label: 'Practice Settings', icon: Settings },
+  { to: '/admin/stock',              label: 'Stock',            icon: Package,        end: true,        roles: ['manager', 'staff'], heading: 'Stock' },
+  { to: '/admin/stock/goods-in',     label: 'Goods In',         icon: Truck,          roles: ['manager'] },
+  { to: '/admin/stock/transfer',     label: 'Transfer',         icon: ArrowRightLeft, roles: ['manager'] },
+  { to: '/admin/stock/count',        label: 'Count',            icon: ClipboardList,  roles: ['manager', 'staff'] },
+  { to: '/admin/stock/quick-log',    label: 'Quick Log',        icon: Zap,            roles: ['manager', 'staff'] },
+  { to: '/admin/stock/expiry-watch', label: 'Expiry Watch',     icon: CalendarClock,  roles: ['manager'] },
+  { to: '/admin/stock/items',        label: 'Items',            icon: Package,        roles: ['manager'] },
 ]
 
 const SITE_COLOURS = {
@@ -29,10 +37,12 @@ const SITE_COLOURS = {
 }
 
 export default function AdminLayout() {
-  const { logout } = useAuth()
+  const { logout, role } = useAuth()
   const { name, slug } = usePractice()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
+
+  const visibleNav = NAV.filter(item => (!item.onlyFor || item.onlyFor === slug) && (item.roles || ['manager']).includes(role))
 
   const [logoTitle, logoSub] = splitPracticeName(name)
   const dot = SITE_COLOURS[slug] ?? 'bg-white/40'
@@ -63,23 +73,27 @@ export default function AdminLayout() {
         </div>
 
         <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
-          {NAV.filter(item => !item.onlyFor || item.onlyFor === slug).map(({ to, label, icon: Icon, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-sans transition-colors ${
-                  isActive
-                    ? 'bg-white/15 text-white'
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
-                }`
-              }
-            >
-              <Icon size={16} strokeWidth={1.75} />
-              {label}
-            </NavLink>
+          {visibleNav.map(({ to, label, icon: Icon, end, heading }) => (
+            <div key={to}>
+              {heading && (
+                <p className="px-3 pt-4 pb-1 text-[10px] font-sans text-white/30 uppercase tracking-widest">{heading}</p>
+              )}
+              <NavLink
+                to={to}
+                end={end}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-sans transition-colors ${
+                    isActive
+                      ? 'bg-white/15 text-white'
+                      : 'text-white/60 hover:text-white hover:bg-white/5'
+                  }`
+                }
+              >
+                <Icon size={16} strokeWidth={1.75} />
+                {label}
+              </NavLink>
+            </div>
           ))}
         </nav>
 

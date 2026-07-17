@@ -6,14 +6,17 @@ const AuthContext = createContext(null)
 
 const TOKEN_KEY = 'octavia_admin_token'
 
-function isTokenValid(token) {
-  if (!token) return false
+function decodePayload(token) {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload.exp * 1000 > Date.now()
+    return JSON.parse(atob(token.split('.')[1]))
   } catch {
-    return false
+    return null
   }
+}
+
+function isTokenValid(token) {
+  const payload = token && decodePayload(token)
+  return !!payload && payload.exp * 1000 > Date.now()
 }
 
 export function AuthProvider({ children }) {
@@ -45,8 +48,10 @@ export function AuthProvider({ children }) {
     }
   }, [token])
 
+  const role = token ? decodePayload(token)?.role || 'manager' : null
+
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated: !!token, login, logout }}>
+    <AuthContext.Provider value={{ token, isAuthenticated: !!token, role, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

@@ -9,11 +9,18 @@ export async function requireAuth(req, res, next) {
   try {
     const token = header.slice(7)
     const payload = jwt.verify(token, process.env.JWT_SECRET)
-    const admin = await Admin.findById(payload.id).select('_id email').lean()
+    const admin = await Admin.findById(payload.id).select('_id email role').lean()
     if (!admin) return res.status(401).json({ error: 'Unauthorised' })
     req.admin = admin
     next()
   } catch {
     res.status(401).json({ error: 'Invalid or expired token' })
   }
+}
+
+export function requireManager(req, res, next) {
+  if (req.admin?.role !== 'manager') {
+    return res.status(403).json({ error: 'Manager access required' })
+  }
+  next()
 }

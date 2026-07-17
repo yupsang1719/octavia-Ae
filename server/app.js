@@ -18,6 +18,7 @@ import uploadRoutes    from './routes/upload.js'
 import settingsRoutes       from './routes/settings.js'
 import treatmentRoutes     from './routes/treatments.js'
 import emailTemplateRoutes from './routes/emailTemplates.js'
+import stockRoutes from './routes/stock.js'
 import { generateSitemap } from './utils/sitemapGenerator.js'
 
 const __dir = dirname(fileURLToPath(import.meta.url))
@@ -85,6 +86,7 @@ app.use('/api/settings',        settingsRoutes)
 app.use('/api/treatments',      treatmentRoutes)
 app.use('/api/email-templates', emailTemplateRoutes)
 app.use('/api/practice',        practiceRoutes)
+app.use('/api/stock',           stockRoutes)
 
 // Sitemap — cached for 24h
 app.get('/sitemap.xml', async (req, res) => {
