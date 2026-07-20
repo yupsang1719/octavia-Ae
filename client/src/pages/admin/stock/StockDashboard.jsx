@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Copy, Download, Check, RotateCcw } from 'lucide-react'
 import { useAuth } from '../../../contexts/AuthContext'
 import StockStatusBadge from '../../../components/admin/stock/StockStatusBadge'
-import { PRACTICES, PRACTICE_LABELS, ITEM_CATEGORIES, ITEM_SUPPLIERS, CENTRAL_PRACTICE } from '../../../data/stockConstants'
+import { PRACTICES, PRACTICE_LABELS, CENTRAL_PRACTICE } from '../../../data/stockConstants'
 import { formatCurrency, formatDateShort } from '../../../utils/formatters'
 
 function Spinner() {
@@ -24,6 +24,13 @@ export default function StockDashboard() {
   const [supplier, setSupplier] = useState('all')
   const [view, setView] = useState('all') // 'all' | 'order-list'
   const [staffPractice, setStaffPractice] = useState(PRACTICES[0].slug)
+  const [categories, setCategories] = useState([])
+  const [suppliers, setSuppliers] = useState([])
+
+  useEffect(() => {
+    axios.get('/api/stock/categories').then(({ data }) => setCategories(Array.isArray(data) ? data : [])).catch(console.error)
+    axios.get('/api/stock/suppliers').then(({ data }) => setSuppliers(Array.isArray(data) ? data : [])).catch(console.error)
+  }, [])
 
   useEffect(() => {
     setLoading(true)
@@ -105,11 +112,11 @@ export default function StockDashboard() {
             </select>
             <select value={category} onChange={e => setCategory(e.target.value)} className="input w-auto text-sm">
               <option value="all">All categories</option>
-              {ITEM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              {categories.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
             </select>
             <select value={supplier} onChange={e => setSupplier(e.target.value)} className="input w-auto text-sm">
               <option value="all">All suppliers</option>
-              {ITEM_SUPPLIERS.map(s => <option key={s} value={s}>{s}</option>)}
+              {suppliers.map(s => <option key={s._id} value={s.name}>{s.name}</option>)}
             </select>
           </div>
 

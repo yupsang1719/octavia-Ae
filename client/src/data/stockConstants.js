@@ -8,21 +8,6 @@ export const PRACTICES = [
 
 export const PRACTICE_LABELS = Object.fromEntries(PRACTICES.map(p => [p.slug, p.label]))
 
-export const ITEM_CATEGORIES = [
-  'Anaesthetics',
-  'Restorative',
-  'Impressions',
-  'Endodontics',
-  'Hygiene & Prevention',
-  'Infection Control & PPE',
-  'Surgical & Sundries',
-  'Surgical & Implants',
-  'Whitening & Aesthetics',
-  'Facial Aesthetics',
-]
-
-export const ITEM_SUPPLIERS = ['Hague Dental Supplies', 'Henry Schein Dental', 'Other']
-
 export const COUNT_TIERS = ['weekly', 'monthly']
 
 export const USAGE_REASONS = [
@@ -37,5 +22,3 @@ export const STATUS_STYLES = {
   LOW:       'bg-amber-100 text-amber-700',
   OK:        'bg-green-100 text-green-700',
 }
-
-export const BATCH_REQUIRED_CATEGORIES = ['Anaesthetics', 'Facial Aesthetics', 'Endodontics']

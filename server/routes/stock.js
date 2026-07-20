@@ -2,6 +2,8 @@ import { Router } from 'express'
 import { requireAuth, requireManager } from '../middleware/auth.js'
 import {
   listItems, createItem, updateItem,
+  listCategories, createCategory, updateCategory,
+  listSuppliers, createSupplier, updateSupplier,
   getDashboard, getOrderListCsv,
   createGoodsIn, listGoodsIn,
   createTransfer, listTransfers,
@@ -19,6 +21,14 @@ router.use(requireAuth)
 router.get('/items',        requireManager, listItems)
 router.post('/items',       requireManager, createItem)
 router.patch('/items/:id',  requireManager, updateItem)
+
+// Categories & Suppliers — manager only
+router.get('/categories',       requireManager, listCategories)
+router.post('/categories',      requireManager, createCategory)
+router.patch('/categories/:id', requireManager, updateCategory)
+router.get('/suppliers',        requireManager, listSuppliers)
+router.post('/suppliers',       requireManager, createSupplier)
+router.patch('/suppliers/:id',  requireManager, updateSupplier)
 
 // Dashboard — manager (full) + staff (read-only, filtered client-side to their practice)
 router.get('/dashboard', getDashboard)

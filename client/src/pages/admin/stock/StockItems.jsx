@@ -1,15 +1,55 @@
 import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import { Plus, ChevronDown, ChevronUp } from 'lucide-react'
-import { ITEM_CATEGORIES, ITEM_SUPPLIERS, COUNT_TIERS } from '../../../data/stockConstants'
+import { COUNT_TIERS } from '../../../data/stockConstants'
 import { formatCurrency } from '../../../utils/formatters'
 
-const EMPTY = {
-  name: '', category: ITEM_CATEGORIES[0], supplier: ITEM_SUPPLIERS[0], unit: '',
-  packSize: 1, costPerUnit: 0, reorderLevel: 0, reorderQty: 0, countTier: 'monthly', notes: '',
-}
+const TABS = [
+  { key: 'items', label: 'Items' },
+  { key: 'categories', label: 'Categories' },
+  { key: 'suppliers', label: 'Suppliers' },
+]
 
 export default function StockItems() {
+  const [tab, setTab] = useState('items')
+  const [categories, setCategories] = useState([])
+  const [suppliers, setSuppliers] = useState([])
+
+  useEffect(() => { loadCategories(); loadSuppliers() }, [])
+
+  function loadCategories() {
+    axios.get('/api/stock/categories').then(({ data }) => setCategories(Array.isArray(data) ? data : [])).catch(console.error)
+  }
+
+  function loadSuppliers() {
+    axios.get('/api/stock/suppliers').then(({ data }) => setSuppliers(Array.isArray(data) ? data : [])).catch(console.error)
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <h1 className="font-serif text-2xl text-brand-dark">Items</h1>
+        <div className="flex gap-1 bg-white rounded-lg border border-gray-200 p-1">
+          {TABS.map(t => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`px-3 py-1.5 rounded-md text-sm font-sans transition-colors ${tab === t.key ? 'bg-brand-green text-white' : 'text-brand-muted hover:text-brand-dark'}`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {tab === 'items' && <ItemsTab categories={categories} suppliers={suppliers} />}
+      {tab === 'categories' && <CatalogTab kind="category" entries={categories} onChanged={loadCategories} />}
+      {tab === 'suppliers' && <CatalogTab kind="supplier" entries={suppliers} onChanged={loadSuppliers} />}
+    </div>
+  )
+}
+
+function ItemsTab({ categories, suppliers }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [showInactive, setShowInactive] = useState(false)
@@ -24,26 +64,37 @@ export default function StockItems() {
   }
 
   const visible = items.filter(i => showInactive || i.active)
+  const activeCategories = categories.filter(c => c.active)
+  const activeSuppliers = suppliers.filter(s => s.active)
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <h1 className="font-serif text-2xl text-brand-dark">Items</h1>
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2 text-sm text-brand-muted font-sans cursor-pointer">
-            <input type="checkbox" checked={showInactive} onChange={e => setShowInactive(e.target.checked)} className="rounded" />
-            Show inactive
-          </label>
-          <button
-            onClick={() => setAdding(v => !v)}
-            className="flex items-center gap-1.5 bg-brand-green text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-brand-green/90"
-          >
-            <Plus size={14} /> New item
-          </button>
-        </div>
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <label className="flex items-center gap-2 text-sm text-brand-muted font-sans cursor-pointer">
+          <input type="checkbox" checked={showInactive} onChange={e => setShowInactive(e.target.checked)} className="rounded" />
+          Show inactive
+        </label>
+        <button
+          onClick={() => setAdding(v => !v)}
+          disabled={activeCategories.length === 0 || activeSuppliers.length === 0}
+          className="flex items-center gap-1.5 bg-brand-green text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-brand-green/90 disabled:opacity-50"
+        >
+          <Plus size={14} /> New item
+        </button>
       </div>
 
-      {adding && <ItemForm onSaved={() => { setAdding(false); load() }} onCancel={() => setAdding(false)} />}
+      {(activeCategories.length === 0 || activeSuppliers.length === 0) && (
+        <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4">
+          Add at least one category and one supplier before creating items.
+        </p>
+      )}
+
+      {adding && (
+        <ItemForm
+          categories={activeCategories} suppliers={activeSuppliers}
+          onSaved={() => { setAdding(false); load() }} onCancel={() => setAdding(false)}
+        />
+      )}
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden overflow-x-auto mt-4">
         {loading ? (
@@ -82,7 +133,7 @@ export default function StockItems() {
                     <tr>
                       <td colSpan={6} className="px-5 py-5 bg-gray-50 border-t border-gray-100">
                         <ItemForm
-                          item={item}
+                          item={item} categories={activeCategories} suppliers={activeSuppliers}
                           onSaved={() => { setExpanded(null); load() }}
                           onCancel={() => setExpanded(null)}
                         />
@@ -102,8 +153,12 @@ export default function StockItems() {
   )
 }
 
-function ItemForm({ item, onSaved, onCancel }) {
-  const [form, setForm] = useState(item ? { ...item } : { ...EMPTY })
+function ItemForm({ item, categories, suppliers, onSaved, onCancel }) {
+  const empty = {
+    name: '', category: categories[0]?.name || '', supplier: suppliers[0]?.name || '', unit: '',
+    packSize: 1, costPerUnit: 0, reorderLevel: 0, reorderQty: 0, countTier: 'monthly', notes: '',
+  }
+  const [form, setForm] = useState(item ? { ...item } : empty)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
@@ -139,6 +194,15 @@ function ItemForm({ item, onSaved, onCancel }) {
     }
   }
 
+  // An item being edited may still reference a now-inactive category/supplier —
+  // keep its current value selectable even though it's filtered out elsewhere.
+  const categoryOptions = categories.some(c => c.name === form.category)
+    ? categories
+    : [{ name: form.category }, ...categories]
+  const supplierOptions = suppliers.some(s => s.name === form.supplier)
+    ? suppliers
+    : [{ name: form.supplier }, ...suppliers]
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4 space-y-4" onClick={e => e.stopPropagation()}>
       <div className="grid sm:grid-cols-2 gap-4">
@@ -150,12 +214,12 @@ function ItemForm({ item, onSaved, onCancel }) {
         </Field>
         <Field label="Category">
           <select value={form.category} onChange={e => set('category', e.target.value)} className="input">
-            {ITEM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            {categoryOptions.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
           </select>
         </Field>
         <Field label="Supplier">
           <select value={form.supplier} onChange={e => set('supplier', e.target.value)} className="input">
-            {ITEM_SUPPLIERS.map(s => <option key={s} value={s}>{s}</option>)}
+            {supplierOptions.map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
           </select>
         </Field>
         <Field label="Pack size">
@@ -194,6 +258,138 @@ function ItemForm({ item, onSaved, onCancel }) {
         {item && (
           <button onClick={toggleActive} disabled={saving} className="text-sm text-red-500 hover:text-red-700">
             {item.active ? 'Deactivate' : 'Reactivate'}
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Shared list+form for Categories and Suppliers — same shape (name + active),
+// categories additionally carry the "requires batch + expiry" flag.
+function CatalogTab({ kind, entries, onChanged }) {
+  const [adding, setAdding] = useState(false)
+  const [expanded, setExpanded] = useState(null)
+  const [showInactive, setShowInactive] = useState(false)
+  const endpoint = kind === 'category' ? '/api/stock/categories' : '/api/stock/suppliers'
+  const visible = entries.filter(e => showInactive || e.active)
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <label className="flex items-center gap-2 text-sm text-brand-muted font-sans cursor-pointer">
+          <input type="checkbox" checked={showInactive} onChange={e => setShowInactive(e.target.checked)} className="rounded" />
+          Show inactive
+        </label>
+        <button
+          onClick={() => setAdding(v => !v)}
+          className="flex items-center gap-1.5 bg-brand-green text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-brand-green/90"
+        >
+          <Plus size={14} /> New {kind}
+        </button>
+      </div>
+
+      {adding && (
+        <CatalogForm kind={kind} endpoint={endpoint} onSaved={() => { setAdding(false); onChanged() }} onCancel={() => setAdding(false)} />
+      )}
+
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mt-4">
+        {visible.length === 0 ? (
+          <p className="text-center text-brand-muted py-10 font-sans text-sm">No {kind}s yet.</p>
+        ) : (
+          <ul className="divide-y divide-gray-100">
+            {visible.map(entry => (
+              <li key={entry._id}>
+                <div
+                  onClick={() => setExpanded(e => e === entry._id ? null : entry._id)}
+                  className={`flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 ${!entry.active ? 'opacity-50' : ''}`}
+                >
+                  <span className="font-sans text-sm text-brand-dark">
+                    {entry.name}{!entry.active && ' (inactive)'}
+                    {kind === 'category' && entry.requiresBatchAndExpiry && (
+                      <span className="ml-2 text-xs text-amber-600">requires batch + expiry</span>
+                    )}
+                  </span>
+                  {expanded === entry._id ? <ChevronUp size={14} className="text-brand-muted" /> : <ChevronDown size={14} className="text-brand-muted" />}
+                </div>
+                {expanded === entry._id && (
+                  <div className="px-4 pb-4 bg-gray-50 border-t border-gray-100">
+                    <CatalogForm
+                      kind={kind} endpoint={endpoint} entry={entry}
+                      onSaved={() => { setExpanded(null); onChanged() }} onCancel={() => setExpanded(null)}
+                    />
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function CatalogForm({ kind, endpoint, entry, onSaved, onCancel }) {
+  const [name, setName] = useState(entry?.name || '')
+  const [requiresBatchAndExpiry, setRequiresBatchAndExpiry] = useState(entry?.requiresBatchAndExpiry || false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  async function save() {
+    setSaving(true)
+    setError('')
+    try {
+      const payload = kind === 'category' ? { name, requiresBatchAndExpiry } : { name }
+      if (entry) {
+        await axios.patch(`${endpoint}/${entry._id}`, payload)
+      } else {
+        await axios.post(endpoint, payload)
+      }
+      onSaved()
+    } catch (err) {
+      setError(err.response?.data?.error || 'Save failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function toggleActive() {
+    setSaving(true)
+    try {
+      await axios.patch(`${endpoint}/${entry._id}`, { active: !entry.active })
+      onSaved()
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to update')
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="pt-3 space-y-3" onClick={e => e.stopPropagation()}>
+      <Field label="Name" required>
+        <input value={name} onChange={e => setName(e.target.value)} className="input" />
+      </Field>
+      {kind === 'category' && (
+        <label className="flex items-center gap-2 text-sm text-brand-muted font-sans cursor-pointer">
+          <input type="checkbox" checked={requiresBatchAndExpiry} onChange={e => setRequiresBatchAndExpiry(e.target.checked)} className="rounded" />
+          Goods In requires a batch number and expiry date for this category
+        </label>
+      )}
+
+      {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>}
+
+      <div className="flex items-center justify-between">
+        <div className="flex gap-2">
+          <button onClick={save} disabled={saving || !name.trim()} className="bg-brand-green text-white font-medium px-4 py-2 rounded-lg text-sm hover:bg-brand-green/90 disabled:opacity-60">
+            {saving ? 'Saving…' : 'Save'}
+          </button>
+          <button onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-brand-muted hover:border-gray-400">
+            Cancel
+          </button>
+        </div>
+        {entry && (
+          <button onClick={toggleActive} disabled={saving} className="text-sm text-red-500 hover:text-red-700">
+            {entry.active ? 'Deactivate' : 'Reactivate'}
           </button>
         )}
       </div>

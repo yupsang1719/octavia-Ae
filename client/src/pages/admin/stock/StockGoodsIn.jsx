@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Plus, X } from 'lucide-react'
 import ItemPicker from '../../../components/admin/stock/ItemPicker'
-import { ITEM_SUPPLIERS, BATCH_REQUIRED_CATEGORIES } from '../../../data/stockConstants'
 import { formatDateShort } from '../../../utils/formatters'
 
 const todayStr = () => new Date().toISOString().slice(0, 10)
@@ -11,8 +10,10 @@ const EMPTY_LINE = { itemId: '', qty: '', batchNo: '', expiryDate: '' }
 
 export default function StockGoodsIn() {
   const [items, setItems] = useState([])
+  const [suppliers, setSuppliers] = useState([])
+  const [categories, setCategories] = useState([])
   const [date, setDate] = useState(todayStr())
-  const [supplier, setSupplier] = useState(ITEM_SUPPLIERS[0])
+  const [supplier, setSupplier] = useState('')
   const [invoiceRef, setInvoiceRef] = useState('')
   const [lines, setLines] = useState([{ ...EMPTY_LINE }])
   const [saving, setSaving] = useState(false)
@@ -22,8 +23,16 @@ export default function StockGoodsIn() {
 
   useEffect(() => {
     axios.get('/api/stock/items', { params: { active: true } }).then(({ data }) => setItems(Array.isArray(data) ? data : [])).catch(console.error)
+    axios.get('/api/stock/suppliers').then(({ data }) => {
+      const active = (Array.isArray(data) ? data : []).filter(s => s.active)
+      setSuppliers(active)
+      setSupplier(prev => prev || active[0]?.name || '')
+    }).catch(console.error)
+    axios.get('/api/stock/categories').then(({ data }) => setCategories(Array.isArray(data) ? data : [])).catch(console.error)
     loadHistory()
   }, [])
+
+  const batchRequiredCategories = new Set(categories.filter(c => c.requiresBatchAndExpiry).map(c => c.name))
 
   function loadHistory() {
     axios.get('/api/stock/goods-in').then(({ data }) => setHistory(Array.isArray(data) ? data : [])).catch(console.error)
@@ -86,7 +95,7 @@ export default function StockGoodsIn() {
           <div>
             <label className="block text-xs font-medium text-brand-muted mb-1">Supplier</label>
             <select value={supplier} onChange={e => setSupplier(e.target.value)} className="input">
-              {ITEM_SUPPLIERS.map(s => <option key={s} value={s}>{s}</option>)}
+              {suppliers.map(s => <option key={s._id} value={s.name}>{s.name}</option>)}
             </select>
           </div>
           <div>
@@ -98,7 +107,7 @@ export default function StockGoodsIn() {
         <div className="space-y-3">
           {lines.map((line, idx) => {
             const item = itemFor(line.itemId)
-            const batchWarn = item && BATCH_REQUIRED_CATEGORIES.includes(item.category) && (!line.batchNo || !line.expiryDate)
+            const batchWarn = item && batchRequiredCategories.has(item.category) && (!line.batchNo || !line.expiryDate)
             return (
               <div key={idx} className="border border-gray-200 rounded-lg p-3">
                 <div className="grid sm:grid-cols-[1fr_100px_140px_150px_auto] gap-2 items-start">

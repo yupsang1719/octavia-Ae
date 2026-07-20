@@ -2,12 +2,11 @@ import mongoose from 'mongoose'
 import Item from '../models/Item.js'
 import StockMovement from '../models/StockMovement.js'
 import Count from '../models/Count.js'
+import Category from '../models/Category.js'
+import Supplier from '../models/Supplier.js'
 import {
   PRACTICE_SLUGS,
   CENTRAL_PRACTICE,
-  ITEM_CATEGORIES,
-  ITEM_SUPPLIERS,
-  BATCH_REQUIRED_CATEGORIES,
   COUNT_TIERS,
 } from '../config/stock.js'
 import { getDashboardData, getStockByItem } from '../services/stockService.js'
@@ -37,8 +36,8 @@ export async function listItems(req, res) {
   try {
     const filter = {}
     if (req.query.active !== undefined) filter.active = req.query.active === 'true'
-    if (req.query.category && ITEM_CATEGORIES.includes(req.query.category)) filter.category = req.query.category
-    if (req.query.supplier && ITEM_SUPPLIERS.includes(req.query.supplier)) filter.supplier = req.query.supplier
+    if (req.query.category) filter.category = req.query.category
+    if (req.query.supplier) filter.supplier = req.query.supplier
     const items = await Item.find(filter).sort({ category: 1, name: 1 })
     res.json(items)
   } catch {
@@ -57,8 +56,8 @@ export async function createItem(req, res) {
     const { name, category, supplier, unit, packSize, costPerUnit, reorderLevel, reorderQty, countTier, notes } = req.body
 
     if (!name?.trim()) return res.status(422).json({ error: 'Name is required' })
-    if (!ITEM_CATEGORIES.includes(category)) return res.status(422).json({ error: 'Invalid category' })
-    if (!ITEM_SUPPLIERS.includes(supplier)) return res.status(422).json({ error: 'Invalid supplier' })
+    if (!(await Category.exists({ name: category, active: true }))) return res.status(422).json({ error: 'Invalid category' })
+    if (!(await Supplier.exists({ name: supplier, active: true }))) return res.status(422).json({ error: 'Invalid supplier' })
     if (!COUNT_TIERS.includes(countTier)) return res.status(422).json({ error: 'Invalid count tier' })
     for (const [field, val] of Object.entries({ packSize, costPerUnit, reorderLevel, reorderQty })) {
       if (typeof val !== 'number' || val < 0) return res.status(422).json({ error: `${field} must be a positive number` })
@@ -82,12 +81,107 @@ export async function updateItem(req, res) {
     const updates = {}
     for (const key of allowed) if (req.body[key] !== undefined) updates[key] = req.body[key]
 
+    if (updates.category && !(await Category.exists({ name: updates.category, active: true }))) {
+      return res.status(422).json({ error: 'Invalid category' })
+    }
+    if (updates.supplier && !(await Supplier.exists({ name: updates.supplier, active: true }))) {
+      return res.status(422).json({ error: 'Invalid supplier' })
+    }
+
     const item = await Item.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true })
     if (!item) return res.status(404).json({ error: 'Item not found' })
     res.json(item)
   } catch (err) {
     if (err.code === 11000) return res.status(409).json({ error: 'An item with that name already exists' })
     res.status(500).json({ error: 'Failed to update item' })
+  }
+}
+
+// ── Categories & Suppliers (catalog) ────────────────────────────────────
+
+export async function listCategories(_req, res) {
+  try {
+    res.json(await Category.find().sort({ name: 1 }))
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch categories' })
+  }
+}
+
+export async function createCategory(req, res) {
+  try {
+    const { name, requiresBatchAndExpiry } = req.body
+    if (!name?.trim()) return res.status(422).json({ error: 'Name is required' })
+    const category = await Category.create({ name: name.trim(), requiresBatchAndExpiry: !!requiresBatchAndExpiry })
+    res.status(201).json(category)
+  } catch (err) {
+    if (err.code === 11000) return res.status(409).json({ error: 'A category with that name already exists' })
+    res.status(500).json({ error: 'Failed to create category' })
+  }
+}
+
+export async function updateCategory(req, res) {
+  try {
+    const { name, requiresBatchAndExpiry, active } = req.body
+    const category = await Category.findById(req.params.id)
+    if (!category) return res.status(404).json({ error: 'Category not found' })
+
+    const oldName = category.name
+    if (name !== undefined) category.name = name.trim()
+    if (requiresBatchAndExpiry !== undefined) category.requiresBatchAndExpiry = !!requiresBatchAndExpiry
+    if (active !== undefined) category.active = !!active
+    await category.save()
+
+    // Keep items pointing at the current name if this category was renamed.
+    if (name !== undefined && category.name !== oldName) {
+      await Item.updateMany({ category: oldName }, { category: category.name })
+    }
+
+    res.json(category)
+  } catch (err) {
+    if (err.code === 11000) return res.status(409).json({ error: 'A category with that name already exists' })
+    res.status(500).json({ error: 'Failed to update category' })
+  }
+}
+
+export async function listSuppliers(_req, res) {
+  try {
+    res.json(await Supplier.find().sort({ name: 1 }))
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch suppliers' })
+  }
+}
+
+export async function createSupplier(req, res) {
+  try {
+    const { name } = req.body
+    if (!name?.trim()) return res.status(422).json({ error: 'Name is required' })
+    const supplier = await Supplier.create({ name: name.trim() })
+    res.status(201).json(supplier)
+  } catch (err) {
+    if (err.code === 11000) return res.status(409).json({ error: 'A supplier with that name already exists' })
+    res.status(500).json({ error: 'Failed to create supplier' })
+  }
+}
+
+export async function updateSupplier(req, res) {
+  try {
+    const { name, active } = req.body
+    const supplier = await Supplier.findById(req.params.id)
+    if (!supplier) return res.status(404).json({ error: 'Supplier not found' })
+
+    const oldName = supplier.name
+    if (name !== undefined) supplier.name = name.trim()
+    if (active !== undefined) supplier.active = !!active
+    await supplier.save()
+
+    if (name !== undefined && supplier.name !== oldName) {
+      await Item.updateMany({ supplier: oldName }, { supplier: supplier.name })
+    }
+
+    res.json(supplier)
+  } catch (err) {
+    if (err.code === 11000) return res.status(409).json({ error: 'A supplier with that name already exists' })
+    res.status(500).json({ error: 'Failed to update supplier' })
   }
 }
 
@@ -98,8 +192,8 @@ export async function getDashboard(req, res) {
     const data = await getDashboardData()
     let items = data
     if (req.query.status) items = items.filter(i => i.stock.status === req.query.status)
-    if (req.query.category && ITEM_CATEGORIES.includes(req.query.category)) items = items.filter(i => i.category === req.query.category)
-    if (req.query.supplier && ITEM_SUPPLIERS.includes(req.query.supplier)) items = items.filter(i => i.supplier === req.query.supplier)
+    if (req.query.category) items = items.filter(i => i.category === req.query.category)
+    if (req.query.supplier) items = items.filter(i => i.supplier === req.query.supplier)
 
     const stockValue = data.reduce((sum, i) => sum + i.stock.total * i.costPerUnit, 0)
     res.json({ items, stockValue })
@@ -141,12 +235,15 @@ export async function createGoodsIn(req, res) {
 
     const items = await Item.find({ _id: { $in: lines.map(l => l.itemId) } }).lean()
     const itemsById = new Map(items.map(i => [String(i._id), i]))
+    const batchRequiredCategories = new Set(
+      (await Category.find({ requiresBatchAndExpiry: true }, 'name').lean()).map(c => c.name)
+    )
 
     for (const line of lines) {
       const item = itemsById.get(String(line.itemId))
       if (!item) return res.status(422).json({ error: 'Unknown item in delivery' })
       if (typeof line.qty !== 'number' || line.qty <= 0) return res.status(422).json({ error: `Quantity must be positive for ${item.name}` })
-      if (BATCH_REQUIRED_CATEGORIES.includes(item.category) && (!line.batchNo?.trim() || !line.expiryDate)) {
+      if (batchRequiredCategories.has(item.category) && (!line.batchNo?.trim() || !line.expiryDate)) {
         return res.status(422).json({ error: `Batch number and expiry date are required for ${item.name}` })
       }
     }
