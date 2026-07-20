@@ -8,6 +8,9 @@ const stockMovementSchema = new mongoose.Schema({
   qty:        { type: Number, required: true },
   location:   { type: String, enum: PRACTICE_SLUGS, required: true, index: true },
 
+  // transfer only — the practice stock is leaving. `location` above is the destination.
+  fromLocation: { type: String, enum: PRACTICE_SLUGS },
+
   // goods_in only
   batchNo:     { type: String, trim: true },
   expiryDate:  { type: Date },

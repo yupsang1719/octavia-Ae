@@ -1,4 +1,4 @@
-import { CENTRAL_PRACTICE, TRANSFER_DESTINATIONS } from '../config/stock.js'
+import { CENTRAL_PRACTICE, PRACTICE_SLUGS } from '../config/stock.js'
 
 export function computeStatus(total, reorderLevel) {
   if (total <= reorderLevel) return 'ORDER_NOW'
@@ -7,19 +7,21 @@ export function computeStatus(total, reorderLevel) {
 }
 
 function emptyBucket() {
-  const bucket = { [CENTRAL_PRACTICE]: 0 }
-  for (const p of TRANSFER_DESTINATIONS) bucket[p] = 0
+  const bucket = {}
+  for (const p of PRACTICE_SLUGS) bucket[p] = 0
   return bucket
 }
 
-// movements: plain objects { itemId, type, location, qty }
+// movements: plain objects { itemId, type, location, fromLocation, qty }
 // Returns Map<itemIdString, { [practiceSlug]: qty, total }>
 //
-// goods_in always lands at Central. A transfer both removes stock from
-// Central and adds it at the destination practice, even though the
-// movement record only stores the destination as `location`. usage and
-// adjustment both deduct at wherever they occurred (adjustment qty may be
-// negative, which nets as a correction upward).
+// goods_in always lands at Central. A transfer removes stock from
+// fromLocation and adds it at location (the destination) — between any two
+// practices, not just Central out. Movements recorded before this field
+// existed have no fromLocation stored, so they fall back to Central (the
+// only source transfers could have had at the time). usage and adjustment
+// both deduct at wherever they occurred (adjustment qty may be negative,
+// which nets as a correction upward).
 export function computeStockByItem(movements) {
   const levels = new Map()
 
@@ -34,7 +36,7 @@ export function computeStockByItem(movements) {
         break
       case 'transfer':
         bucket[m.location] += m.qty
-        bucket[CENTRAL_PRACTICE] -= m.qty
+        bucket[m.fromLocation || CENTRAL_PRACTICE] -= m.qty
         break
       case 'usage':
       case 'adjustment':
@@ -52,16 +54,16 @@ export function computeStockByItem(movements) {
 
 // Returns one or more adjustment-movement payloads { itemId, location, qty, note }
 // that exactly cancel the stock effect of `original`. A transfer touches two
-// locations (destination +qty, Central -qty) so it needs two adjustments;
+// locations (destination +qty, source -qty) so it needs two adjustments;
 // goods_in and usage/adjustment only ever touch one location.
 export function buildReversalMovements(original) {
-  const { itemId, type, location, qty } = original
+  const { itemId, type, location, fromLocation, qty } = original
   const note = `Reversal of ${type} movement dated ${new Date(original.date).toLocaleDateString('en-GB')}`
 
   if (type === 'transfer') {
     return [
       { itemId, location, qty, note },
-      { itemId, location: CENTRAL_PRACTICE, qty: -qty, note },
+      { itemId, location: fromLocation || CENTRAL_PRACTICE, qty: -qty, note },
     ]
   }
   if (type === 'goods_in') {

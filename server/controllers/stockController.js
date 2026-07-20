@@ -5,13 +5,12 @@ import Count from '../models/Count.js'
 import {
   PRACTICE_SLUGS,
   CENTRAL_PRACTICE,
-  TRANSFER_DESTINATIONS,
   ITEM_CATEGORIES,
   ITEM_SUPPLIERS,
   BATCH_REQUIRED_CATEGORIES,
   COUNT_TIERS,
 } from '../config/stock.js'
-import { getDashboardData, getStockByItem, getCentralStock } from '../services/stockService.js'
+import { getDashboardData, getStockByItem } from '../services/stockService.js'
 import { buildReversalMovements } from '../services/stockCalc.js'
 import { submitCount } from '../services/countService.js'
 
@@ -109,7 +108,7 @@ export async function getDashboard(req, res) {
   }
 }
 
-export async function getOrderListCsv(req, res) {
+export async function getOrderListCsv(_req, res) {
   try {
     const data = await getDashboardData()
     const rows = data.filter(i => i.stock.status !== 'OK')
@@ -175,7 +174,7 @@ export async function createGoodsIn(req, res) {
   }
 }
 
-export async function listGoodsIn(req, res) {
+export async function listGoodsIn(_req, res) {
   try {
     const movements = await StockMovement.find({ type: 'goods_in' })
       .sort({ date: -1, createdAt: -1 })
@@ -203,8 +202,10 @@ export async function listGoodsIn(req, res) {
 
 export async function createTransfer(req, res) {
   try {
-    const { destination, date, lines, override } = req.body
-    if (!TRANSFER_DESTINATIONS.includes(destination)) return res.status(422).json({ error: 'Invalid destination practice' })
+    const { source, destination, date, lines, override } = req.body
+    if (!PRACTICE_SLUGS.includes(source)) return res.status(422).json({ error: 'Invalid source practice' })
+    if (!PRACTICE_SLUGS.includes(destination)) return res.status(422).json({ error: 'Invalid destination practice' })
+    if (source === destination) return res.status(422).json({ error: 'Source and destination must be different practices' })
     if (!date || isFutureDate(date)) return res.status(422).json({ error: 'Date is required and cannot be in the future' })
     if (!Array.isArray(lines) || lines.length === 0) return res.status(422).json({ error: 'At least one line is required' })
 
@@ -218,15 +219,15 @@ export async function createTransfer(req, res) {
       if (!item) return res.status(422).json({ error: 'Unknown item in transfer' })
       if (typeof line.qty !== 'number' || line.qty <= 0) return res.status(422).json({ error: `Quantity must be positive for ${item.name}` })
 
-      const centralStock = stockByItem.get(String(line.itemId))?.[CENTRAL_PRACTICE] ?? 0
-      if (line.qty > centralStock) {
+      const sourceStock = stockByItem.get(String(line.itemId))?.[source] ?? 0
+      if (line.qty > sourceStock) {
         if (!override) {
           return res.status(409).json({
-            error: `Insufficient central stock for ${item.name} (have ${centralStock}, requested ${line.qty})`,
+            error: `Insufficient stock for ${item.name} at the source practice (have ${sourceStock}, requested ${line.qty})`,
             code: 'INSUFFICIENT_STOCK',
           })
         }
-        warnings.push(`${item.name}: transferred ${line.qty} against central stock of ${centralStock}`)
+        warnings.push(`${item.name}: transferred ${line.qty} against source stock of ${sourceStock}`)
       }
     }
 
@@ -238,6 +239,7 @@ export async function createTransfer(req, res) {
       itemId: line.itemId,
       qty: line.qty,
       location: destination,
+      fromLocation: source,
       transferId,
       createdBy: req.admin._id,
       createdAt: now,
@@ -249,7 +251,7 @@ export async function createTransfer(req, res) {
   }
 }
 
-export async function listTransfers(req, res) {
+export async function listTransfers(_req, res) {
   try {
     const movements = await StockMovement.find({ type: 'transfer' })
       .sort({ date: -1, createdAt: -1 })
@@ -259,7 +261,10 @@ export async function listTransfers(req, res) {
     const transfers = new Map()
     for (const m of movements) {
       if (!transfers.has(m.transferId)) {
-        transfers.set(m.transferId, { transferId: m.transferId, date: m.date, destination: m.location, lines: [] })
+        transfers.set(m.transferId, {
+          transferId: m.transferId, date: m.date,
+          source: m.fromLocation || CENTRAL_PRACTICE, destination: m.location, lines: [],
+        })
       }
       transfers.get(m.transferId).lines.push({ item: m.itemId, qty: m.qty, movementId: m._id })
     }
@@ -350,7 +355,7 @@ export async function createQuickLog(req, res) {
 
 // ── Expiry Watch ─────────────────────────────────────────────────────────
 
-export async function getExpiryWatch(req, res) {
+export async function getExpiryWatch(_req, res) {
   try {
     const movements = await StockMovement.find({ type: 'goods_in', expiryDate: { $ne: null } })
       .sort({ expiryDate: 1 })
@@ -377,7 +382,10 @@ export async function getExpiryWatch(req, res) {
 function buildMovementFilter(query) {
   const filter = {}
   if (query.itemId) filter.itemId = query.itemId
-  if (query.location && PRACTICE_SLUGS.includes(query.location)) filter.location = query.location
+  if (query.location && PRACTICE_SLUGS.includes(query.location)) {
+    // For transfers, "at this practice" means it either sent or received stock.
+    filter.$or = [{ location: query.location }, { fromLocation: query.location }]
+  }
   if (query.type) filter.type = query.type
   if (query.from || query.to) {
     filter.date = {}
@@ -416,6 +424,7 @@ export async function exportMovementsCsv(req, res) {
       { label: 'SKU', value: r => r.itemId?.sku },
       { label: 'Item', value: r => r.itemId?.name },
       { label: 'Qty', value: r => r.qty },
+      { label: 'From', value: r => r.type === 'transfer' ? (r.fromLocation || '') : '' },
       { label: 'Location', value: r => r.location },
       { label: 'Reason', value: r => r.reason || '' },
       { label: 'Batch No', value: r => r.batchNo || '' },
@@ -452,16 +461,5 @@ export async function reverseMovement(req, res) {
     res.status(201).json(created)
   } catch {
     res.status(500).json({ error: 'Failed to reverse movement' })
-  }
-}
-
-// ── Misc ─────────────────────────────────────────────────────────────────
-
-export async function getCentralStockForItem(req, res) {
-  try {
-    const stock = await getCentralStock(req.params.itemId)
-    res.json({ centralStock: stock })
-  } catch {
-    res.status(500).json({ error: 'Failed to fetch stock' })
   }
 }

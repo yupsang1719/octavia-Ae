@@ -8,8 +8,6 @@ export const PRACTICES = [
 
 export const PRACTICE_LABELS = Object.fromEntries(PRACTICES.map(p => [p.slug, p.label]))
 
-export const TRANSFER_DESTINATIONS = PRACTICES.filter(p => p.slug !== CENTRAL_PRACTICE)
-
 export const ITEM_CATEGORIES = [
   'Anaesthetics',
   'Restorative',

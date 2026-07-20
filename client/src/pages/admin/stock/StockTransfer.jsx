@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Plus, X, AlertTriangle } from 'lucide-react'
 import ItemPicker from '../../../components/admin/stock/ItemPicker'
-import { TRANSFER_DESTINATIONS, PRACTICE_LABELS, CENTRAL_PRACTICE } from '../../../data/stockConstants'
+import { PRACTICES, PRACTICE_LABELS, CENTRAL_PRACTICE } from '../../../data/stockConstants'
 import { formatDateShort } from '../../../utils/formatters'
 
 const todayStr = () => new Date().toISOString().slice(0, 10)
@@ -10,8 +10,9 @@ const EMPTY_LINE = { itemId: '', qty: '' }
 
 export default function StockTransfer() {
   const [items, setItems] = useState([])
-  const [centralStock, setCentralStock] = useState({}) // itemId -> qty
-  const [destination, setDestination] = useState(TRANSFER_DESTINATIONS[0].slug)
+  const [stockByItem, setStockByItem] = useState({}) // itemId -> { practiceSlug: qty }
+  const [source, setSource] = useState(CENTRAL_PRACTICE)
+  const [destination, setDestination] = useState(PRACTICES.find(p => p.slug !== CENTRAL_PRACTICE).slug)
   const [date, setDate] = useState(todayStr())
   const [lines, setLines] = useState([{ ...EMPTY_LINE }])
   const [saving, setSaving] = useState(false)
@@ -24,8 +25,8 @@ export default function StockTransfer() {
     axios.get('/api/stock/items', { params: { active: true } }).then(({ data }) => setItems(Array.isArray(data) ? data : [])).catch(console.error)
     axios.get('/api/stock/dashboard').then(({ data }) => {
       const map = {}
-      for (const i of data.items || []) map[i._id] = i.stock[CENTRAL_PRACTICE]
-      setCentralStock(map)
+      for (const i of data.items || []) map[i._id] = i.stock
+      setStockByItem(map)
     }).catch(console.error)
     loadHistory()
   }, [])
@@ -46,10 +47,20 @@ export default function StockTransfer() {
     setLines(prev => prev.filter((_, i) => i !== idx))
   }
 
+  function swapDirection() {
+    setSource(destination)
+    setDestination(source)
+  }
+
   async function submit(e, override = false) {
     if (e) e.preventDefault()
     setError('')
     setSuccess('')
+
+    if (source === destination) {
+      setError('Source and destination must be different practices.')
+      return
+    }
 
     const validLines = lines.filter(l => l.itemId && l.qty)
     if (validLines.length === 0) {
@@ -60,7 +71,7 @@ export default function StockTransfer() {
     setSaving(true)
     try {
       await axios.post('/api/stock/transfers', {
-        destination, date, override,
+        source, destination, date, override,
         lines: validLines.map(l => ({ ...l, qty: Number(l.qty) })),
       })
       setSuccess('Transfer recorded.')
@@ -80,14 +91,30 @@ export default function StockTransfer() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl text-brand-dark mb-6">Transfer</h1>
+      <h1 className="font-serif text-2xl text-brand-dark mb-2">Transfer</h1>
+      <p className="text-sm text-brand-muted font-sans mb-6">
+        Move stock between any two practices — most transfers will be Central out to a practice, but stock can move the other way too, or directly between Godalming and Hindhead.
+      </p>
 
       <form onSubmit={submit} className="bg-white rounded-xl border border-gray-200 p-5 mb-6 space-y-5">
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-[1fr_auto_1fr_1fr] gap-3 items-end">
           <div>
-            <label className="block text-xs font-medium text-brand-muted mb-1">Destination practice</label>
+            <label className="block text-xs font-medium text-brand-muted mb-1">From</label>
+            <select value={source} onChange={e => setSource(e.target.value)} className="input">
+              {PRACTICES.map(p => <option key={p.slug} value={p.slug}>{p.label}</option>)}
+            </select>
+          </div>
+          <button
+            type="button" onClick={swapDirection}
+            className="mb-0.5 px-2 py-2 border border-gray-300 rounded-lg text-brand-muted hover:border-brand-green hover:text-brand-green transition-colors"
+            title="Swap direction"
+          >
+            ⇄
+          </button>
+          <div>
+            <label className="block text-xs font-medium text-brand-muted mb-1">To</label>
             <select value={destination} onChange={e => setDestination(e.target.value)} className="input">
-              {TRANSFER_DESTINATIONS.map(p => <option key={p.slug} value={p.slug}>{p.label}</option>)}
+              {PRACTICES.map(p => <option key={p.slug} value={p.slug}>{p.label}</option>)}
             </select>
           </div>
           <div>
@@ -95,10 +122,13 @@ export default function StockTransfer() {
             <input type="date" value={date} max={todayStr()} onChange={e => setDate(e.target.value)} required className="input" />
           </div>
         </div>
+        {source === destination && (
+          <p className="text-xs text-red-600 flex items-center gap-1"><AlertTriangle size={12} /> Source and destination must be different practices.</p>
+        )}
 
         <div className="space-y-3">
           {lines.map((line, idx) => {
-            const stock = centralStock[line.itemId]
+            const stock = stockByItem[line.itemId]?.[source]
             const over = line.itemId && line.qty && stock !== undefined && Number(line.qty) > stock
             return (
               <div key={idx} className="border border-gray-200 rounded-lg p-3">
@@ -114,10 +144,10 @@ export default function StockTransfer() {
                   </button>
                 </div>
                 {line.itemId && (
-                  <p className="text-xs text-brand-muted mt-1.5">Central stock: {stock ?? '—'}</p>
+                  <p className="text-xs text-brand-muted mt-1.5">{PRACTICE_LABELS[source]} stock: {stock ?? '—'}</p>
                 )}
                 {over && (
-                  <p className="text-xs text-amber-600 mt-1 flex items-center gap-1"><AlertTriangle size={12} /> Requested qty exceeds central stock</p>
+                  <p className="text-xs text-amber-600 mt-1 flex items-center gap-1"><AlertTriangle size={12} /> Requested qty exceeds stock at {PRACTICE_LABELS[source]}</p>
                 )}
               </div>
             )
@@ -146,7 +176,7 @@ export default function StockTransfer() {
         )}
 
         <button
-          type="submit" disabled={saving}
+          type="submit" disabled={saving || source === destination}
           className="bg-brand-green text-white font-medium px-5 py-2.5 rounded-lg hover:bg-brand-green/90 transition-colors disabled:opacity-60"
         >
           {saving ? 'Saving…' : 'Record transfer'}
@@ -158,7 +188,7 @@ export default function StockTransfer() {
         {history.map(t => (
           <div key={t.transferId} className="bg-white rounded-xl border border-gray-200 p-4">
             <div className="flex justify-between text-sm mb-2 font-sans">
-              <span className="font-medium text-brand-dark">To {PRACTICE_LABELS[t.destination]}</span>
+              <span className="font-medium text-brand-dark">{PRACTICE_LABELS[t.source]} → {PRACTICE_LABELS[t.destination]}</span>
               <span className="text-brand-muted">{formatDateShort(t.date)}</span>
             </div>
             <ul className="text-sm text-brand-muted font-sans space-y-0.5">

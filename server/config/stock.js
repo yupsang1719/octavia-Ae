@@ -2,8 +2,6 @@ export const CENTRAL_PRACTICE = 'octavia-house'
 
 export const PRACTICE_SLUGS = ['octavia-house', 'octavia-aesthetic', 'new-octavia']
 
-export const TRANSFER_DESTINATIONS = PRACTICE_SLUGS.filter(p => p !== CENTRAL_PRACTICE)
-
 export const ITEM_CATEGORIES = [
   'Anaesthetics',
   'Restorative',

@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Copy, Download, Check, RotateCcw } from 'lucide-react'
 import { useAuth } from '../../../contexts/AuthContext'
 import StockStatusBadge from '../../../components/admin/stock/StockStatusBadge'
-import { PRACTICES, PRACTICE_LABELS, ITEM_CATEGORIES, ITEM_SUPPLIERS, TRANSFER_DESTINATIONS, CENTRAL_PRACTICE } from '../../../data/stockConstants'
+import { PRACTICES, PRACTICE_LABELS, ITEM_CATEGORIES, ITEM_SUPPLIERS, CENTRAL_PRACTICE } from '../../../data/stockConstants'
 import { formatCurrency, formatDateShort } from '../../../utils/formatters'
 
 function Spinner() {
@@ -245,7 +245,11 @@ function MovementHistoryView() {
                   <td className="px-3 py-3 font-sans capitalize">{m.type.replace('_', ' ')}</td>
                   <td className="px-3 py-3 font-sans">{m.itemId?.name}</td>
                   <td className="text-right px-3 py-3 font-sans">{m.qty}</td>
-                  <td className="px-3 py-3 font-sans">{PRACTICE_LABELS[m.location]}</td>
+                  <td className="px-3 py-3 font-sans">
+                    {m.type === 'transfer' && m.fromLocation
+                      ? `${PRACTICE_LABELS[m.fromLocation]} → ${PRACTICE_LABELS[m.location]}`
+                      : PRACTICE_LABELS[m.location]}
+                  </td>
                   <td className="px-3 py-3 font-sans text-brand-muted hidden lg:table-cell">{m.createdBy?.email}</td>
                   <td className="px-3 py-3 text-right">
                     <button onClick={() => reverse(m._id)} className="flex items-center gap-1 text-xs text-brand-muted hover:text-red-600 ml-auto">
@@ -339,7 +343,7 @@ function StaffStockView({ practice, setPractice }) {
     <div>
       <h1 className="font-serif text-2xl text-brand-dark mb-4">Stock levels</h1>
       <select value={practice} onChange={e => setPractice(e.target.value)} className="input w-auto text-sm mb-4">
-        {[...TRANSFER_DESTINATIONS, { slug: 'octavia-house', label: PRACTICE_LABELS['octavia-house'] }].map(p => (
+        {PRACTICES.map(p => (
           <option key={p.slug} value={p.slug}>{p.label}</option>
         ))}
       </select>

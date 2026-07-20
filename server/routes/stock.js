@@ -9,7 +9,6 @@ import {
   createQuickLog,
   getExpiryWatch,
   listMovements, exportMovementsCsv, reverseMovement,
-  getCentralStockForItem,
 } from '../controllers/stockController.js'
 
 const router = Router()
@@ -20,7 +19,6 @@ router.use(requireAuth)
 router.get('/items',        requireManager, listItems)
 router.post('/items',       requireManager, createItem)
 router.patch('/items/:id',  requireManager, updateItem)
-router.get('/items/:itemId/central-stock', requireManager, getCentralStockForItem)
 
 // Dashboard — manager (full) + staff (read-only, filtered client-side to their practice)
 router.get('/dashboard', getDashboard)
