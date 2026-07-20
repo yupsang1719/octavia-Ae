@@ -82,6 +82,9 @@ const StockQuickLog     = lazy(() => import('./pages/admin/stock/StockQuickLog')
 const StockExpiryWatch  = lazy(() => import('./pages/admin/stock/StockExpiryWatch'))
 const StockItems        = lazy(() => import('./pages/admin/stock/StockItems'))
 
+// ── Facilities page ──────────────────────────────────────────────────────────
+const AdminFacilities   = lazy(() => import('./pages/admin/facilities/AdminFacilities'))
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -221,6 +224,9 @@ export default function App() {
             <Route path="stock/transfer"       element={<ManagerRoute><StockTransfer /></ManagerRoute>} />
             <Route path="stock/expiry-watch"   element={<ManagerRoute><StockExpiryWatch /></ManagerRoute>} />
             <Route path="stock/items"          element={<ManagerRoute><StockItems /></ManagerRoute>} />
+
+            {/* Facilities — manager only */}
+            <Route path="facilities" element={<ManagerRoute><AdminFacilities /></ManagerRoute>} />
           </Route>
         </Routes>
       </Suspense>

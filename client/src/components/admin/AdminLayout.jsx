@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity, Package, Truck, ArrowRightLeft, ClipboardList, Zap, CalendarClock } from 'lucide-react'
+import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity, Package, Truck, ArrowRightLeft, ClipboardList, Zap, CalendarClock, Wrench } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
@@ -28,6 +28,7 @@ const NAV = [
   { to: '/admin/stock/quick-log',    label: 'Quick Log',        icon: Zap,            roles: ['manager', 'staff'] },
   { to: '/admin/stock/expiry-watch', label: 'Expiry Watch',     icon: CalendarClock,  roles: ['manager'] },
   { to: '/admin/stock/items',        label: 'Items',            icon: Package,        roles: ['manager'] },
+  { to: '/admin/facilities',         label: 'Facilities',       icon: Wrench,         roles: ['manager'], heading: 'Facilities' },
 ]
 
 const SITE_COLOURS = {
