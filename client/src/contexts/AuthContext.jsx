@@ -48,10 +48,11 @@ export function AuthProvider({ children }) {
     }
   }, [token])
 
-  const role = token ? decodePayload(token)?.role || 'manager' : null
+  const payload = token ? decodePayload(token) : null
+  const role = payload?.role || (token ? 'manager' : null)
 
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated: !!token, role, login, logout }}>
+    <AuthContext.Provider value={{ token, isAuthenticated: !!token, role, email: payload?.email || null, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

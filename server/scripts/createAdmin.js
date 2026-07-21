@@ -2,10 +2,17 @@ import 'dotenv/config'
 import mongoose from 'mongoose'
 import Admin from '../models/Admin.js'
 
-const EMAIL    = 'info@octavia-dental.co.uk'
-const PASSWORD = 'OctaviaAdmin2026!'
+// Usage: node server/scripts/createAdmin.js <email> <password>
+// Creates a 'manager' role account (full access). For a restricted staff
+// account, use createStaffUser.js instead.
+
+const [, , email, password] = process.argv
 
 async function main() {
+  if (!email || !password) {
+    console.error('Usage: node server/scripts/createAdmin.js <email> <password>')
+    process.exit(1)
+  }
   if (!process.env.MONGODB_URI) {
     console.error('MONGODB_URI is not set in your .env file')
     process.exit(1)
@@ -14,19 +21,18 @@ async function main() {
   await mongoose.connect(process.env.MONGODB_URI)
   console.log('Connected to MongoDB')
 
-  const existing = await Admin.findOne({ email: EMAIL })
+  const existing = await Admin.findOne({ email })
   if (existing) {
-    console.log(`Admin already exists: ${EMAIL}`)
+    console.log(`Account already exists: ${email} (role: ${existing.role})`)
     await mongoose.disconnect()
     return
   }
 
-  const admin = new Admin({ email: EMAIL, password: PASSWORD })
+  const admin = new Admin({ email, password, role: 'manager' })
   await admin.save()
-  console.log(`Admin created:`)
-  console.log(`  Email:    ${EMAIL}`)
-  console.log(`  Password: ${PASSWORD}`)
-  console.log(`\nChange this password after first login.`)
+  console.log(`Manager account created:`)
+  console.log(`  Email: ${email}`)
+  console.log(`  Role:  manager`)
 
   await mongoose.disconnect()
 }

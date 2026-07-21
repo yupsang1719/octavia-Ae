@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity, Package, Truck, ArrowRightLeft, ClipboardList, Zap, CalendarClock, Wrench } from 'lucide-react'
+import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity, Package, Truck, ArrowRightLeft, ClipboardList, Zap, CalendarClock, Wrench, UserCog } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
@@ -21,6 +21,7 @@ const NAV = [
   { to: '/admin/patients',           label: 'Patients',        icon: UserCheck },
   { to: '/admin/email-templates',    label: 'Email Templates', icon: Mail },
   { to: '/admin/practice-settings',  label: 'Practice Settings', icon: Settings },
+  { to: '/admin/users',              label: 'Users',           icon: UserCog },
   { to: '/admin/stock',              label: 'Stock',            icon: Package,        end: true,        roles: ['manager', 'staff'], heading: 'Stock' },
   { to: '/admin/stock/goods-in',     label: 'Goods In',         icon: Truck,          roles: ['manager'] },
   { to: '/admin/stock/transfer',     label: 'Transfer',         icon: ArrowRightLeft, roles: ['manager'] },

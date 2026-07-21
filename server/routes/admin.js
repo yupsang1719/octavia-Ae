@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { login, getDashboard, getAllPosts, getPostById, getAllGallery, getAllTeam } from '../controllers/adminController.js'
-import { requireAuth } from '../middleware/auth.js'
+import { listUsers, createUser, updateUser, resetUserPassword } from '../controllers/userController.js'
+import { requireAuth, requireManager } from '../middleware/auth.js'
 import { authLimiter } from '../middleware/rateLimiter.js'
 import { sendReviewRequest } from '../utils/email.js'
 
@@ -12,6 +13,12 @@ router.get('/posts',         requireAuth, getAllPosts)
 router.get('/posts/:id',     requireAuth, getPostById)
 router.get('/gallery',       requireAuth, getAllGallery)
 router.get('/team',          requireAuth, getAllTeam)
+
+// Staff-portal user management — manager only
+router.get('/users',                  requireAuth, requireManager, listUsers)
+router.post('/users',                 requireAuth, requireManager, createUser)
+router.patch('/users/:id',            requireAuth, requireManager, updateUser)
+router.post('/users/:id/reset-password', requireAuth, requireManager, resetUserPassword)
 
 router.post('/review-request', requireAuth, async (req, res) => {
   const { name, email, note, treatment, visitDate, clinician } = req.body

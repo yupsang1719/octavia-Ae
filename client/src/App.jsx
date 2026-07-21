@@ -72,6 +72,7 @@ const AdminPatients             = lazy(() => import('./pages/admin/AdminPatients
 const AdminEmailTemplates       = lazy(() => import('./pages/admin/AdminEmailTemplates'))
 const AdminEmailTemplateEditor  = lazy(() => import('./pages/admin/AdminEmailTemplateEditor'))
 const AdminPracticeSettings     = lazy(() => import('./pages/admin/AdminPracticeSettings'))
+const AdminUsers                = lazy(() => import('./pages/admin/Users'))
 
 // ── Stock pages ───────────────────────────────────────────────────────────────
 const StockDashboard    = lazy(() => import('./pages/admin/stock/StockDashboard'))
@@ -215,6 +216,7 @@ export default function App() {
             <Route path="email-templates"              element={<ManagerRoute><AdminEmailTemplates /></ManagerRoute>} />
             <Route path="email-templates/:id"          element={<ManagerRoute><AdminEmailTemplateEditor /></ManagerRoute>} />
             <Route path="practice-settings"            element={<ManagerRoute><AdminPracticeSettings /></ManagerRoute>} />
+            <Route path="users"                        element={<ManagerRoute><AdminUsers /></ManagerRoute>} />
 
             {/* Stock — Dashboard/Count/Quick Log open to manager + staff; the rest manager-only */}
             <Route path="stock"                element={<StockDashboard />} />

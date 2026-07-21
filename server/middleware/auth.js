@@ -9,8 +9,9 @@ export async function requireAuth(req, res, next) {
   try {
     const token = header.slice(7)
     const payload = jwt.verify(token, process.env.JWT_SECRET)
-    const admin = await Admin.findById(payload.id).select('_id email role').lean()
+    const admin = await Admin.findById(payload.id).select('_id email role active').lean()
     if (!admin) return res.status(401).json({ error: 'Unauthorised' })
+    if (admin.active === false) return res.status(401).json({ error: 'Account disabled' })
     // .lean() skips schema defaults, so accounts created before the `role`
     // field existed would otherwise come back with role: undefined.
     req.admin = { ...admin, role: admin.role || 'manager' }

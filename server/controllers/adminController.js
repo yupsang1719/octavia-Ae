@@ -12,6 +12,9 @@ export async function login(req, res) {
     if (!admin || !(await admin.comparePassword(password))) {
       return res.status(401).json({ error: 'Invalid credentials' })
     }
+    if (admin.active === false) {
+      return res.status(401).json({ error: 'This account has been disabled' })
+    }
     const token = jwt.sign(
       { id: admin._id, email: admin.email, role: admin.role },
       process.env.JWT_SECRET,
