@@ -6,6 +6,7 @@ import Footer        from './components/layout/Footer'
 import WhatsAppButton from './components/ui/WhatsAppButton'
 import StickyBookBtn from './components/layout/StickyBookBtn'
 import ConsentBanner from './components/ui/ConsentBanner'
+import Notices from './components/notices/Notices'
 import ProtectedRoute from './components/admin/ProtectedRoute'
 import ManagerRoute   from './components/admin/ManagerRoute'
 import AdminLayout   from './components/admin/AdminLayout'
@@ -73,6 +74,7 @@ const AdminEmailTemplates       = lazy(() => import('./pages/admin/AdminEmailTem
 const AdminEmailTemplateEditor  = lazy(() => import('./pages/admin/AdminEmailTemplateEditor'))
 const AdminPracticeSettings     = lazy(() => import('./pages/admin/AdminPracticeSettings'))
 const AdminUsers                = lazy(() => import('./pages/admin/Users'))
+const AdminNotices              = lazy(() => import('./pages/admin/AdminNotices'))
 
 // ── Stock pages ───────────────────────────────────────────────────────────────
 const StockDashboard    = lazy(() => import('./pages/admin/stock/StockDashboard'))
@@ -113,6 +115,7 @@ function AdminIndex() {
 function PublicLayout() {
   return (
     <>
+      <Notices />
       <Navbar />
       <main>
         <Outlet />
@@ -217,6 +220,7 @@ export default function App() {
             <Route path="email-templates/:id"          element={<ManagerRoute><AdminEmailTemplateEditor /></ManagerRoute>} />
             <Route path="practice-settings"            element={<ManagerRoute><AdminPracticeSettings /></ManagerRoute>} />
             <Route path="users"                        element={<ManagerRoute><AdminUsers /></ManagerRoute>} />
+            <Route path="notices"                      element={<ManagerRoute><AdminNotices /></ManagerRoute>} />
 
             {/* Stock — Dashboard/Count/Quick Log open to manager + staff; the rest manager-only */}
             <Route path="stock"                element={<StockDashboard />} />

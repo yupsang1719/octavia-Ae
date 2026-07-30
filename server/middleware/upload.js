@@ -47,3 +47,9 @@ export const blogUpload = multer({
   fileFilter: imageFilter,
   limits: { fileSize: 5 * 1024 * 1024 },
 })
+
+export const noticeUpload = multer({
+  storage: diskStorage('notices'),
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+})

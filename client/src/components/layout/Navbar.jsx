@@ -182,11 +182,12 @@ export default function Navbar() {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-400 ${
+        className={`fixed left-0 right-0 z-40 transition-all duration-400 ${
           transparent
             ? 'bg-brand-dark/40 backdrop-blur-md'
             : 'bg-white/95 backdrop-blur-md border-b border-brand-border/50 shadow-sm shadow-brand-dark/4'
         }`}
+        style={{ top: 'var(--notice-banner-height, 0px)' }}
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
