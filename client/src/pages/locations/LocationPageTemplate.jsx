@@ -21,7 +21,7 @@ function fade(delay = 0) {
 }
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
-function LocationHero({ location, onBook, phone, phoneTel, isPrivate }) {
+function LocationHero({ location, onBook, phone, phoneTel, isPrivate, bookingLabel }) {
   return (
     <section className="relative bg-brand-green pt-16 overflow-hidden">
       <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full border border-white/10 pointer-events-none" />
@@ -314,7 +314,7 @@ function LocationFAQ({ faqs }) {
 }
 
 // ── CTA ───────────────────────────────────────────────────────────────────────
-function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address, isPrivate }) {
+function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address, isPrivate, bookingLabel }) {
   return (
     <section className="section-padding bg-brand-green">
       <div className="container-wide text-center">
@@ -405,7 +405,7 @@ export default function LocationPageTemplate({ location }) {
 
       {schemas.map((s, i) => <SchemaMarkup key={i} schema={s} />)}
 
-      <LocationHero location={location} onBook={open} phone={phone} phoneTel={phoneTel} isPrivate={isPrivate} />
+      <LocationHero location={location} onBook={open} phone={phone} phoneTel={phoneTel} isPrivate={isPrivate} bookingLabel={bookingLabel} />
 
       {location.nhsStats && <NHSBanner stats={location.nhsStats} />}
 
@@ -438,6 +438,7 @@ export default function LocationPageTemplate({ location }) {
         whatsapp={whatsapp}
         address={address}
         isPrivate={isPrivate}
+        bookingLabel={bookingLabel}
       />
 
       <BookingModal isOpen={isOpen} onClose={close} />
