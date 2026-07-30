@@ -22,9 +22,9 @@ export default {
         },
       },
       fontFamily: {
-        serif:   ['Cormorant Garamond', 'Georgia', 'serif'],
+        serif:   ['Bodoni Moda', 'Georgia', 'serif'],
         sans:    ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Playfair Display', 'Georgia', 'serif'],
+        display: ['Bodoni Moda', 'Georgia', 'serif'],
       },
       spacing: {
         'section-desktop': '96px',

@@ -68,7 +68,7 @@
     line-height: 1.7;
   }
 
-  /* Cormorant Garamond only looks premium at 28px+.
+  /* Bodoni Moda only looks premium at 28px+.
      h3/h4 at card scale use font-sans via explicit class overrides. */
   h1, h2 {
     @apply font-serif;
