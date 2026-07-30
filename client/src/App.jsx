@@ -28,6 +28,7 @@ const Fillings           = lazy(() => import('./pages/treatments/Fillings'))
 const Crowns             = lazy(() => import('./pages/treatments/Crowns'))
 const Bridges            = lazy(() => import('./pages/treatments/Bridges'))
 const Dentures           = lazy(() => import('./pages/treatments/Dentures'))
+const TreatmentBySlug    = lazy(() => import('./pages/treatments/TreatmentBySlug'))
 const FacialAesthetics = lazy(() => import('./pages/aesthetics/FacialAesthetics'))
 const Godalming        = lazy(() => import('./pages/locations/Godalming'))
 const Guildford        = lazy(() => import('./pages/locations/Guildford'))
@@ -168,6 +169,7 @@ export default function App() {
             <Route path="/treatments/crowns"             element={<Crowns />} />
             <Route path="/treatments/bridges"            element={<Bridges />} />
             <Route path="/treatments/dentures"           element={<Dentures />} />
+            <Route path="/treatments/:slug"              element={<TreatmentBySlug />} />
             <Route path="/facial-aesthetics"             element={<FacialAesthetics />} />
             <Route path="/dentist-godalming"             element={<Godalming />} />
             <Route path="/dentist-guildford"             element={<Guildford />} />
