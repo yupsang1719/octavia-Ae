@@ -5,8 +5,12 @@ const noticeSchema = new mongoose.Schema({
   title:     { type: String, required: true, trim: true },
   message:   { type: String, required: true, trim: true },
   type:      { type: String, enum: ['popup', 'banner'], required: true },
-  // 'all' shows on every practice site; otherwise scoped to one
-  practice:  { type: String, enum: [...PRACTICE_SLUGS, 'all'], default: 'all' },
+  // Which practice sites this shows on — all three checked = shows everywhere
+  practices: {
+    type: [{ type: String, enum: PRACTICE_SLUGS }],
+    default: PRACTICE_SLUGS,
+    validate: v => v.length > 0,
+  },
   image:     { type: String, trim: true },
   linkText:  { type: String, trim: true },
   linkUrl:   { type: String, trim: true },

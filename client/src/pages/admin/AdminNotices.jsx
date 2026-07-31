@@ -4,8 +4,13 @@ import { Plus, ChevronDown, ChevronUp, Upload, X } from 'lucide-react'
 import { PRACTICES } from '../../data/stockConstants'
 
 const TYPE_LABELS = { popup: 'Popup', banner: 'Banner' }
-const PRACTICE_OPTIONS = [{ slug: 'all', label: 'All practices' }, ...PRACTICES]
-const PRACTICE_LABELS = Object.fromEntries(PRACTICE_OPTIONS.map(p => [p.slug, p.label]))
+const PRACTICE_LABELS = Object.fromEntries(PRACTICES.map(p => [p.slug, p.label]))
+
+function practiceSummary(practices) {
+  if (!practices?.length) return '—'
+  if (practices.length === PRACTICES.length) return 'All practices'
+  return practices.map(p => PRACTICE_LABELS[p]).join(', ')
+}
 
 function toDateInput(value) {
   if (!value) return ''
@@ -80,7 +85,7 @@ export default function AdminNotices() {
                     >
                       <td className="px-4 py-3 font-sans font-medium text-brand-dark">{notice.title}</td>
                       <td className="px-3 py-3 font-sans text-brand-muted">{TYPE_LABELS[notice.type]}</td>
-                      <td className="px-3 py-3 font-sans text-brand-muted hidden md:table-cell">{PRACTICE_LABELS[notice.practice]}</td>
+                      <td className="px-3 py-3 font-sans text-brand-muted hidden md:table-cell">{practiceSummary(notice.practices)}</td>
                       <td className="px-3 py-3">
                         <span className={`text-xs font-sans px-2 py-0.5 rounded-full ${status.className}`}>{status.label}</span>
                       </td>
@@ -115,11 +120,11 @@ export default function AdminNotices() {
 
 function NoticeForm({ notice, onSaved, onCancel }) {
   const empty = {
-    title: '', message: '', type: 'banner', practice: 'all',
+    title: '', message: '', type: 'banner', practices: PRACTICES.map(p => p.slug),
     image: '', linkText: '', linkUrl: '', startDate: '', endDate: '',
   }
   const [form, setForm] = useState(notice ? {
-    title: notice.title, message: notice.message, type: notice.type, practice: notice.practice,
+    title: notice.title, message: notice.message, type: notice.type, practices: notice.practices || [],
     image: notice.image || '', linkText: notice.linkText || '', linkUrl: notice.linkUrl || '',
     startDate: toDateInput(notice.startDate), endDate: toDateInput(notice.endDate),
   } : empty)
@@ -131,6 +136,15 @@ function NoticeForm({ notice, onSaved, onCancel }) {
 
   function set(field, value) {
     setForm(prev => ({ ...prev, [field]: value }))
+  }
+
+  function togglePractice(slug) {
+    setForm(prev => ({
+      ...prev,
+      practices: prev.practices.includes(slug)
+        ? prev.practices.filter(p => p !== slug)
+        : [...prev.practices, slug],
+    }))
   }
 
   function pickImage(e) {
@@ -199,10 +213,20 @@ function NoticeForm({ notice, onSaved, onCancel }) {
             <option value="popup">Popup (dismissible overlay)</option>
           </select>
         </Field>
-        <Field label="Practice">
-          <select value={form.practice} onChange={e => set('practice', e.target.value)} className="input">
-            {PRACTICE_OPTIONS.map(p => <option key={p.slug} value={p.slug}>{p.label}</option>)}
-          </select>
+        <Field label="Practices" required>
+          <div className="flex flex-col gap-2 pt-1">
+            {PRACTICES.map(p => (
+              <label key={p.slug} className="flex items-center gap-2 text-sm text-brand-dark font-sans cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.practices.includes(p.slug)}
+                  onChange={() => togglePractice(p.slug)}
+                  className="rounded"
+                />
+                {p.label}
+              </label>
+            ))}
+          </div>
         </Field>
         <Field label="Link URL (optional)">
           <input value={form.linkUrl} onChange={e => set('linkUrl', e.target.value)} className="input" placeholder="/treatments/teeth-whitening" />
@@ -243,7 +267,7 @@ function NoticeForm({ notice, onSaved, onCancel }) {
 
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
-          <button onClick={save} disabled={saving || !form.title.trim() || !form.message.trim()} className="bg-brand-green text-white font-medium px-4 py-2 rounded-lg text-sm hover:bg-brand-green/90 disabled:opacity-60">
+          <button onClick={save} disabled={saving || !form.title.trim() || !form.message.trim() || form.practices.length === 0} className="bg-brand-green text-white font-medium px-4 py-2 rounded-lg text-sm hover:bg-brand-green/90 disabled:opacity-60">
             {saving ? 'Saving…' : 'Save'}
           </button>
           <button onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-brand-muted hover:border-gray-400">
