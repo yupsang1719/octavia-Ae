@@ -6,6 +6,7 @@ import GoldRule from '../ui/GoldRule'
 import { services as staticServices } from '../../data/services'
 import { NHS_BANDS } from '../../data/nhsBands'
 import { usePractice } from '../../contexts/PracticeContext'
+import { useTreatments } from '../../hooks/useTreatments'
 
 /* ── Service icons ──────────────────────────────────────────────────────────── */
 function ServiceIcon({ id, className }) {
@@ -194,24 +195,19 @@ export default function ServicesGrid() {
   const { type, slug, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
   const [services, setServices] = useState(staticServices)
+  const { treatments: allTreatments } = useTreatments()
 
   useEffect(() => {
-    if (!isPrivate) return
-    fetch('/api/treatments')
-      .then(r => r.json())
-      .then(data => {
-        if (!Array.isArray(data) || !data.length) return
-        const bySlug = Object.fromEntries(data.map(t => [t.slug, t]))
-        const visible = staticServices.filter(s => bySlug[s.href.replace('/treatments/', '')])
-        if (!visible.length) return
-        setServices(visible.map(s => {
-          const slug = s.href.replace('/treatments/', '')
-          const cms = bySlug[slug]
-          return { ...s, priceFrom: cms.priceFrom ?? s.priceFrom, tagline: cms.tagline ?? s.tagline }
-        }))
-      })
-      .catch(() => {})
-  }, [isPrivate])
+    if (!isPrivate || !allTreatments.length) return
+    const bySlug = Object.fromEntries(allTreatments.map(t => [t.slug, t]))
+    const visible = staticServices.filter(s => bySlug[s.href.replace('/treatments/', '')])
+    if (!visible.length) return
+    setServices(visible.map(s => {
+      const slug = s.href.replace('/treatments/', '')
+      const cms = bySlug[slug]
+      return { ...s, priceFrom: cms.priceFrom ?? s.priceFrom, tagline: cms.tagline ?? s.tagline }
+    }))
+  }, [isPrivate, allTreatments])
 
   return (
     <section className="section-padding bg-brand-green relative overflow-hidden">

@@ -6,6 +6,7 @@ import { CheckCircle } from 'lucide-react'
 import axios from 'axios'
 import FormField from './FormField'
 import { usePractice } from '../../contexts/PracticeContext'
+import { useTreatments } from '../../hooks/useTreatments'
 
 const schema = z.object({
   name:        z.string().min(2, 'Please enter your name'),
@@ -23,20 +24,15 @@ export default function ContactForm() {
   const [apiError, setApiError]   = useState('')
   const [serviceOptions, setServiceOptions] = useState([])
   const { phone, name: practiceName } = usePractice()
+  const { treatments: allTreatments } = useTreatments()
 
   useEffect(() => {
-    fetch('/api/treatments')
-      .then(r => r.json())
-      .then(data => {
-        if (!Array.isArray(data)) return
-        setServiceOptions([
-          ...data.map(t => ({ value: t.slug, label: t.name })),
-          { value: 'general', label: 'General Enquiry' },
-          { value: 'other',   label: 'Other' },
-        ])
-      })
-      .catch(() => {})
-  }, [])
+    setServiceOptions([
+      ...allTreatments.map(t => ({ value: t.slug, label: t.name })),
+      { value: 'general', label: 'General Enquiry' },
+      { value: 'other',   label: 'Other' },
+    ])
+  }, [allTreatments])
 
   const {
     register, handleSubmit, formState: { errors, isSubmitting },

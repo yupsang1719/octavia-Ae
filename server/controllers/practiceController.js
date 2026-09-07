@@ -1,4 +1,5 @@
 import Practice from '../models/Practice.js'
+import { invalidatePracticeCache } from '../utils/practiceCache.js'
 
 export async function getPractice(req, res) {
   try {
@@ -43,6 +44,7 @@ export async function updatePractice(req, res) {
       { new: true }
     )
     if (!practice) return res.status(404).json({ error: 'Practice not found' })
+    invalidatePracticeCache()
     res.json(practice)
   } catch {
     res.status(500).json({ error: 'Failed to update practice' })

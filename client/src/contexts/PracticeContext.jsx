@@ -21,8 +21,22 @@ const DEFAULTS = {
 
 const PracticeContext = createContext(DEFAULTS)
 
+function derive(data) {
+  const phoneTel = (data.phone || '').replace(/\s+/g, '')
+  const isPrivate = data.type === 'private'
+  const freeConsultation = data.freeConsultation !== false
+  const bookingLabel = (isPrivate && freeConsultation) ? 'Book free consultation' : 'Request appointment'
+  return { ...DEFAULTS, ...data, phoneTel, freeConsultation, bookingLabel }
+}
+
+// In production the server already knows which domain was requested and
+// stamps the right practice's data into the page before it's sent (see
+// server/app.js). So there's usually nothing to fetch here at all — this
+// is only a fallback for local dev (vite serves index.html unstamped).
+const injected = typeof window !== 'undefined' ? window.__PRACTICE__ : null
+
 export function PracticeProvider({ children }) {
-  const [practice, setPractice] = useState(DEFAULTS)
+  const [practice, setPractice] = useState(injected ? derive(injected) : DEFAULTS)
 
   // Apply practice theme to <html> so CSS variable overrides take effect
   useEffect(() => {
@@ -32,16 +46,10 @@ export function PracticeProvider({ children }) {
   }, [practice.slug])
 
   useEffect(() => {
+    if (injected) return
     fetch('/api/practice')
       .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (!data) return
-        const phoneTel = (data.phone || '').replace(/\s+/g, '')
-        const isPrivate = data.type === 'private'
-        const freeConsultation = data.freeConsultation !== false
-        const bookingLabel = (isPrivate && freeConsultation) ? 'Book free consultation' : 'Request appointment'
-        setPractice({ ...DEFAULTS, ...data, phoneTel, freeConsultation, bookingLabel })
-      })
+      .then(data => { if (data) setPractice(derive(data)) })
       .catch(() => {})
   }, [])
 

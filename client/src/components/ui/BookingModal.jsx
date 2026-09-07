@@ -7,6 +7,7 @@ import { X, CheckCircle, ChevronRight } from 'lucide-react'
 import axios from 'axios'
 import FormField from '../forms/FormField'
 import { usePractice } from '../../contexts/PracticeContext'
+import { useTreatments } from '../../hooks/useTreatments'
 
 const schema = z.object({
   name:         z.string().min(2, 'Please enter your name'),
@@ -30,22 +31,18 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
   const [serviceOptions, setServiceOptions] = useState([])
   const { phone, phoneTel, type, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
+  const { treatments: allTreatments } = useTreatments()
 
   useEffect(() => {
-    fetch('/api/treatments')
-      .then(r => r.json())
-      .then(data => {
-        if (!Array.isArray(data) || !data.length) {
-          setServiceOptions(STATIC_TAIL)
-          return
-        }
-        setServiceOptions([
-          ...data.map(t => ({ value: t.slug, label: t.name })),
-          ...STATIC_TAIL,
-        ])
-      })
-      .catch(() => setServiceOptions(STATIC_TAIL))
-  }, [])
+    if (!allTreatments.length) {
+      setServiceOptions(STATIC_TAIL)
+      return
+    }
+    setServiceOptions([
+      ...allTreatments.map(t => ({ value: t.slug, label: t.name })),
+      ...STATIC_TAIL,
+    ])
+  }, [allTreatments])
 
   const {
     register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue,

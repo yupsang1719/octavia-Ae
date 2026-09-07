@@ -5,6 +5,7 @@ import { Menu, Phone, ChevronDown } from 'lucide-react'
 import MobileMenu from './MobileMenu'
 import BookingModal from '../ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
+import { useTreatments } from '../../hooks/useTreatments'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
 
@@ -146,6 +147,7 @@ export default function Navbar() {
   const isPrivate     = type === 'private'
   const locationLinks = LOCATION_LINKS_BY_PRACTICE[slug] ?? LOCATION_LINKS_BY_PRACTICE['octavia-aesthetic']
   const [logoTitle, logoSub]            = splitPracticeName(name)
+  const { treatments: allTreatments }   = useTreatments()
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 60) }
@@ -154,27 +156,22 @@ export default function Navbar() {
   }, [])
 
   useEffect(() => {
-    fetch('/api/treatments')
-      .then(r => r.json())
-      .then(data => {
-        if (!Array.isArray(data) || !data.length) return
-        const uncategorized = data.filter(t => !t.category)
-        const categorized   = data.filter(t => t.category)
-        const categories    = [...new Set(categorized.map(t => t.category))]
-        const items = []
-        for (const t of uncategorized) {
-          items.push({ label: t.name, href: `/treatments/${t.slug}` })
-        }
-        for (const cat of categories) {
-          items.push({ isHeader: true, label: cat, href: '' })
-          categorized.filter(t => t.category === cat).forEach(t => {
-            items.push({ label: t.name, href: `/treatments/${t.slug}` })
-          })
-        }
-        setTreatments(items)
+    if (!allTreatments.length) return
+    const uncategorized = allTreatments.filter(t => !t.category)
+    const categorized   = allTreatments.filter(t => t.category)
+    const categories    = [...new Set(categorized.map(t => t.category))]
+    const items = []
+    for (const t of uncategorized) {
+      items.push({ label: t.name, href: `/treatments/${t.slug}` })
+    }
+    for (const cat of categories) {
+      items.push({ isHeader: true, label: cat, href: '' })
+      categorized.filter(t => t.category === cat).forEach(t => {
+        items.push({ label: t.name, href: `/treatments/${t.slug}` })
       })
-      .catch(() => {})
-  }, [])
+    }
+    setTreatments(items)
+  }, [allTreatments])
 
   const transparent = !scrolled
   const textColor   = transparent ? 'text-white' : 'text-brand-dark'

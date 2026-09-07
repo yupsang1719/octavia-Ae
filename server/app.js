@@ -2,10 +2,12 @@ import express from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
 import compression from 'compression'
+import { readFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { apiLimiter } from './middleware/rateLimiter.js'
 import { resolvePractice } from './middleware/practice.js'
+import { getCachedPractice } from './utils/practiceCache.js'
 import practiceRoutes from './routes/practice.js'
 import enquiryRoutes from './routes/enquiries.js'
 import blogRoutes    from './routes/blog.js'
@@ -126,8 +128,33 @@ app.get('/api/debug/treatments', async (req, res) => {
 // Serve React build in production
 if (process.env.NODE_ENV === 'production') {
   const clientDist = resolve(__dir, '../client/dist')
+  const indexTemplate = readFileSync(resolve(clientDist, 'index.html'), 'utf-8')
+
   app.use(express.static(clientDist, { maxAge: '1y', index: false }))
-  app.get('*', (req, res) => res.sendFile(resolve(clientDist, 'index.html')))
+
+  // Stamp the correct practice's data into the page server-side, keyed off the
+  // hostname resolved by resolvePractice. This means the browser never has to
+  // make a client-side call just to find out which practice it's looking at —
+  // so a slow network or the API rate limiter can no longer make the site
+  // briefly display the wrong practice's name/phone/address.
+  app.get('*', async (req, res) => {
+    let practice = null
+    try {
+      practice = await getCachedPractice(req.practiceSlug)
+    } catch {
+      // fall through and serve the template unstamped; client-side fetch covers it
+    }
+
+    if (!practice) {
+      res.set('Cache-Control', 'no-store')
+      return res.send(indexTemplate)
+    }
+
+    const json = JSON.stringify(practice).replace(/</g, '\\u003c')
+    const html = indexTemplate.replace('</head>', `<script>window.__PRACTICE__=${json}</script></head>`)
+    res.set('Cache-Control', 'no-store')
+    res.send(html)
+  })
 } else {
   app.use((req, res) => res.status(404).json({ error: 'Not found' }))
 }

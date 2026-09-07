@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
@@ -7,6 +6,7 @@ import SchemaMarkup from '../../components/ui/SchemaMarkup'
 import FAQAccordion from '../../components/ui/FAQAccordion'
 import BookingModal from '../../components/ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
+import { useTreatments } from '../../hooks/useTreatments'
 import { usePractice } from '../../contexts/PracticeContext'
 import { localBusinessSchema, faqSchema, breadcrumbSchema } from '../../utils/schema'
 import { SITE_URL } from '../../utils/seo'
@@ -364,13 +364,7 @@ export default function LocationPageTemplate({ location }) {
   const { name, phone, phoneTel, whatsapp, address, type, slug, bookingLabel } = usePractice()
   const isPrivate = type === 'private'
 
-  const [treatments, setTreatments] = useState([])
-  useEffect(() => {
-    fetch('/api/treatments')
-      .then(r => r.json())
-      .then(data => { if (Array.isArray(data)) setTreatments(data) })
-      .catch(() => {})
-  }, [])
+  const { treatments } = useTreatments()
 
   const canonical = `${SITE_URL}/${
     location.slug === 'nhs-alternative' ? 'nhs-alternative-surrey' : `dentist-${location.slug}`

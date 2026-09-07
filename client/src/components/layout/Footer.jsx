@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Phone, Mail, MapPin, Send } from 'lucide-react'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
+import { useTreatments } from '../../hooks/useTreatments'
 
 function InstagramIcon({ className }) {
   return (
@@ -61,18 +62,13 @@ export default function Footer() {
   const { phone, phoneTel, email: practiceEmail, address, instagram, name, type, slug } = usePractice()
   const [logoTitle, logoSub] = splitPracticeName(name)
   const isPrivate = type === 'private'
+  const { treatments: allTreatments } = useTreatments()
 
-  // Fetch published treatments for this practice (same as navbar)
+  // Derive published treatments for this practice (same shared list as navbar)
   useEffect(() => {
-    if (!isPrivate) return
-    fetch('/api/treatments')
-      .then(r => r.json())
-      .then(data => {
-        if (!Array.isArray(data) || !data.length) return
-        setTreatments(data.map(t => ({ label: t.name, href: `/treatments/${t.slug}` })))
-      })
-      .catch(() => {})
-  }, [isPrivate])
+    if (!isPrivate || !allTreatments.length) return
+    setTreatments(allTreatments.map(t => ({ label: t.name, href: `/treatments/${t.slug}` })))
+  }, [isPrivate, allTreatments])
 
   // Fetch opening hours from CMS (stored in SiteSettings, separate from Practice model)
   useEffect(() => {
