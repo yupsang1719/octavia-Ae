@@ -34,8 +34,8 @@ export default function AdminPracticeSettings() {
   }, [selectedSlug])
 
   function handleChange(e) {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
+    const { name, value, type: inputType, checked } = e.target
+    setForm(prev => ({ ...prev, [name]: inputType === 'checkbox' ? checked : value }))
     setSaved(false)
   }
 
@@ -102,6 +102,20 @@ export default function AdminPracticeSettings() {
             ))}
           </div>
           <p className="mt-2 text-xs text-gray-400">Controls "waiting list" notice in footer and treatment page labels.</p>
+
+          <label className="mt-4 flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              name="freeConsultation"
+              checked={!!form.freeConsultation}
+              onChange={handleChange}
+              className="accent-brand-green"
+            />
+            <span className="text-sm text-gray-700">Offer free consultations</span>
+          </label>
+          <p className="mt-1 text-xs text-gray-400">
+            When on, booking buttons and site copy say "Book free consultation." When off, they say "Book Appointment." Off by default.
+          </p>
         </section>
 
         {/* SEO */}

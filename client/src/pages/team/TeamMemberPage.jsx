@@ -29,8 +29,7 @@ const CATEGORY_ORDER = [
 
 export default function TeamMemberPage({ member }) {
   const { isOpen, open, close } = useBookingModal()
-  const { type } = usePractice()
-  const isPrivate = type === 'private'
+  const { bookingLabel } = usePractice()
   const firstName = member.name.replace(/^Dr\s+/, '').split(' ')[0]
 
   const [otherMembers, setOtherMembers] = useState([])
@@ -334,7 +333,7 @@ export default function TeamMemberPage({ member }) {
                     onClick={() => open()}
                     className="btn-primary"
                   >
-                    {isPrivate ? 'Book free consultation' : 'Request appointment'}
+                    {bookingLabel}
                   </button>
                 </motion.div>
               )}

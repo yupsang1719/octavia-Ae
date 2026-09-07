@@ -12,7 +12,7 @@ export const services = [
     id: 'invisalign',
     name: 'Invisalign',
     tagline: 'Straighten your smile — invisibly.',
-    priceFrom: 'Free consultation',
+    priceFrom: 'Price on consultation',
     href: '/treatments/invisalign',
     specialist: 'DrAna',
     icon: 'aligners',

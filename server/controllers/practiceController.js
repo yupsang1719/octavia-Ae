@@ -32,7 +32,8 @@ export async function getPractices(_req, res) {
 
 export async function updatePractice(req, res) {
   const ALLOWED = ['name', 'address', 'phone', 'email', 'whatsapp', 'type',
-                   'tagline', 'instagram', 'googleMapsUrl', 'metaTitle', 'metaDesc', 'hours']
+                   'tagline', 'instagram', 'googleMapsUrl', 'metaTitle', 'metaDesc', 'hours',
+                   'freeConsultation']
   const update = {}
   for (const key of ALLOWED) {
     if (req.body[key] !== undefined) update[key] = req.body[key]

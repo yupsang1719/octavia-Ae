@@ -16,7 +16,7 @@ export default function NotFound() {
               { label:'Homepage', href:'/' },
               { label:'Our treatments', href:'/treatments/dental-implants' },
               { label:'Contact us', href:'/contact' },
-              { label:'Book free consultation', href:'/contact' },
+              { label:'Book appointment', href:'/contact' },
             ].map(link => (
               <Link key={link.href} to={link.href}
                 className="inline-flex items-center gap-1.5 font-sans text-sm font-medium text-brand-green hover:gap-3 transition-all duration-200">

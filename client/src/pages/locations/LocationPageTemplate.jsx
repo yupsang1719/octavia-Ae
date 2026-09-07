@@ -45,7 +45,7 @@ function LocationHero({ location, onBook, phone, phoneTel, isPrivate, bookingLab
           )}
           <div className="flex flex-col sm:flex-row gap-3">
             <button onClick={onBook} className="btn-primary bg-white text-brand-green hover:bg-brand-cream px-8 py-4 text-base">
-              {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
+              {bookingLabel || 'Book Appointment'}
             </button>
             <a
               href={`tel:${phoneTel}`}
@@ -314,13 +314,13 @@ function LocationFAQ({ faqs }) {
 }
 
 // ── CTA ───────────────────────────────────────────────────────────────────────
-function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address, isPrivate, bookingLabel }) {
+function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address, isPrivate, freeConsultation, bookingLabel }) {
   return (
     <section className="section-padding bg-brand-green">
       <div className="container-wide text-center">
         <motion.div {...fade(0)}>
           <h2 className="font-serif text-3xl lg:text-4xl text-white font-medium mb-4">
-            {isPrivate ? 'Ready to book your free consultation?' : 'Get in touch today'}
+            {isPrivate && freeConsultation ? 'Ready to book your free consultation?' : isPrivate ? 'Ready to book your appointment?' : 'Get in touch today'}
           </h2>
           <p className="font-sans text-white/70 max-w-md mx-auto mb-8">
             {isPrivate
@@ -336,7 +336,7 @@ function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address,
               onClick={onBook}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-green font-sans font-medium text-base rounded-sm transition-all hover:bg-brand-cream"
             >
-              {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
+              {bookingLabel || 'Book Appointment'}
             </button>
             {whatsapp && (
               <a
@@ -361,7 +361,7 @@ function LocationCTA({ locationName, onBook, phone, phoneTel, whatsapp, address,
 // ── Main Template ─────────────────────────────────────────────────────────────
 export default function LocationPageTemplate({ location }) {
   const { isOpen, open, close } = useBookingModal()
-  const { name, phone, phoneTel, whatsapp, address, type, slug, bookingLabel } = usePractice()
+  const { name, phone, phoneTel, whatsapp, address, type, slug, bookingLabel, freeConsultation } = usePractice()
   const isPrivate = type === 'private'
 
   const { treatments } = useTreatments()
@@ -432,6 +432,7 @@ export default function LocationPageTemplate({ location }) {
         whatsapp={whatsapp}
         address={address}
         isPrivate={isPrivate}
+        freeConsultation={freeConsultation}
         bookingLabel={bookingLabel}
       />
 

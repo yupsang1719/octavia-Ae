@@ -29,8 +29,7 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
   const [submitted, setSubmitted] = useState(false)
   const [apiError, setApiError]   = useState('')
   const [serviceOptions, setServiceOptions] = useState([])
-  const { phone, phoneTel, type, bookingLabel } = usePractice()
-  const isPrivate = type === 'private'
+  const { phone, phoneTel, bookingLabel } = usePractice()
   const { treatments: allTreatments } = useTreatments()
 
   useEffect(() => {
@@ -103,7 +102,7 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
           {/* Header */}
           <div className="bg-brand-green px-6 py-5 flex items-center justify-between">
             <div>
-              <h2 className="font-serif text-xl text-white font-medium">{bookingLabel || (isPrivate ? 'Book Your Free Consultation' : 'Request an Appointment')}</h2>
+              <h2 className="font-serif text-xl text-white font-medium">{bookingLabel || 'Book Appointment'}</h2>
               <p className="text-brand-green-bg text-sm mt-0.5 font-sans">We'll call you to confirm within 2 hours</p>
             </div>
             <button

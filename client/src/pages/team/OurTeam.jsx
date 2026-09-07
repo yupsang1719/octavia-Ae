@@ -39,13 +39,13 @@ const TRUST_POINTS = [
   {
     icon: Heart,
     heading: 'Patient-centred always',
-    body: 'We only recommend what is right for your situation. Free consultations mean there is no pressure — you see the full picture before committing to anything.',
+    body: 'We only recommend what is right for your situation. No pressure — you see the full picture before committing to anything.',
   },
 ]
 
 export default function OurTeam() {
   const { isOpen, open, close } = useBookingModal()
-  const { type, phone, phoneTel, email: practiceEmail, whatsapp, bookingLabel } = usePractice()
+  const { type, phone, phoneTel, email: practiceEmail, whatsapp, bookingLabel, freeConsultation } = usePractice()
   const isPrivate = type === 'private'
   const [members, setMembers] = useState([])
 
@@ -168,16 +168,18 @@ export default function OurTeam() {
           <motion.div {...fade(0)}>
             <h2 className="font-serif text-3xl lg:text-4xl text-white font-medium mb-4">Ready to meet the team?</h2>
             <p className="font-sans text-white/70 max-w-md mx-auto mb-8 text-sm leading-relaxed">
-              {isPrivate
+              {isPrivate && freeConsultation
                 ? 'Book a free consultation and take the first step towards the smile you deserve.'
-                : 'Get in touch to book your appointment with our team.'}
+                : isPrivate
+                  ? 'Book an appointment and take the first step towards the smile you deserve.'
+                  : 'Get in touch to book your appointment with our team.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => open()}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-green font-sans font-medium text-sm rounded-sm hover:bg-brand-cream transition-all"
               >
-                {bookingLabel || (isPrivate ? 'Book free consultation' : 'Request appointment')}
+                {bookingLabel || 'Book Appointment'}
               </button>
               {whatsapp && (
                 <a

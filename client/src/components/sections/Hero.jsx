@@ -45,13 +45,13 @@ export default function Hero({
   heroImage = 'https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1400&q=80',
 }) {
   const { isOpen, open, close } = useBookingModal()
-  const { type, whatsapp, address, bookingLabel } = usePractice()
+  const { type, whatsapp, address, bookingLabel, freeConsultation } = usePractice()
 
   const isPrivate = type === 'private'
   const resolvedHeadline = headline ?? 'Your smile.'
   const resolvedTags = tags ?? (
     isPrivate
-      ? ['No waiting list', 'New patients welcome', 'Free consultations', 'Surrey & Hampshire']
+      ? ['No waiting list', 'New patients welcome', freeConsultation ? 'Free consultations' : 'Transparent pricing', 'Surrey & Hampshire']
       : ['NHS patients welcome(Waiting list may apply)', 'Private options available', 'New patients accepted', 'Surrey & Hampshire']
   )
 

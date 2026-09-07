@@ -24,7 +24,9 @@ const practiceSchema = new mongoose.Schema({
   metaTitle: String,
   metaDesc:  String,
 
-  freeConsultation: { type: Boolean, default: true },
+  // Off by default — a practice has to opt in to claiming free consultations,
+  // rather than opt out. Editable from Admin → Practice Settings.
+  freeConsultation: { type: Boolean, default: false },
 
   hours: [hourSchema],
 }, { timestamps: true })

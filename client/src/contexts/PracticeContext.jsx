@@ -12,8 +12,8 @@ const DEFAULTS = {
   googleMapsUrl:    'https://maps.google.com/?q=Octavia+Dental+Godalming',
   tagline:          'Private dental care & facial aesthetics in Godalming, Surrey.',
   type:             'private',
-  freeConsultation: true,
-  bookingLabel:     'Book free consultation',
+  freeConsultation: false,
+  bookingLabel:     'Book Appointment',
   metaTitle:        'Octavia Dental & Facial Aesthetics | Godalming, Surrey',
   metaDesc:         'Private dental care and facial aesthetics in Godalming, Surrey.',
   hours:            [],
@@ -24,8 +24,8 @@ const PracticeContext = createContext(DEFAULTS)
 function derive(data) {
   const phoneTel = (data.phone || '').replace(/\s+/g, '')
   const isPrivate = data.type === 'private'
-  const freeConsultation = data.freeConsultation !== false
-  const bookingLabel = (isPrivate && freeConsultation) ? 'Book free consultation' : 'Request appointment'
+  const freeConsultation = data.freeConsultation === true
+  const bookingLabel = (isPrivate && freeConsultation) ? 'Book free consultation' : 'Book Appointment'
   return { ...DEFAULTS, ...data, phoneTel, freeConsultation, bookingLabel }
 }
 

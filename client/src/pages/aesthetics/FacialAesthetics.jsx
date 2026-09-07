@@ -8,6 +8,7 @@ import { useBookingModal } from '../../hooks/useBookingModal'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { SITE_URL } from '../../utils/seo'
+import { usePractice } from '../../contexts/PracticeContext'
 
 function fade(d=0){return{initial:{opacity:0,y:18},whileInView:{opacity:1,y:0},viewport:{once:true},transition:{duration:0.45,delay:d,ease:'easeOut'}}}
 
@@ -25,6 +26,7 @@ const benefits = [
 
 export default function FacialAesthetics() {
   const { isOpen, open, close } = useBookingModal()
+  const { bookingLabel, freeConsultation } = usePractice()
   const [drAna, setDrAna] = useState(null)
   useEffect(() => {
     axios.get('/api/team/dr-ana').then(({ data }) => setDrAna(data)).catch(() => {})
@@ -33,7 +35,7 @@ export default function FacialAesthetics() {
     <>
       <Helmet>
         <title>Facial Aesthetics Godalming Surrey | Anti-Wrinkle Injections | Octavia Dental</title>
-        <meta name="description" content="Facial aesthetics treatments in Godalming by dentist-trained Dr Ana. Anti-wrinkle injections. Safer and more precise than beauty salons. Free consultation." />
+        <meta name="description" content="Facial aesthetics treatments in Godalming by dentist-trained Dr Ana. Anti-wrinkle injections. Safer and more precise than beauty salons. Book an appointment." />
         <link rel="canonical" href={`${SITE_URL}/facial-aesthetics`} />
       </Helmet>
 
@@ -44,7 +46,7 @@ export default function FacialAesthetics() {
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-white font-medium leading-[1.08] mb-4">Precision aesthetics. Delivered by a dental specialist.</h1>
             <p className="font-sans text-lg text-white/70 leading-relaxed mb-8">Dr Ana is a GDC-registered dentist with advanced training in facial aesthetics. Her deep understanding of facial anatomy delivers results that most non-medical practitioners cannot match.</p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={() => open()} className="btn-primary px-8 py-4 text-base">Book free consultation</button>
+              <button onClick={() => open()} className="btn-primary px-8 py-4 text-base">{bookingLabel}</button>
               <a href="tel:01483958205" className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 text-white font-sans font-medium text-base rounded-sm hover:bg-white/10 transition-all">01483 958205</a>
             </div>
           </motion.div>
@@ -101,8 +103,8 @@ export default function FacialAesthetics() {
         <div className="container-wide text-center">
           <motion.div {...fade(0)}>
             <h2 className="font-serif text-3xl text-white font-medium mb-4">Book your facial aesthetics consultation</h2>
-            <p className="font-sans text-white/70 max-w-md mx-auto mb-8">Free consultation with Dr Ana — she will assess your concerns and explain what treatment can realistically achieve for you.</p>
-            <button onClick={() => open()} className="inline-flex items-center justify-center px-8 py-4 bg-white text-brand-green font-sans font-medium text-base rounded-sm hover:bg-brand-cream transition-all">Book free consultation</button>
+            <p className="font-sans text-white/70 max-w-md mx-auto mb-8">{freeConsultation ? 'Free consultation with Dr Ana — she will assess your concerns and explain what treatment can realistically achieve for you.' : 'Book an appointment with Dr Ana — she will assess your concerns and explain what treatment can realistically achieve for you.'}</p>
+            <button onClick={() => open()} className="inline-flex items-center justify-center px-8 py-4 bg-white text-brand-green font-sans font-medium text-base rounded-sm hover:bg-brand-cream transition-all">{bookingLabel}</button>
           </motion.div>
         </div>
       </section>
