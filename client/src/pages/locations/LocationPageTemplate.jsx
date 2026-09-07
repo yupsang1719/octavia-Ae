@@ -137,7 +137,7 @@ function ServicesAvailable({ treatments }) {
 }
 
 // ── Why Choose ────────────────────────────────────────────────────────────────
-function WhyChoose({ locationName, practiceName, isPrivate, practiceSlug }) {
+function WhyChoose({ locationName, practiceName, isPrivate, freeConsultation, practiceSlug }) {
   const specialistBody = practiceSlug === 'octavia-aesthetic'
     ? 'Dr Ali leads all implant and complex restorative cases. Dr Ana specialises in cosmetic dentistry and facial aesthetics. You see an expert for your treatment — every time.'
     : 'Our specialist dental team covers the full range of implant, restorative and cosmetic dentistry. You see an experienced clinician for every treatment — every time.'
@@ -146,7 +146,9 @@ function WhyChoose({ locationName, practiceName, isPrivate, practiceSlug }) {
     ? [
         { title: 'No waiting list',          body: `New patients from ${locationName} can be seen within days. Contact us today and we can find you an early appointment.` },
         { title: 'Specialist dentists',       body: specialistBody },
-        { title: 'Free initial consultation', body: 'All new patients receive a complimentary consultation. We discuss your concerns, assess your teeth and give you a clear, transparent quote before you commit to anything.' },
+        freeConsultation
+          ? { title: 'Free initial consultation', body: 'All new patients receive a complimentary consultation. We discuss your concerns, assess your teeth and give you a clear, transparent quote before you commit to anything.' }
+          : { title: 'Thorough initial consultation', body: 'All new patients receive a full consultation. We discuss your concerns, assess your teeth and give you a clear, transparent quote before you commit to anything.' },
         { title: 'Modern, purpose-built clinic', body: 'Our clinic is equipped with the latest digital scanning, imaging and treatment technology — delivering results that rival London practices at a fraction of the cost.' },
       ]
     : [
@@ -256,7 +258,7 @@ function GoogleMapEmbed({ address, name }) {
 }
 
 // ── NHS Section (private only) ────────────────────────────────────────────────
-function NHSSection({ locationName, practiceName, practiceSlug }) {
+function NHSSection({ locationName, practiceName, practiceSlug, freeConsultation }) {
   return (
     <section className="section-padding bg-brand-dark text-white">
       <div className="container-wide">
@@ -272,7 +274,7 @@ function NHSSection({ locationName, practiceName, practiceSlug }) {
               You don't have to keep waiting. {practiceName} accepts new patients immediately — no referral, no waiting list, no delay. Private care at a price you can understand, from a team that genuinely has time for you.
             </p>
             <ul className="space-y-2 mb-8">
-              {['No referral letter needed', 'Free initial consultation', 'Seen within days, not months', 'Flexible payment plans for larger treatments'].map(point => (
+              {['No referral letter needed', freeConsultation ? 'Free initial consultation' : 'Thorough initial consultation', 'Seen within days, not months', 'Flexible payment plans for larger treatments'].map(point => (
                 <li key={point} className="flex items-center gap-2 font-sans text-sm text-white/80">
                   <CheckCircle className="w-4 h-4 text-brand-green flex-shrink-0" />
                   {point}
@@ -411,11 +413,12 @@ export default function LocationPageTemplate({ location }) {
         locationName={location.slug === 'nhs-alternative' ? 'patients across Surrey & Hampshire' : location.name}
         practiceName={name}
         isPrivate={isPrivate}
+        freeConsultation={freeConsultation}
         practiceSlug={slug}
       />
 
       {location.nhs_note && !isNHSPage && isPrivate && (
-        <NHSSection locationName={location.name} practiceName={name} practiceSlug={slug} />
+        <NHSSection locationName={location.name} practiceName={name} practiceSlug={slug} freeConsultation={freeConsultation} />
       )}
 
       <HowToGetHere location={location} address={address} phone={phone} phoneTel={phoneTel} />

@@ -9,7 +9,7 @@ import { usePractice } from '../../contexts/PracticeContext'
 
 export default function CTASection() {
   const { isOpen, open, close } = useBookingModal()
-  const { phone, phoneTel, whatsapp, address, type, bookingLabel } = usePractice()
+  const { phone, phoneTel, whatsapp, address, type, bookingLabel, freeConsultation } = usePractice()
   const isPrivate = type === 'private'
 
   return (
@@ -76,9 +76,11 @@ export default function CTASection() {
               viewport={{ once: true }}
               transition={{ delay: 0.25, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              {isPrivate
+              {isPrivate && freeConsultation
                 ? 'Book a no-obligation consultation with Dr Ali or Dr Ana. We\'ll assess your needs, explain your options, and give you a transparent quote — all at no cost.'
-                : 'NHS and private patients are welcome. Use our contact form or call us directly and we\'ll get back to you as soon as possible.'}
+                : isPrivate
+                  ? 'Book a consultation with Dr Ali or Dr Ana. We\'ll assess your needs, explain your options, and give you a transparent quote.'
+                  : 'NHS and private patients are welcome. Use our contact form or call us directly and we\'ll get back to you as soon as possible.'}
             </motion.p>
 
             <motion.div

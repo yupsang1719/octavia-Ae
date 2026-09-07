@@ -6,7 +6,7 @@ const DEFAULTS = [
   { value: '500+', label: 'Happy patients' },
   { value: '5.0★', label: 'Google rating' },
   { value: '2',    label: 'Specialist dentists' },
-  { value: 'Free', label: 'Consultations' },
+  { value: 'Transparent', label: 'Pricing' },
   { value: 'None', label: 'Waiting list' },
 ]
 
@@ -141,7 +141,7 @@ export default function AdminTrustBar() {
           <p className="font-sans text-xs text-brand-muted mt-4 leading-relaxed">
             <strong>Value examples:</strong> <code className="bg-gray-100 px-1 rounded">500+</code> &nbsp;
             <code className="bg-gray-100 px-1 rounded">5.0★</code> &nbsp;
-            <code className="bg-gray-100 px-1 rounded">Free</code> &nbsp;
+            <code className="bg-gray-100 px-1 rounded">GDC</code> &nbsp;
             <code className="bg-gray-100 px-1 rounded">None</code><br/>
             Numbers animate on scroll. Text values display statically.
           </p>

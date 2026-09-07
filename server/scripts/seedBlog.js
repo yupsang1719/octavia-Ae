@@ -67,7 +67,7 @@ If you're looking for a longer-lasting, more transformative result — particula
 
 Many patients find that composite bonding is the right starting point, particularly if they're unsure whether they want to commit to the permanence of veneers.
 
-Dr Ana offers free consultations for both treatments at our Godalming clinic. She'll assess your teeth, discuss your goals honestly, and recommend the option that genuinely suits you best — not the most expensive one.
+Dr Ana offers consultations for both treatments at our Godalming clinic. She'll assess your teeth, discuss your goals honestly, and recommend the option that genuinely suits you best — not the most expensive one.
 
 *Prices quoted at consultation may vary based on individual assessment.*`,
   },
@@ -103,7 +103,7 @@ Most adults in good general health are suitable candidates for dental implants. 
 - Good general health (some systemic conditions require careful assessment)
 - Non-smoking or willingness to stop (smoking significantly increases failure risk)
 
-Even if you've been told elsewhere that you have insufficient bone, there are often options. Bone grafting can restore volume in many cases. Dr Ali will assess your X-rays and a CBCT cone beam scan at your free consultation and give you an honest answer about your options.
+Even if you've been told elsewhere that you have insufficient bone, there are often options. Bone grafting can restore volume in many cases. Dr Ali will assess your X-rays and a CBCT cone beam scan at your consultation and give you an honest answer about your options.
 
 ## The procedure, step by step
 
@@ -127,7 +127,7 @@ The main factors that affect longevity: oral hygiene, smoking, and whether you g
 
 A single dental implant at Octavia Dental starts from £2,500. This includes all stages of treatment — consultation, placement, healing support, and the final crown.
 
-Flexible payment plans are available for patients who want to spread the cost. Speak to us at your free consultation.
+Flexible payment plans are available for patients who want to spread the cost. Speak to us at your consultation.
 
 ## Why Godalming patients choose Dr Ali
 
@@ -135,7 +135,7 @@ Patients travel to us from Guildford, Farnham, Haslemere, Hampshire and beyond. 
 
 Dr Ali's postgraduate training and extensive clinical experience with complex cases means patients get predictable, long-lasting results. If you've been quoted elsewhere, a second opinion from Dr Ali costs nothing and could save you from a wrong decision.
 
-*Book a free consultation at our Godalming clinic — 01483 958205.*`,
+*Book an appointment at our Godalming clinic — 01483 958205.*`,
   },
   {
     slug: 'why-dentist-botox-safer',
@@ -194,9 +194,9 @@ If you're considering anti-wrinkle treatment anywhere, ask these questions:
 
 If the answers are vague or evasive, look elsewhere.
 
-At Octavia Dental, I offer free facial aesthetics consultations at our Godalming clinic. Anti-wrinkle treatments are prescription-only medicines and I carry out a full clinical assessment for every patient.
+At Octavia Dental, I offer facial aesthetics consultations at our Godalming clinic. Anti-wrinkle treatments are prescription-only medicines and I carry out a full clinical assessment for every patient.
 
-*Anti-wrinkle treatments at Octavia Dental start from £200 per area. Book a free consultation — 01483 958205.*`,
+*Anti-wrinkle treatments at Octavia Dental start from £200 per area. Book an appointment — 01483 958205.*`,
   },
   {
     slug: 'invisalign-adults-godalming',
@@ -225,7 +225,7 @@ There's no upper age limit. As long as your teeth and gums are healthy, you're l
 
 It depends on how much movement is needed. Mild corrections can be completed in as little as 3 months. Most adult cases take 9–18 months. Complex cases can take up to 24 months, though this is less common.
 
-At your free consultation, I'll take a digital scan of your teeth and we can look at a simulation of your likely result and timeline.
+At your consultation, I'll take a digital scan of your teeth and we can look at a simulation of your likely result and timeline.
 
 ## Does it hurt?
 
@@ -235,7 +235,7 @@ There are no brackets to catch on the inside of your cheeks, no wires to irritat
 
 ## How much does it cost?
 
-Invisalign pricing varies depending on complexity. At Octavia Dental, we price following your free consultation and digital scan, when we can give you an accurate assessment of your case.
+Invisalign pricing varies depending on complexity. At Octavia Dental, we price following your consultation and digital scan, when we can give you an accurate assessment of your case.
 
 Comprehensive cases typically range from £2,800 to £5,000. Payment plans are available. We don't add hidden charges — the quote you receive covers the entire course of treatment including all aligners, retainers, and check-up appointments.
 
@@ -253,7 +253,7 @@ Most patients are delighted with their results. The discipline of wearing the al
 
 ---
 
-*Free Invisalign consultations at our Godalming clinic, serving patients from Guildford, Farnham, Haslemere and Hampshire. Book online or call 01483 958205.*`,
+*Invisalign consultations at our Godalming clinic, serving patients from Guildford, Farnham, Haslemere and Hampshire. Book online or call 01483 958205.*`,
   },
   {
     slug: 'nhs-dental-crisis-surrey',
@@ -302,7 +302,7 @@ The public health implications are serious. Poor dental health is linked to card
 
 We're a private practice based in Godalming — and we accept new patients from across Surrey and Hampshire immediately. There is no waiting list and no referral required.
 
-We know that private care is not the right choice for everyone, and we'd never pretend otherwise. But if you're struggling to access dental care and want to understand your options honestly, we offer free initial consultations.
+We know that private care is not the right choice for everyone, and we'd never pretend otherwise. But if you're struggling to access dental care and want to understand your options honestly, we offer initial consultations.
 
 The most expensive dental decision you can make is to do nothing. If your teeth need attention, getting it sorted sooner — whatever the route — is almost always better than waiting.
 
@@ -373,7 +373,7 @@ Dr Ana will give you a realistic expectation at your consultation — not an ove
 
 ---
 
-*Teeth whitening at Octavia Dental from £299. Free consultations available — 01483 958205.*
+*Teeth whitening at Octavia Dental from £299. Book an appointment — 01483 958205.*
 
 *Prices quoted at consultation may vary based on individual assessment.*`,
   },

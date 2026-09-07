@@ -4,7 +4,7 @@ const DEFAULTS = [
   { value: '500+', label: 'Happy patients' },
   { value: '5.0★', label: 'Google rating' },
   { value: '2',    label: 'Specialist dentists' },
-  { value: 'Free', label: 'Consultations' },
+  { value: 'Transparent', label: 'Pricing' },
   { value: 'None', label: 'Waiting list' },
 ]
 

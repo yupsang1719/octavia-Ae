@@ -64,9 +64,13 @@ const NHS_USPS = [
 export default function USPSection() {
   const [active, setActive] = useState(0)
   const { isOpen, open, close } = useBookingModal()
-  const { type, bookingLabel } = usePractice()
+  const { type, bookingLabel, freeConsultation } = usePractice()
   const isPrivate = type === 'private'
-  const usps = isPrivate ? PRIVATE_USPS : NHS_USPS
+  const usps = (isPrivate ? PRIVATE_USPS : NHS_USPS).map(u =>
+    u.title === 'Free initial consultation' && !freeConsultation
+      ? { ...u, title: 'Thorough initial consultation', body: 'Every new patient receives a full consultation. We assess your teeth, explain your options and give you a transparent quote — before you commit to anything.' }
+      : u
+  )
 
   return (
     <>
