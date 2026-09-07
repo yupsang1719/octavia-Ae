@@ -150,8 +150,15 @@ if (process.env.NODE_ENV === 'production') {
       return res.send(indexTemplate)
     }
 
+    // A JSON data island, not an inline <script> — the CSP here is script-src
+    // 'self' with no 'unsafe-inline', so an executable inline script would be
+    // silently blocked by the browser (curl won't show that; only a real
+    // browser enforces CSP). A type="application/json" block is inert and
+    // isn't subject to script-src at all — same technique Next.js uses for
+    // __NEXT_DATA__.
     const json = JSON.stringify(practice).replace(/</g, '\\u003c')
-    const html = indexTemplate.replace('</head>', `<script>window.__PRACTICE__=${json}</script></head>`)
+    const dataIsland = `<script type="application/json" id="__PRACTICE_DATA__">${json}</script></head>`
+    const html = indexTemplate.replace('</head>', dataIsland)
     res.set('Cache-Control', 'no-store')
     res.send(html)
   })

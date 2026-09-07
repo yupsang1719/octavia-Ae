@@ -30,10 +30,23 @@ function derive(data) {
 }
 
 // In production the server already knows which domain was requested and
-// stamps the right practice's data into the page before it's sent (see
-// server/app.js). So there's usually nothing to fetch here at all — this
-// is only a fallback for local dev (vite serves index.html unstamped).
-const injected = typeof window !== 'undefined' ? window.__PRACTICE__ : null
+// stamps the right practice's data into the page before it's sent, as a
+// JSON data island (see server/app.js — a CSP-safe alternative to an
+// inline <script>, since this app's script-src doesn't allow unsafe-inline).
+// So there's usually nothing to fetch here at all — this is only a fallback
+// for local dev (vite serves index.html unstamped).
+function readInjectedPractice() {
+  if (typeof document === 'undefined') return null
+  const el = document.getElementById('__PRACTICE_DATA__')
+  if (!el) return null
+  try {
+    return JSON.parse(el.textContent)
+  } catch {
+    return null
+  }
+}
+
+const injected = readInjectedPractice()
 
 export function PracticeProvider({ children }) {
   const [practice, setPractice] = useState(injected ? derive(injected) : DEFAULTS)
