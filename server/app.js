@@ -158,7 +158,26 @@ if (process.env.NODE_ENV === 'production') {
     // __NEXT_DATA__.
     const json = JSON.stringify(practice).replace(/</g, '\\u003c')
     const dataIsland = `<script type="application/json" id="__PRACTICE_DATA__">${json}</script></head>`
-    const html = indexTemplate.replace('</head>', dataIsland)
+
+    // Per-practice <title>/description/canonical in the raw HTML, so crawlers
+    // and link previews that don't run JS see the right practice. data-rh marks
+    // them as react-helmet-async's own, so Helmet replaces them on hydrate
+    // instead of leaving duplicates.
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    const title = esc(practice.metaTitle || practice.name)
+    const desc  = practice.metaDesc || practice.tagline
+    const host  = practice.domains?.[0]
+    const headTags = [
+      desc && `<meta name="description" content="${esc(desc)}" data-rh="true" />`,
+      host && `<link rel="canonical" href="https://${host}${esc(req.path)}" data-rh="true" />`,
+      `<meta property="og:site_name" content="${esc(practice.name)}" data-rh="true" />`,
+      `<meta property="og:title" content="${title}" data-rh="true" />`,
+      desc && `<meta property="og:description" content="${esc(desc)}" data-rh="true" />`,
+    ].filter(Boolean).join('\n    ')
+
+    const html = indexTemplate
+      .replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>\n    ${headTags}`)
+      .replace('</head>', dataIsland)
     res.set('Cache-Control', 'no-store')
     res.send(html)
   })

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Outlet, useLocation, Navigate } from 'react-router-dom'
 import { Suspense, lazy, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { SITE_URL, SITE_NAME, SITE_DESC } from './utils/seo'
 import Navbar        from './components/layout/Navbar'
 import Footer        from './components/layout/Footer'
 import WhatsAppButton from './components/ui/WhatsAppButton'
@@ -134,18 +135,18 @@ export default function App() {
   return (
     <BrowserRouter>
       <Helmet
-        defaultTitle="Octavia Dental & Facial Aesthetics | Godalming, Surrey"
+        defaultTitle={SITE_NAME}
         titleTemplate="%s"
       >
-        <meta name="description"       content="Private dental & facial aesthetics clinic in Godalming, Surrey. Implants, Invisalign, composite bonding, anti-wrinkle injections. No waiting list. New patients welcome." />
-        <link rel="canonical"          href="https://octavia-dental.co.uk" />
+        <meta name="description"       content={SITE_DESC} />
+        <link rel="canonical"          href={SITE_URL} />
         <meta name="robots"            content="index, follow" />
-        <meta name="author"            content="Octavia Dental & Facial Aesthetics" />
-        <meta property="og:site_name"  content="Octavia Dental & Facial Aesthetics" />
+        <meta name="author"            content={SITE_NAME} />
+        <meta property="og:site_name"  content={SITE_NAME} />
         <meta property="og:type"       content="website" />
-        <meta property="og:image"      content="https://octavia-dental.co.uk/images/og-default.webp" />
+        <meta property="og:image"      content={`${SITE_URL}/images/og-default.webp`} />
         <meta name="twitter:card"      content="summary_large_image" />
-        <meta name="twitter:image"     content="https://octavia-dental.co.uk/images/og-default.webp" />
+        <meta name="twitter:image"     content={`${SITE_URL}/images/og-default.webp`} />
       </Helmet>
 
       <ScrollToTop />

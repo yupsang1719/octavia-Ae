@@ -11,14 +11,14 @@ import BlogPreview    from '../components/sections/BlogPreview'
 import CTASection     from '../components/sections/CTASection'
 import SchemaMarkup   from '../components/ui/SchemaMarkup'
 import { dentalClinicSchema } from '../utils/schema'
-import { SITE_URL } from '../utils/seo'
+import { SITE_URL, SITE_DESC } from '../utils/seo'
 import { usePractice } from '../contexts/PracticeContext'
 
 export default function Home() {
   const { metaTitle, metaDesc } = usePractice()
 
   const title = metaTitle || 'Private Dentist Godalming | Octavia Dental & Facial Aesthetics'
-  const desc  = metaDesc  || 'Private dental & facial aesthetics clinic in Godalming, Surrey. Implants, Invisalign, composite bonding, anti-wrinkle injections. No waiting list. New patients welcome.'
+  const desc  = metaDesc  || SITE_DESC
 
   return (
     <>
