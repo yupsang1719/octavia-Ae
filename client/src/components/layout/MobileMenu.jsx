@@ -4,6 +4,7 @@ import { X, ChevronDown, Phone, MessageCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
+import { hasPriceList } from '../../utils/priceList'
 
 const FALLBACK_TREATMENTS = [
   { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
@@ -50,7 +51,6 @@ const LOCATION_LINKS_BY_PRACTICE = {
   ],
 }
 
-const OCTAVIA_AESTHETIC_ONLY = ['/facial-aesthetics', '/prices']
 
 const mainLinks = [
   { label: 'Facial Aesthetics', href: '/facial-aesthetics' },
@@ -244,7 +244,7 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments 
             <nav className="flex-1 overflow-y-auto px-7 py-4 relative z-10">
               <SubGroup label={isPrivate ? 'Treatments' : 'NHS Treatments'} items={treatmentLinks} onClose={onClose} />
 
-              {mainLinks.filter(l => !OCTAVIA_AESTHETIC_ONLY.includes(l.href) || slug === 'octavia-aesthetic').map((link, i) => (
+              {mainLinks.filter(l => (l.href !== '/facial-aesthetics' || slug === 'octavia-aesthetic') && (l.href !== '/prices' || hasPriceList(slug))).map((link, i) => (
                 <StaggerLink
                   key={link.href}
                   href={link.href}

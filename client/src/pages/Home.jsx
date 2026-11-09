@@ -13,6 +13,7 @@ import SchemaMarkup   from '../components/ui/SchemaMarkup'
 import { dentalClinicSchema } from '../utils/schema'
 import { SITE_URL, SITE_DESC } from '../utils/seo'
 import { usePractice } from '../contexts/PracticeContext'
+import { hasPriceList } from '../utils/priceList'
 
 export default function Home() {
   const { metaTitle, metaDesc, slug } = usePractice()
@@ -49,8 +50,8 @@ export default function Home() {
       {/* Section 2: Trust Bar */}
       <TrustBar />
 
-      {/* Section 3: Services — octavia-aesthetic uses the menu + /prices page instead */}
-      {slug !== 'octavia-aesthetic' && <ServicesGrid />}
+      {/* Section 3: Services — practices with a /prices page use that + the menu instead */}
+      {!hasPriceList(slug) && <ServicesGrid />}
 
       {/* Section 4: USPs + NHS card */}
       <USPSection />

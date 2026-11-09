@@ -76,7 +76,7 @@ export async function generateSitemap(practiceSlug = 'octavia-aesthetic') {
 
   const urls = [
     ...SHARED_PAGES.map(toXml),
-    ...(practiceSlug === 'octavia-aesthetic'
+    ...(['octavia-aesthetic', 'new-octavia'].includes(practiceSlug)
       ? [toXml({ url: '/prices', changefreq: 'monthly', priority: '0.8' })]
       : []),
     ...locations.map(toXml),

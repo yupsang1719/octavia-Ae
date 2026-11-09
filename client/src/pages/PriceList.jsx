@@ -63,7 +63,7 @@ export default function PriceList() {
       .catch(() => setCategories([]))
   }, [])
 
-  const desc = `Treatment prices at ${name}: general dentistry, hygiene, cosmetic dentistry, implants and facial aesthetics.`
+  const desc = `Treatment prices at ${name}: general and cosmetic dentistry, implants, restorative care and more.`
 
   return (
     <>

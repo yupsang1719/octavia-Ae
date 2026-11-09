@@ -4,6 +4,7 @@ import { Phone, Mail, MapPin, Send } from 'lucide-react'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
 import { useTreatments } from '../../hooks/useTreatments'
+import { hasPriceList } from '../../utils/priceList'
 
 function InstagramIcon({ className }) {
   return (
@@ -79,7 +80,7 @@ export default function Footer() {
   }, [])
 
   const practiceLinks = [
-    ...(slug === 'octavia-aesthetic' ? [{ label: 'Price List', href: '/prices' }] : []),
+    ...(hasPriceList(slug) ? [{ label: 'Price List', href: '/prices' }] : []),
     { label: 'Our Team',       href: '/our-team' },
     { label: 'Gallery',        href: '/gallery' },
     { label: 'Blog',           href: '/blog' },

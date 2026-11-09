@@ -4,6 +4,7 @@ import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, Ba
 import { useAuth } from '../../contexts/AuthContext'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
+import { PRICE_LIST_PRACTICES } from '../../utils/priceList'
 
 // roles omitted = manager only
 const NAV = [
@@ -18,7 +19,7 @@ const NAV = [
   { to: '/admin/opening-hours',      label: 'Opening Hours',   icon: Clock },
   { to: '/admin/review-request',     label: 'Review Requests', icon: Star },
   { to: '/admin/treatments',         label: 'Treatments',      icon: Stethoscope },
-  { to: '/admin/price-list',         label: 'Price List',      icon: PoundSterling, onlyFor: 'octavia-aesthetic' },
+  { to: '/admin/price-list',         label: 'Price List',      icon: PoundSterling, onlyFor: PRICE_LIST_PRACTICES },
   { to: '/admin/nhs-bands',          label: 'NHS Bands',       icon: Activity, onlyFor: 'octavia-house' },
   { to: '/admin/patients',           label: 'Patients',        icon: UserCheck },
   { to: '/admin/email-templates',    label: 'Email Templates', icon: Mail },
@@ -46,7 +47,7 @@ export default function AdminLayout() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
-  const visibleNav = NAV.filter(item => (!item.onlyFor || item.onlyFor === slug) && (item.roles || ['manager']).includes(role))
+  const visibleNav = NAV.filter(item => (!item.onlyFor || [].concat(item.onlyFor).includes(slug)) && (item.roles || ['manager']).includes(role))
 
   const [logoTitle, logoSub] = splitPracticeName(name)
   const dot = SITE_COLOURS[slug] ?? 'bg-white/40'

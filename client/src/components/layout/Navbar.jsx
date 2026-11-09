@@ -8,6 +8,7 @@ import { useBookingModal } from '../../hooks/useBookingModal'
 import { useTreatments } from '../../hooks/useTreatments'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
+import { hasPriceList } from '../../utils/priceList'
 
 const FALLBACK_TREATMENTS = [
   { label: 'General Dentistry',    href: '/treatments/general-dentistry' },
@@ -214,7 +215,7 @@ export default function Navbar() {
             {[
               { id: 'treatments',  label: isPrivate ? 'Treatments' : 'NHS Treatments', dropdown: isPrivate ? treatments : NHS_BAND_LINKS },
               slug === 'octavia-aesthetic' && { id: 'aesthetics', label: 'Facial Aesthetics', href: '/facial-aesthetics' },
-              slug === 'octavia-aesthetic' && { id: 'prices',     label: 'Prices',            href: '/prices' },
+              hasPriceList(slug) && { id: 'prices',     label: 'Prices',            href: '/prices' },
               { id: 'team',        label: 'Our Team',          href: '/our-team'     },
               { id: 'gallery',     label: 'Gallery',           href: '/gallery'      },
               { id: 'locations',   label: 'Locations',         dropdown: locationLinks},
