@@ -42,10 +42,10 @@ function SplitHeading({ text, className, baseDelay = 0 }) {
 export default function Hero({
   headline,
   tags,
-  heroImage = 'https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1400&q=80',
+  heroImage = '/images/bg/2026-06-08.jpg',
 }) {
   const { isOpen, open, close } = useBookingModal()
-  const { type, whatsapp, address, bookingLabel, freeConsultation } = usePractice()
+  const { name, type, whatsapp, address, bookingLabel, freeConsultation } = usePractice()
 
   const isPrivate = type === 'private'
   const resolvedHeadline = headline ?? 'Your smile.'
@@ -76,13 +76,13 @@ export default function Hero({
           <div className="absolute inset-0">
             <img
               src={heroImage}
-              alt="Octavia Dental & Facial Aesthetics team in Godalming"
-              className="w-full h-full object-cover object-top"
+              alt={`Treatment room at ${name}`}
+              className="w-full h-full object-cover object-[60%_50%]"
               loading="eager"
               fetchpriority="high"
               decoding="async"
-              width="900"
-              height="1100"
+              width="1800"
+              height="1012"
             />
           </div>
           <div className="absolute inset-0 bg-gradient-to-r from-[#0e1a0c] via-[#0e1a0c]/80 lg:via-[#0e1a0c]/35 to-transparent" />
