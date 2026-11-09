@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Outlet, useLocation, Navigate } from 'react-router-dom'
 import { Suspense, lazy, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { SITE_URL, SITE_NAME, SITE_DESC } from './utils/seo'
+import { SITE_URL, SITE_NAME } from './utils/seo'
 import Navbar        from './components/layout/Navbar'
 import Footer        from './components/layout/Footer'
 import WhatsAppButton from './components/ui/WhatsAppButton'
@@ -134,12 +134,10 @@ function PublicLayout() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Helmet
-        defaultTitle={SITE_NAME}
-        titleTemplate="%s"
-      >
-        <meta name="description"       content={SITE_DESC} />
-        <link rel="canonical"          href={SITE_URL} />
+      {/* Site-wide tags only. Title, description and canonical are set per page:
+          on React 19 Helmet no longer de-duplicates, so defaults here would
+          appear alongside each page's own (conflicting canonicals). */}
+      <Helmet>
         <meta name="robots"            content="index, follow" />
         <meta name="author"            content={SITE_NAME} />
         <meta property="og:site_name"  content={SITE_NAME} />
