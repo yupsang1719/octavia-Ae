@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
-import { Phone, Mail, MapPin, Clock, MessageCircle } from 'lucide-react'
-import ContactForm from '../components/forms/ContactForm'
+import { Phone, MapPin, Clock, MessageCircle } from 'lucide-react'
+import EmailEnquiry from '../components/ui/EmailEnquiry'
 import { usePractice } from '../contexts/PracticeContext'
 import { SITE_URL } from '../utils/seo'
 
@@ -23,7 +23,7 @@ const GETTING_HERE = {
 
 export default function Contact() {
   const {
-    name, phone, phoneTel, email: practiceEmail,
+    name, phone, phoneTel,
     address, whatsapp, hours, metaTitle, slug,
   } = usePractice()
 
@@ -34,10 +34,10 @@ export default function Contact() {
     <>
       <Helmet>
         <title>Contact Us | {metaTitle}</title>
-        <meta name="description" content={`Contact ${name}. Call ${phone} or send a message. ${address}.`} />
+        <meta name="description" content={`Contact ${name}. Call ${phone} or email us. ${address}.`} />
         <link rel="canonical" href={`${SITE_URL}/contact`} />
         <meta property="og:title"       content={`Contact Us | ${name}`} />
-        <meta property="og:description" content={`Call ${phone} or send a message. ${address}.`} />
+        <meta property="og:description" content={`Call ${phone} or email us. ${address}.`} />
         <meta property="og:url"         content={`${SITE_URL}/contact`} />
         <meta name="twitter:card"       content="summary_large_image" />
       </Helmet>
@@ -50,8 +50,8 @@ export default function Contact() {
             <h1 className="font-display text-4xl sm:text-5xl text-white font-medium leading-[1.08] mb-4">Contact us.</h1>
             <p className="font-sans text-lg text-white/70 leading-relaxed">
               {whatsapp
-                ? "Call, WhatsApp or fill in the form below and we'll be in touch within 2 hours."
-                : "Call or fill in the form below and we'll be in touch within 2 hours."}
+                ? 'Appointments, treatment questions or simply hello. Call, WhatsApp or write to us.'
+                : 'Appointments, treatment questions or simply hello. Call or write to us.'}
             </p>
           </motion.div>
         </div>
@@ -72,13 +72,6 @@ export default function Contact() {
                   <Phone className="w-4 h-4 text-brand-green mt-0.5 flex-shrink-0" />
                   <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors">{phone}</span>
                 </a>
-
-                {practiceEmail && (
-                  <a href={`mailto:${practiceEmail}`} className="flex items-start gap-3 group">
-                    <Mail className="w-4 h-4 text-brand-green mt-0.5 flex-shrink-0" />
-                    <span className="font-sans text-sm text-brand-dark group-hover:text-brand-green transition-colors break-all">{practiceEmail}</span>
-                  </a>
-                )}
 
                 <address className="flex items-start gap-3 not-italic">
                   <MapPin className="w-4 h-4 text-brand-green mt-0.5 flex-shrink-0" />
@@ -131,11 +124,10 @@ export default function Contact() {
               )}
             </div>
 
-            {/* Right — contact form */}
-            <div className="lg:col-span-3">
+            {/* Right — email enquiry */}
+            <div className="lg:col-span-3 order-first">
               <motion.div {...fade(0.05)}>
-                <h2 className="font-serif text-2xl text-brand-dark font-medium mb-6">Send us a message</h2>
-                <ContactForm />
+                <EmailEnquiry />
               </motion.div>
             </div>
           </div>

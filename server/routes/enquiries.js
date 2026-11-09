@@ -1,24 +1,10 @@
 import { Router } from 'express'
-import { body } from 'express-validator'
-import { createEnquiry, getEnquiries, updateEnquiryStatus } from '../controllers/enquiryController.js'
+import { getEnquiries, updateEnquiryStatus } from '../controllers/enquiryController.js'
 import { requireAuth } from '../middleware/auth.js'
-import { enquiryLimiter } from '../middleware/rateLimiter.js'
-import { validateRequest } from '../middleware/validateRequest.js'
 
+// Public submissions were retired in favour of email (mailto) enquiries.
+// These admin routes stay so historical enquiries remain viewable in the CMS.
 const router = Router()
-
-router.post(
-  '/',
-  enquiryLimiter,
-  [
-    body('name').trim().notEmpty().isLength({ min: 2 }),
-    body('email').isEmail().normalizeEmail(),
-    body('phone').optional().trim(),
-    body('gdprConsent').equals('true').withMessage('GDPR consent required'),
-  ],
-  validateRequest,
-  createEnquiry
-)
 
 router.get('/',   requireAuth, getEnquiries)
 router.patch('/:id', requireAuth, updateEnquiryStatus)
