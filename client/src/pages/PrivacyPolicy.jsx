@@ -1,12 +1,19 @@
 import { Helmet } from 'react-helmet-async'
 import { SITE_URL } from '../utils/seo'
+import { usePractice } from '../contexts/PracticeContext'
 
 export default function PrivacyPolicy() {
+  const { slug, name, address, email, phone, phoneTel, type } = usePractice()
+  const kind = slug === 'octavia-aesthetic' ? 'a private dental and facial aesthetics practice'
+    : type === 'mixed' ? 'an NHS and private dental practice'
+    : 'a private dental practice'
+  const mail = <a href={`mailto:${email}`} className="text-brand-green hover:underline">{email}</a>
+
   return (
     <>
       <Helmet>
-        <title>Privacy Policy | Octavia Dental & Facial Aesthetics</title>
-        <meta name="description" content="Privacy Policy for Octavia Dental & Facial Aesthetics. How we collect, use and protect your personal data in accordance with UK GDPR." />
+        <title>{`Privacy Policy | ${name}`}</title>
+        <meta name="description" content={`Privacy Policy for ${name}. How we collect, use and protect your personal data in accordance with UK GDPR.`} />
         <link rel="canonical" href={`${SITE_URL}/privacy-policy`} />
       </Helmet>
 
@@ -19,8 +26,8 @@ export default function PrivacyPolicy() {
 
             <section>
               <h2 className="font-serif text-2xl text-brand-dark font-medium mb-3">1. Who we are</h2>
-              <p className="font-sans text-brand-muted leading-relaxed">Octavia Dental & Facial Aesthetics ("we", "us", "our") is a private dental and facial aesthetics practice located at Seymour House, Lower South Street, Godalming, Surrey, GU7 1BZ. We are registered with the Care Quality Commission (CQC) and all our clinicians are registered with the General Dental Council (GDC).</p>
-              <p className="font-sans text-brand-muted leading-relaxed mt-3">For data protection purposes, we are the Data Controller for personal information collected through this website and during your treatment with us. Contact us at <a href="mailto:info@octavia-dental.co.uk" className="text-brand-green hover:underline">info@octavia-dental.co.uk</a> or <a href="tel:01483958205" className="text-brand-green hover:underline">01483 958205</a>.</p>
+              <p className="font-sans text-brand-muted leading-relaxed">{name} ("we", "us", "our") is {kind} located at {address}. We are registered with the Care Quality Commission (CQC) and all our clinicians are registered with the General Dental Council (GDC).</p>
+              <p className="font-sans text-brand-muted leading-relaxed mt-3">For data protection purposes, we are the Data Controller for personal information collected through this website and during your treatment with us. Contact us at {mail} or <a href={`tel:${phoneTel}`} className="text-brand-green hover:underline">{phone}</a>.</p>
             </section>
 
             <section>
@@ -85,7 +92,7 @@ export default function PrivacyPolicy() {
                 <li>Request data portability</li>
                 <li>Lodge a complaint with the ICO (ico.org.uk)</li>
               </ul>
-              <p className="font-sans text-brand-muted leading-relaxed mt-3">To exercise any of these rights, contact us at <a href="mailto:info@octavia-dental.co.uk" className="text-brand-green hover:underline">info@octavia-dental.co.uk</a>.</p>
+              <p className="font-sans text-brand-muted leading-relaxed mt-3">To exercise any of these rights, contact us at {mail}.</p>
             </section>
 
             <section>
@@ -95,7 +102,7 @@ export default function PrivacyPolicy() {
 
             <section>
               <h2 className="font-serif text-2xl text-brand-dark font-medium mb-3">9. Complaints</h2>
-              <p className="font-sans text-brand-muted leading-relaxed">If you have a complaint about how we handle your personal data, please contact us first at <a href="mailto:info@octavia-dental.co.uk" className="text-brand-green hover:underline">info@octavia-dental.co.uk</a>. If you remain dissatisfied, you have the right to complain to the Information Commissioner's Office at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-brand-green hover:underline">ico.org.uk</a>.</p>
+              <p className="font-sans text-brand-muted leading-relaxed">If you have a complaint about how we handle your personal data, please contact us first at {mail}. If you remain dissatisfied, you have the right to complain to the Information Commissioner's Office at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-brand-green hover:underline">ico.org.uk</a>.</p>
             </section>
           </div>
         </div>

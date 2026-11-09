@@ -12,6 +12,7 @@ function readInjectedPractice() {
 }
 
 const practice = readInjectedPractice()
+export const PRACTICE = practice
 
 export const SITE_URL  = practice?.domains?.[0] ? `https://${practice.domains[0]}` : 'https://octavia-dental.co.uk'
 export const SITE_NAME = practice?.name || 'Octavia Dental & Facial Aesthetics'

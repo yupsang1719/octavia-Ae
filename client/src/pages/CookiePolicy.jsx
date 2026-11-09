@@ -1,12 +1,16 @@
 import { Helmet } from 'react-helmet-async'
 import { SITE_URL } from '../utils/seo'
+import { usePractice } from '../contexts/PracticeContext'
 
 export default function CookiePolicy() {
+  const { name, email } = usePractice()
+  const host = SITE_URL.replace(/^https?:\/\//, '')
+
   return (
     <>
       <Helmet>
-        <title>Cookie Policy | Octavia Dental & Facial Aesthetics</title>
-        <meta name="description" content="Cookie Policy for octavia-dental.co.uk. How and why we use cookies on our website." />
+        <title>{`Cookie Policy | ${name}`}</title>
+        <meta name="description" content={`Cookie Policy for ${host}. How and why we use cookies on our website.`} />
         <link rel="canonical" href={`${SITE_URL}/cookie-policy`} />
       </Helmet>
 
@@ -22,7 +26,7 @@ export default function CookiePolicy() {
               { title:'Types of cookies we use', body:null, list:['Essential cookies — required for the website to function. These cannot be disabled.','Analytics cookies — help us understand how visitors use the site (e.g. Google Analytics). These are only set with your consent.','Preference cookies — remember your settings (e.g. cookie consent). These are set after you interact with our consent banner.'] },
               { title:'Managing cookies', body:'You can control and delete cookies through your browser settings. Please note that disabling cookies may affect the functionality of this website. You can also update your consent preferences by clicking "Essential only" on our cookie banner.' },
               { title:'Third-party cookies', body:'We may use third-party services such as Google Analytics and Google Maps that set their own cookies. These are subject to their respective privacy policies. We use Google Maps solely to display our practice location.' },
-              { title:'Contact', body:null, link:{ text:'If you have questions about our use of cookies, contact us at info@octavia-dental.co.uk', href:'mailto:info@octavia-dental.co.uk' } },
+              { title:'Contact', body:null, link:{ text:`If you have questions about our use of cookies, contact us at ${email}`, href:`mailto:${email}` } },
             ].map(section => (
               <section key={section.title}>
                 <h2 className="font-serif text-2xl text-brand-dark font-medium mb-3">{section.title}</h2>
