@@ -50,8 +50,11 @@ const LOCATION_LINKS_BY_PRACTICE = {
   ],
 }
 
+const OCTAVIA_AESTHETIC_ONLY = ['/facial-aesthetics', '/prices']
+
 const mainLinks = [
   { label: 'Facial Aesthetics', href: '/facial-aesthetics' },
+  { label: 'Prices',            href: '/prices' },
   { label: 'Our Team',          href: '/our-team' },
   { label: 'Gallery',           href: '/gallery' },
   { label: 'Blog',              href: '/blog' },
@@ -241,7 +244,7 @@ export default function MobileMenu({ isOpen, onClose, onOpenBooking, treatments 
             <nav className="flex-1 overflow-y-auto px-7 py-4 relative z-10">
               <SubGroup label={isPrivate ? 'Treatments' : 'NHS Treatments'} items={treatmentLinks} onClose={onClose} />
 
-              {mainLinks.filter(l => l.href !== '/facial-aesthetics' || slug === 'octavia-aesthetic').map((link, i) => (
+              {mainLinks.filter(l => !OCTAVIA_AESTHETIC_ONLY.includes(l.href) || slug === 'octavia-aesthetic').map((link, i) => (
                 <StaggerLink
                   key={link.href}
                   href={link.href}

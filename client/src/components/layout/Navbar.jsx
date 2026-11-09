@@ -214,6 +214,7 @@ export default function Navbar() {
             {[
               { id: 'treatments',  label: isPrivate ? 'Treatments' : 'NHS Treatments', dropdown: isPrivate ? treatments : NHS_BAND_LINKS },
               slug === 'octavia-aesthetic' && { id: 'aesthetics', label: 'Facial Aesthetics', href: '/facial-aesthetics' },
+              slug === 'octavia-aesthetic' && { id: 'prices',     label: 'Prices',            href: '/prices' },
               { id: 'team',        label: 'Our Team',          href: '/our-team'     },
               { id: 'gallery',     label: 'Gallery',           href: '/gallery'      },
               { id: 'locations',   label: 'Locations',         dropdown: locationLinks},

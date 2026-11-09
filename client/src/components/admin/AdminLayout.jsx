@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity, Package, Truck, ArrowRightLeft, ClipboardList, Zap, CalendarClock, Wrench, UserCog, Megaphone } from 'lucide-react'
+import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity, Package, Truck, ArrowRightLeft, ClipboardList, Zap, CalendarClock, Wrench, UserCog, Megaphone, PoundSterling } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
@@ -18,6 +18,7 @@ const NAV = [
   { to: '/admin/opening-hours',      label: 'Opening Hours',   icon: Clock },
   { to: '/admin/review-request',     label: 'Review Requests', icon: Star },
   { to: '/admin/treatments',         label: 'Treatments',      icon: Stethoscope },
+  { to: '/admin/price-list',         label: 'Price List',      icon: PoundSterling, onlyFor: 'octavia-aesthetic' },
   { to: '/admin/nhs-bands',          label: 'NHS Bands',       icon: Activity, onlyFor: 'octavia-house' },
   { to: '/admin/patients',           label: 'Patients',        icon: UserCheck },
   { to: '/admin/email-templates',    label: 'Email Templates', icon: Mail },

@@ -15,7 +15,7 @@ import { SITE_URL, SITE_DESC } from '../utils/seo'
 import { usePractice } from '../contexts/PracticeContext'
 
 export default function Home() {
-  const { metaTitle, metaDesc } = usePractice()
+  const { metaTitle, metaDesc, slug } = usePractice()
 
   const title = metaTitle || 'Private Dentist Godalming | Octavia Dental & Facial Aesthetics'
   const desc  = metaDesc  || SITE_DESC
@@ -49,8 +49,8 @@ export default function Home() {
       {/* Section 2: Trust Bar */}
       <TrustBar />
 
-      {/* Section 3: Services */}
-      <ServicesGrid />
+      {/* Section 3: Services — octavia-aesthetic uses the menu + /prices page instead */}
+      {slug !== 'octavia-aesthetic' && <ServicesGrid />}
 
       {/* Section 4: USPs + NHS card */}
       <USPSection />

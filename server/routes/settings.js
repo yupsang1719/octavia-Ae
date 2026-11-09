@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { getTrustBar, updateTrustBar, getOpeningHours, updateOpeningHours } from '../controllers/settingsController.js'
+import { getTrustBar, updateTrustBar, getOpeningHours, updateOpeningHours, getPriceList, updatePriceList } from '../controllers/settingsController.js'
 
 const router = Router()
 
@@ -9,5 +9,8 @@ router.put('/trust-bar',      requireAuth, updateTrustBar)
 
 router.get('/opening-hours',  getOpeningHours)
 router.put('/opening-hours',  requireAuth, updateOpeningHours)
+
+router.get('/price-list',     getPriceList)
+router.put('/price-list',     requireAuth, updatePriceList)
 
 export default router

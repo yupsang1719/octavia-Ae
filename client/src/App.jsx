@@ -51,6 +51,7 @@ const Gallery          = lazy(() => import('./pages/Gallery'))
 const Blog             = lazy(() => import('./pages/Blog'))
 const BlogPost         = lazy(() => import('./pages/BlogPost'))
 const Contact          = lazy(() => import('./pages/Contact'))
+const PriceList        = lazy(() => import('./pages/PriceList'))
 const PrivacyPolicy    = lazy(() => import('./pages/PrivacyPolicy'))
 const CookiePolicy     = lazy(() => import('./pages/CookiePolicy'))
 const NotFound         = lazy(() => import('./pages/NotFound'))
@@ -66,6 +67,7 @@ const AdminTeam          = lazy(() => import('./pages/admin/AdminTeam'))
 const AdminTeamEditor    = lazy(() => import('./pages/admin/AdminTeamEditor'))
 const AdminReviews       = lazy(() => import('./pages/admin/AdminReviews'))
 const AdminTrustBar             = lazy(() => import('./pages/admin/AdminTrustBar'))
+const AdminPriceList            = lazy(() => import('./pages/admin/AdminPriceList'))
 const AdminOpeningHours         = lazy(() => import('./pages/admin/AdminOpeningHours'))
 const AdminReviewRequest        = lazy(() => import('./pages/admin/AdminReviewRequest'))
 const AdminTreatments           = lazy(() => import('./pages/admin/AdminTreatments'))
@@ -190,6 +192,7 @@ export default function App() {
             <Route path="/blog"                          element={<Blog />} />
             <Route path="/blog/:slug"                    element={<BlogPost />} />
             <Route path="/contact"                       element={<Contact />} />
+            <Route path="/prices"                        element={<PriceList />} />
             <Route path="/privacy-policy"                element={<PrivacyPolicy />} />
             <Route path="/cookie-policy"                 element={<CookiePolicy />} />
             <Route path="*"                              element={<NotFound />} />
@@ -211,6 +214,7 @@ export default function App() {
             <Route path="team/:id"        element={<ManagerRoute><AdminTeamEditor /></ManagerRoute>} />
             <Route path="reviews"          element={<ManagerRoute><AdminReviews /></ManagerRoute>} />
             <Route path="trust-bar"        element={<ManagerRoute><AdminTrustBar /></ManagerRoute>} />
+            <Route path="price-list"       element={<ManagerRoute><AdminPriceList /></ManagerRoute>} />
             <Route path="opening-hours"    element={<ManagerRoute><AdminOpeningHours /></ManagerRoute>} />
             <Route path="review-request"       element={<ManagerRoute><AdminReviewRequest /></ManagerRoute>} />
             <Route path="treatments"                    element={<ManagerRoute><AdminTreatments /></ManagerRoute>} />

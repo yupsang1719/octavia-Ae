@@ -79,6 +79,7 @@ export default function Footer() {
   }, [])
 
   const practiceLinks = [
+    ...(slug === 'octavia-aesthetic' ? [{ label: 'Price List', href: '/prices' }] : []),
     { label: 'Our Team',       href: '/our-team' },
     { label: 'Gallery',        href: '/gallery' },
     { label: 'Blog',           href: '/blog' },
