@@ -100,7 +100,7 @@ function ServiceRow({ service, index }) {
         </span>
 
         {/* Icon */}
-        <div className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center flex-shrink-0 relative z-10 transition-all duration-300 group-hover:border-brand-gold/50 group-hover:bg-brand-gold/8">
+        <div className="w-6 flex items-center justify-center flex-shrink-0 relative z-10">
           <ServiceIcon id={service.id} className="w-4 h-4 text-white/60 group-hover:text-brand-gold transition-colors duration-300" />
         </div>
 
@@ -116,14 +116,14 @@ function ServiceRow({ service, index }) {
 
         {/* Price */}
         <div className="flex-shrink-0 relative z-10 hidden md:block">
-          <span className="font-sans text-[11px] font-medium text-brand-gold/80 bg-brand-gold/8 border border-brand-gold/20 px-3 py-1.5 rounded-full whitespace-nowrap">
+          <span className="font-sans text-sm text-brand-gold whitespace-nowrap">
             {service.priceFrom}
           </span>
         </div>
 
         {/* Arrow */}
         <motion.div
-          className="flex-shrink-0 relative z-10 w-7 h-7 rounded-full border border-white/10 flex items-center justify-center group-hover:border-brand-gold/40 group-hover:bg-brand-gold/8 transition-all duration-300"
+          className="flex-shrink-0 relative z-10 flex items-center justify-center"
           animate={{ x: hovered ? 2 : 0 }}
           transition={{ duration: 0.25 }}
         >
@@ -162,7 +162,7 @@ function NHSBandRow({ band, index }) {
         <span className="font-sans text-[10px] font-medium text-brand-gold/40 tracking-[0.22em] flex-shrink-0 w-6 select-none relative z-10">
           {num}
         </span>
-        <div className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center flex-shrink-0 relative z-10 transition-all duration-300 group-hover:border-brand-gold/50 group-hover:bg-brand-gold/8">
+        <div className="w-6 flex items-center justify-center flex-shrink-0 relative z-10">
           <CheckCircle className="w-4 h-4 text-white/60 group-hover:text-brand-gold transition-colors duration-300" />
         </div>
         <div className="flex-1 min-w-0 relative z-10">
@@ -174,12 +174,12 @@ function NHSBandRow({ band, index }) {
           </p>
         </div>
         <div className="flex-shrink-0 relative z-10 hidden md:block">
-          <span className="font-sans text-[11px] font-medium text-brand-gold/80 bg-brand-gold/8 border border-brand-gold/20 px-3 py-1.5 rounded-full whitespace-nowrap">
+          <span className="font-sans text-sm text-brand-gold whitespace-nowrap">
             {band.price}
           </span>
         </div>
         <motion.div
-          className="flex-shrink-0 relative z-10 w-7 h-7 rounded-full border border-white/10 flex items-center justify-center group-hover:border-brand-gold/40 group-hover:bg-brand-gold/8 transition-all duration-300"
+          className="flex-shrink-0 relative z-10 flex items-center justify-center"
           animate={{ x: hovered ? 2 : 0 }}
           transition={{ duration: 0.25 }}
         >
@@ -211,8 +211,6 @@ export default function ServicesGrid() {
 
   return (
     <section className="section-padding bg-brand-green relative overflow-hidden">
-      <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full border border-white/4 pointer-events-none" />
-      <div className="absolute -bottom-32 -left-24 w-72 h-72 rounded-full border border-white/3 pointer-events-none" />
 
       <div className="container-wide relative z-10">
 

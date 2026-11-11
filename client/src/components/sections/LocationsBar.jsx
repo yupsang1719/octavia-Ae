@@ -33,29 +33,26 @@ export default function LocationsBar() {
             </span>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {locations.map((loc, i) => (
-              <motion.div
-                key={`${loc.label}-${i}`}
-                initial={{ opacity: 0, scale: 0.92 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.035, duration: 0.3, ease: 'easeOut' }}
-              >
-                <Link
-                  to={loc.href}
-                  className={`inline-block px-4 py-1.5 rounded-full border font-sans text-xs font-medium cursor-pointer transition-all duration-200 ${
-                    loc.primary
-                      ? 'bg-brand-green text-white border-brand-green hover:bg-brand-green/90'
-                      : loc.highlight
-                      ? 'bg-brand-gold/10 text-brand-dark border-brand-gold/30 hover:border-brand-gold hover:text-brand-dark'
-                      : 'bg-white text-brand-muted border-brand-border hover:border-brand-green/40 hover:text-brand-green'
-                  }`}
-                >
-                  {loc.label}
-                </Link>
-              </motion.div>
-            ))}
+          <div className="overflow-hidden">
+            <ul className="-ml-6 flex flex-wrap gap-y-2">
+              {locations.map((loc, i) => (
+                <li key={`${loc.label}-${i}`} className="relative pl-6">
+                  <span aria-hidden="true" className="absolute left-2.5 top-1/2 -translate-y-1/2 w-1 h-1 rotate-45 bg-brand-gold" />
+                  <Link
+                    to={loc.href}
+                    className={`font-sans text-sm underline-offset-4 decoration-brand-gold/60 hover:underline transition-colors duration-200 ${
+                      loc.primary
+                        ? 'text-brand-dark font-semibold'
+                        : loc.highlight
+                        ? 'text-brand-green font-medium'
+                        : 'text-brand-muted hover:text-brand-dark'
+                    }`}
+                  >
+                    {loc.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </motion.div>
       </div>

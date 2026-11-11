@@ -26,19 +26,6 @@ export default function CTASection() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           />
 
-          {/* Slow-rotating outer ring */}
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-white/4"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-          />
-          {/* Counter-rotating inner ring */}
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full border border-brand-gold/8"
-            animate={{ rotate: -360 }}
-            transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-          />
-
           {/* Breathing glow */}
           <motion.div
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-brand-gold/5"

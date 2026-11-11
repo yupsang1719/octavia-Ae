@@ -24,8 +24,6 @@ function fade(delay = 0) {
 function LocationHero({ location, onBook, phone, phoneTel, isPrivate, bookingLabel }) {
   return (
     <section className="relative bg-brand-green pt-16 overflow-hidden">
-      <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full border border-white/10 pointer-events-none" />
-      <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full border border-white/5 pointer-events-none" />
 
       <div className="container-wide py-20 lg:py-28 relative z-10">
         <motion.div className="max-w-2xl" {...fade(0)}>

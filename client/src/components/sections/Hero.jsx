@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { useBookingModal } from '../../hooks/useBookingModal'
 import BookingModal from '../ui/BookingModal'
 import TextScramble from '../ui/TextScramble'
+import TagList from '../ui/TagList'
 import { usePractice } from '../../contexts/PracticeContext'
 
 const ROTATING_WORDS = ['confidence.', 'radiance.', 'perfection.', 'future.']
@@ -187,22 +188,11 @@ export default function Hero({
 
             {/* Tag pills */}
             <motion.div
-              className="flex flex-wrap gap-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.1, duration: 0.6 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              {resolvedTags.map((tag, i) => (
-                <motion.span
-                  key={tag}
-                  className="text-xs font-sans font-normal px-3.5 py-1.5 rounded-full border border-white/15 text-white/60 bg-white/4 tracking-wide"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.15 + i * 0.07, duration: 0.35, ease: 'easeOut' }}
-                >
-                  {tag}
-                </motion.span>
-              ))}
+              <TagList items={resolvedTags} className="font-sans text-[13px] text-white/70 tracking-wide" />
             </motion.div>
 
             <motion.p

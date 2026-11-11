@@ -92,7 +92,7 @@ export default function OurTeam() {
 
       {/* Team by category */}
       {grouped.map((group, gi) => (
-        <section key={group.key} className={`section-padding ${gi % 2 === 0 ? 'bg-white' : 'bg-brand-cream'}`}>
+        <section key={group.key} className={`section-padding ${gi % 2 === 0 ? 'bg-brand-cream' : 'bg-white'}`}>
           <div className="container-wide">
             <motion.h2
               className="font-serif text-3xl lg:text-4xl text-brand-dark font-medium mb-2"
@@ -103,9 +103,9 @@ export default function OurTeam() {
             <motion.p className="font-sans text-brand-muted mb-10 text-sm" {...fade(0.08)}>
               {group.key === 'dentist' ? 'Click a card to read more about each clinician.' : 'GDC registered. Available on request.'}
             </motion.p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {group.members.map((member, i) => (
-                <motion.div key={member._id} {...fade(i * 0.1)}>
+                <motion.div key={member._id} className="h-full" {...fade(i * 0.08)}>
                   <TeamCard member={member} />
                 </motion.div>
               ))}
@@ -115,7 +115,7 @@ export default function OurTeam() {
       ))}
 
       {/* Trust points */}
-      <section className="section-padding bg-brand-cream">
+      <section className="section-padding bg-white">
         <div className="container-wide">
           <motion.h2 className="font-serif text-3xl lg:text-4xl text-brand-dark font-medium mb-10" {...fade(0)}>
             Why patients choose our team
@@ -124,13 +124,13 @@ export default function OurTeam() {
             {TRUST_POINTS.map(({ icon: Icon, heading, body }, i) => (
               <motion.div
                 key={heading}
-                className="bg-white border border-brand-border rounded-sm p-6"
+                className="bg-brand-cream rounded-2xl p-7 ring-1 ring-black/5"
                 {...fade(i * 0.1)}
               >
-                <div className="w-10 h-10 rounded-lg bg-brand-green-bg flex items-center justify-center mb-4">
-                  <Icon className="w-5 h-5 text-brand-green" strokeWidth={1.5} />
+                <div className="w-11 h-11 rounded-full bg-brand-green flex items-center justify-center mb-5">
+                  <Icon className="w-5 h-5 text-white" strokeWidth={1.5} />
                 </div>
-                <h3 className="font-serif text-lg text-brand-dark font-medium mb-2">{heading}</h3>
+                <h3 className="font-sans text-lg text-brand-dark font-semibold tracking-tight mb-2">{heading}</h3>
                 <p className="font-sans text-sm text-brand-muted leading-relaxed">{body}</p>
               </motion.div>
             ))}
@@ -146,8 +146,8 @@ export default function OurTeam() {
               Supporting team
             </motion.h2>
             <div className="max-w-xl">
-              <motion.div className="bg-brand-cream border border-brand-border rounded-sm p-6" {...fade(0.1)}>
-                <h3 className="font-serif text-lg text-brand-dark font-medium mb-1">Reception & Patient Care</h3>
+              <motion.div className="bg-brand-cream rounded-2xl p-7 ring-1 ring-black/5" {...fade(0.1)}>
+                <h3 className="font-sans text-lg text-brand-dark font-semibold tracking-tight mb-1">Reception & Patient Care</h3>
                 <p className="font-sans text-sm text-brand-green font-medium mb-3">Front of house</p>
                 <p className="font-sans text-sm text-brand-muted leading-relaxed">
                   Our friendly reception team are here to make every visit to Octavia Dental as smooth and comfortable as possible — from booking your first appointment to supporting you throughout treatment.
@@ -177,7 +177,7 @@ export default function OurTeam() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => open()}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-green font-sans font-medium text-sm rounded-sm hover:bg-brand-cream transition-all"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-green font-sans font-medium text-sm rounded-full hover:bg-brand-cream transition-all"
               >
                 {bookingLabel || 'Book Appointment'}
               </button>
@@ -186,7 +186,7 @@ export default function OurTeam() {
                   href={`https://wa.me/${whatsapp}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 text-white font-sans font-medium text-sm rounded-sm hover:bg-white/10 transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 text-white font-sans font-medium text-sm rounded-full hover:bg-white/10 transition-all"
                 >
                   WhatsApp us
                 </a>

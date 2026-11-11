@@ -20,7 +20,7 @@ function slugify(str) {
 }
 
 const EMPTY = {
-  name: '', slug: '', role: '', eyebrow: '', category: 'other',
+  name: '', slug: '', role: '', eyebrow: '', postNominals: '', cardSummary: '', category: 'other',
   specialisms: [], gdcNumber: '', initials: '', image: '',
   bio: '', bioExtended: [], qualifications: [], treatments: [],
   bookingService: '', ctaHeading: '', ctaBody: '',
@@ -157,6 +157,12 @@ export default function AdminTeamEditor() {
             </Field>
             <Field label="Eyebrow text (above name)">
               <input value={form.eyebrow} onChange={e => set('eyebrow', e.target.value)} className="input" />
+            </Field>
+            <Field label="Post-nominals (under name, e.g. BDS MJDF RCS)">
+              <input value={form.postNominals ?? ''} onChange={e => set('postNominals', e.target.value)} className="input" />
+            </Field>
+            <Field label={`Card summary (${(form.cardSummary ?? '').length}/160)`}>
+              <textarea rows={2} maxLength={160} value={form.cardSummary ?? ''} onChange={e => set('cardSummary', e.target.value)} className="input resize-none" placeholder="One line on what they do, shown on team cards" />
             </Field>
             <Field label="Category">
               <select value={form.category} onChange={e => set('category', e.target.value)} className="input">

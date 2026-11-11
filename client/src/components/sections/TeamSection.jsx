@@ -15,7 +15,7 @@ export default function TeamSection() {
   }, [])
 
   return (
-    <section className="section-padding bg-white">
+    <section className="section-padding bg-brand-cream">
       <div className="container-wide">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
@@ -55,14 +55,15 @@ export default function TeamSection() {
         </div>
 
         {/* Team cards */}
-        <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto lg:mx-0">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {dentists.map((member, i) => (
             <motion.div
               key={member._id}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.14, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: i * 0.1, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="h-full"
             >
               <TeamCard member={member} />
             </motion.div>
@@ -70,7 +71,7 @@ export default function TeamSection() {
         </div>
 
         <motion.p
-          className="mt-8 font-sans text-xs text-brand-subtle text-center lg:text-left"
+          className="mt-10 font-sans text-xs text-brand-muted text-center lg:text-left"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

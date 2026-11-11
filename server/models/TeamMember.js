@@ -10,6 +10,8 @@ const teamMemberSchema = new mongoose.Schema({
   slug:        { type: String, required: true, unique: true, trim: true },
   role:        { type: String, required: true, trim: true },
   eyebrow:     { type: String, trim: true },
+  postNominals:{ type: String, trim: true, default: '' },
+  cardSummary: { type: String, trim: true, default: '', maxlength: 200 },
   category:    {
     type: String,
     enum: ['dentist','hygienist','therapist','nurse','trainee-nurse','marketing','receptionist','practice-manager','other'],

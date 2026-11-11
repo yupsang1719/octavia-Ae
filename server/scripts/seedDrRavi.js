@@ -16,8 +16,10 @@ async function seed() {
     {
       name:     'Dr Ravi Pant',
       slug:     'dr-ravi-pant',
-      role:     'Principal Dentist',
-      eyebrow:  'Principal Dentist',
+      role:     'Clinical Director',
+      eyebrow:  'Clinical Director',
+      postNominals: 'BDS (Hons), MSc Prosth Dent (GKT Lon), MFDS RCS (Eng), Cert Ortho Warwick',
+      cardSummary:  'Gold-medal graduate with an MSc in Prosthetic Dentistry from Guy\'s. Leads complex restorative, orthodontic and Six Month Smiles cases.',
       category: 'dentist',
       initials: 'RP',
       gdcNumber: '116967',
@@ -59,12 +61,12 @@ async function seed() {
 
       bookingService: 'general',
       ctaHeading: 'Book an appointment with Dr Ravi',
-      ctaBody:    'As principal dentist, Dr Ravi Pant sees patients for a full range of treatments — from routine care to advanced restorative and orthodontic cases.',
+      ctaBody:    'As Clinical Director, Dr Ravi Pant sees patients for a full range of treatments — from routine care to advanced restorative and orthodontic cases.',
       prescriptionNotice: false,
       hasPage:    true,
 
-      metaTitle: 'Dr Ravi Pant — Principal Dentist | Octavia Dental Godalming',
-      metaDesc:  'Dr Ravi Pant is principal dentist at Octavia Dental, Godalming. GDC No. 116967. MSc Prosthetic Dentistry, Six Month Smiles provider, orthodontics and comprehensive dental care.',
+      metaTitle: 'Dr Ravi Pant — Clinical Director | Octavia Dental Godalming',
+      metaDesc:  'Dr Ravi Pant is Clinical Director at Octavia Dental, Godalming. GDC No. 116967. MSc Prosthetic Dentistry (Guy\'s), Six Month Smiles provider, orthodontics and comprehensive dental care.',
 
       practices: ['octavia-aesthetic', 'octavia-house'],
       published: true,

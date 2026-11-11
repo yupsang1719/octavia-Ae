@@ -20,9 +20,9 @@ function fade(delay = 0) {
 }
 
 const BAND_COLOURS = {
-  1: { bg: 'bg-brand-green',  badge: 'bg-green-900/40 text-green-300 border-green-700/40' },
-  2: { bg: 'bg-[#1a3a6b]',   badge: 'bg-blue-900/40 text-blue-300 border-blue-700/40' },
-  3: { bg: 'bg-[#4a1a1a]',   badge: 'bg-red-900/40 text-red-300 border-red-700/40' },
+  1: { bg: 'bg-brand-green' },
+  2: { bg: 'bg-[#1a3a6b]' },
+  3: { bg: 'bg-[#4a1a1a]' },
 }
 
 export default function NHSBandPage({ band: rawBand }) {
@@ -73,11 +73,10 @@ export default function NHSBandPage({ band: rawBand }) {
 
       {/* ── Hero ── */}
       <section className={`relative ${colours.bg} pt-16 overflow-hidden`}>
-        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full border border-white/10 pointer-events-none" />
         <div className="container-wide py-20 lg:py-28 relative z-10">
           <motion.div className="max-w-2xl" {...fade(0)}>
             <div className="flex items-center gap-3 mb-4">
-              <span className={`font-sans text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full border ${colours.badge}`}>
+              <span className="font-sans text-xs font-semibold uppercase tracking-widest text-brand-gold">
                 NHS Treatment
               </span>
             </div>

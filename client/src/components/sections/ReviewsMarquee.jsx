@@ -44,7 +44,7 @@ function ReviewCard({ review }) {
           )}
         </div>
         {review.treatment && (
-          <span className="text-[10px] font-sans font-medium text-brand-gold bg-brand-gold/8 px-2.5 py-1 rounded-full border border-brand-gold/20 whitespace-nowrap">
+          <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.14em] text-brand-gold-dk whitespace-nowrap">
             {review.treatment}
           </span>
         )}
@@ -151,7 +151,7 @@ function FeaturedGrid({ reviews }) {
                 {review.location && <p className="font-sans text-[11px] text-brand-subtle mt-0.5">{review.location}</p>}
               </div>
               {review.treatment && (
-                <span className="text-[10px] font-sans font-medium text-brand-gold bg-brand-gold/8 px-2.5 py-1 rounded-full border border-brand-gold/20 whitespace-nowrap">
+                <span className="text-[10px] font-sans font-semibold uppercase tracking-[0.14em] text-brand-gold-dk whitespace-nowrap">
                   {review.treatment}
                 </span>
               )}

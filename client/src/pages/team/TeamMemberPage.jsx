@@ -7,6 +7,7 @@ import axios from 'axios'
 import BookingModal from '../../components/ui/BookingModal'
 import { useBookingModal } from '../../hooks/useBookingModal'
 import { usePractice } from '../../contexts/PracticeContext'
+import TagList from '../../components/ui/TagList'
 import { SITE_URL } from '../../utils/seo'
 
 const ease = [0.22, 1, 0.36, 1]
@@ -186,6 +187,18 @@ export default function TeamMemberPage({ member }) {
                 {member.name}
               </motion.h1>
 
+              {/* Post-nominals */}
+              {member.postNominals && (
+                <motion.p
+                  className="font-sans text-[15px] text-brand-gold font-medium leading-relaxed mb-5 max-w-xl"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.86, ease }}
+                >
+                  {member.postNominals}
+                </motion.p>
+              )}
+
               {/* Role + GDC */}
               <motion.p
                 className="font-sans text-brand-green-mid text-sm uppercase tracking-widest mb-8"
@@ -193,37 +206,36 @@ export default function TeamMemberPage({ member }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.55, delay: 0.92, ease }}
               >
-                {member.role}
+                {member.eyebrow && member.eyebrow !== member.role && member.role}
                 {member.gdcNumber && (
-                  <span className="ml-4 pl-4 border-l border-white/15 text-white/30 normal-case tracking-normal">
+                  <span className={`text-white/40 normal-case tracking-normal ${member.eyebrow && member.eyebrow !== member.role ? 'ml-4 pl-4 border-l border-white/15' : ''}`}>
                     GDC {member.gdcNumber}
                   </span>
                 )}
               </motion.p>
 
+              {/* Short summary */}
+              {member.cardSummary && (
+                <motion.p
+                  className="font-sans text-base text-white/75 leading-relaxed mb-8 -mt-3 max-w-lg"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.96, ease }}
+                >
+                  {member.cardSummary}
+                </motion.p>
+              )}
+
               {/* Specialisms — stagger each tag */}
               {member.specialisms?.length > 0 && (
                 <motion.div
-                  className="flex flex-wrap gap-2 mb-10"
-                  initial="hidden"
-                  animate="visible"
-                  variants={{
-                    visible: { transition: { staggerChildren: 0.07, delayChildren: 1.0 } },
-                  }}
+                  className="mb-10 pt-6 border-t border-white/10 max-w-xl"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 1.0, ease }}
                 >
-                  {member.specialisms.map(s => (
-                    <motion.span
-                      key={s}
-                      variants={{
-                        hidden:   { opacity: 0, scale: 0.82, y: 6 },
-                        visible:  { opacity: 1, scale: 1,    y: 0 },
-                      }}
-                      transition={{ duration: 0.3, ease }}
-                      className="font-sans text-[11px] px-3 py-1.5 border border-white/15 text-white/60 rounded-full"
-                    >
-                      {s}
-                    </motion.span>
-                  ))}
+                  <p className="font-sans text-[10px] uppercase tracking-[0.25em] text-white/40 font-semibold mb-3">Areas of focus</p>
+                  <TagList items={member.specialisms} className="font-sans text-sm text-white/75" />
                 </motion.div>
               )}
 
