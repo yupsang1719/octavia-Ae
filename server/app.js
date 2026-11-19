@@ -23,6 +23,7 @@ import emailTemplateRoutes from './routes/emailTemplates.js'
 import stockRoutes from './routes/stock.js'
 import facilitiesRoutes from './routes/facilities.js'
 import noticeRoutes from './routes/notices.js'
+import patientStoryRoutes from './routes/patientStories.js'
 import { generateSitemap } from './utils/sitemapGenerator.js'
 
 const __dir = dirname(fileURLToPath(import.meta.url))
@@ -67,7 +68,8 @@ app.use(cors({
 // Resolve which practice this request belongs to (based on hostname)
 app.use(resolvePractice)
 
-// Serve uploaded files
+// Serve uploaded files (story videos/posters have unique names, so cache them long)
+app.use('/uploads/stories', express.static(resolve(__dir, '../uploads/stories'), { maxAge: '30d' }))
 app.use('/uploads', express.static(resolve(__dir, '../uploads')))
 
 // Body parsing
@@ -93,6 +95,7 @@ app.use('/api/practice',        practiceRoutes)
 app.use('/api/stock',           stockRoutes)
 app.use('/api/facilities',      facilitiesRoutes)
 app.use('/api/notices',         noticeRoutes)
+app.use('/api/patient-stories', patientStoryRoutes)
 
 // Sitemap — cached for 24h
 app.get('/sitemap.xml', async (req, res) => {

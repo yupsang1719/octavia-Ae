@@ -63,6 +63,7 @@ const AdminEnquiries  = lazy(() => import('./pages/admin/AdminEnquiries'))
 const AdminBlog       = lazy(() => import('./pages/admin/AdminBlog'))
 const AdminBlogEditor = lazy(() => import('./pages/admin/AdminBlogEditor'))
 const AdminGallery    = lazy(() => import('./pages/admin/AdminGallery'))
+const AdminPatientStories = lazy(() => import('./pages/admin/AdminPatientStories'))
 const AdminTeam          = lazy(() => import('./pages/admin/AdminTeam'))
 const AdminTeamEditor    = lazy(() => import('./pages/admin/AdminTeamEditor'))
 const AdminReviews       = lazy(() => import('./pages/admin/AdminReviews'))
@@ -210,6 +211,7 @@ export default function App() {
             <Route path="blog/new"        element={<ManagerRoute><AdminBlogEditor /></ManagerRoute>} />
             <Route path="blog/edit/:id"   element={<ManagerRoute><AdminBlogEditor /></ManagerRoute>} />
             <Route path="gallery"         element={<ManagerRoute><AdminGallery /></ManagerRoute>} />
+            <Route path="patient-stories" element={<ManagerRoute><AdminPatientStories /></ManagerRoute>} />
             <Route path="team"            element={<ManagerRoute><AdminTeam /></ManagerRoute>} />
             <Route path="team/:id"        element={<ManagerRoute><AdminTeamEditor /></ManagerRoute>} />
             <Route path="reviews"          element={<ManagerRoute><AdminReviews /></ManagerRoute>} />

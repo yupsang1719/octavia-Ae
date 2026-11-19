@@ -5,6 +5,7 @@ import ServicesGrid   from '../components/sections/ServicesGrid'
 import USPSection     from '../components/sections/USPSection'
 import TeamSection    from '../components/sections/TeamSection'
 import ReviewsMarquee from '../components/sections/ReviewsMarquee'
+import PatientStories from '../components/sections/PatientStories'
 import GalleryPreview from '../components/sections/GalleryPreview'
 import LocationsBar   from '../components/sections/LocationsBar'
 import BlogPreview    from '../components/sections/BlogPreview'
@@ -61,6 +62,9 @@ export default function Home() {
 
       {/* Section 6: Reviews marquee — only renders if published reviews exist */}
       <ReviewsMarquee />
+
+      {/* Section 6b: Patient video stories — only renders if published videos exist */}
+      <PatientStories />
 
       {/* Section 7: Gallery preview */}
       <GalleryPreview />

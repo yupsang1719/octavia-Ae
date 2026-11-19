@@ -13,6 +13,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { getTreatmentById } from '../../data/treatments'
 import { usePractice } from '../../contexts/PracticeContext'
+import PatientStories from '../../components/sections/PatientStories'
 
 function fadeUp(delay = 0) {
   return {
@@ -477,6 +478,12 @@ export default function TreatmentPageTemplate({ treatment: treatmentProp, slug }
         <Benefits benefits={treatment.benefits} />
         <Process steps={treatment.process} />
         <BeforeAfterSection treatmentId={treatment.id} />
+        <PatientStories
+          treatment={treatment.slug || treatment.id}
+          treatmentLabel={treatment.name}
+          heading="Hear it from our patients."
+          className="bg-white border-t border-brand-border/40"
+        />
         <Pricing treatment={treatment} />
         <FAQSection faqs={treatment.faq} />
         <GDCNotes gdcNote={treatment.gdcNote} rxNote={treatment.rxNote} />

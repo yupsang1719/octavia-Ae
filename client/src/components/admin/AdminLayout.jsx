@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity, Package, Truck, ArrowRightLeft, ClipboardList, Zap, CalendarClock, Wrench, UserCog, Megaphone, PoundSterling } from 'lucide-react'
+import { LayoutDashboard, Inbox, FileText, Image, Users, Star, MessageSquare, BarChart2, Stethoscope, Clock, Mail, UserCheck, LogOut, Menu, X, Settings, Activity, Package, Truck, ArrowRightLeft, ClipboardList, Zap, CalendarClock, Wrench, UserCog, Megaphone, PoundSterling, Film } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { usePractice } from '../../contexts/PracticeContext'
 import { splitPracticeName } from '../../utils/splitPracticeName'
@@ -12,6 +12,7 @@ const NAV = [
   { to: '/admin/enquiries',          label: 'Enquiries',       icon: Inbox },
   { to: '/admin/blog',               label: 'Blog',            icon: FileText },
   { to: '/admin/gallery',            label: 'Gallery',         icon: Image },
+  { to: '/admin/patient-stories',    label: 'Patient Stories', icon: Film },
   { to: '/admin/team',               label: 'Team',            icon: Users },
   { to: '/admin/reviews',            label: 'Reviews',         icon: MessageSquare },
   { to: '/admin/notices',            label: 'Notices',         icon: Megaphone },
