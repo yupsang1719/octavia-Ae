@@ -32,7 +32,7 @@ function StoryPlayer({ story, large = false }) {
         playsInline
         controls={started}
         onPlay={onPlay}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-contain bg-black"
         aria-label={`${story.name} shares their experience`}
       />
       {!started && (

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
-import { Plus, Trash2, Eye, EyeOff, X, Upload, ArrowUp, ArrowDown, Film, Loader2, AlertCircle } from 'lucide-react'
+import { Plus, Trash2, Eye, EyeOff, X, Upload, ArrowUp, ArrowDown, Film, Loader2, AlertCircle, Pencil } from 'lucide-react'
 
 const MAX_MB = 200
 const input = 'w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent'
@@ -134,6 +134,28 @@ export default function AdminPatientStories() {
   const treatmentName = s => treatments.find(t => t.slug === s)?.name || s
   const uploading = progress !== null
 
+  // ── Inline edit of an existing story's details ──
+  const [editingId, setEditingId] = useState(null)
+  const [edit, setEdit]           = useState({})
+  const [editError, setEditError] = useState('')
+
+  function startEdit(item) {
+    setEditingId(item._id)
+    setEdit({ name: item.name, treatment: item.treatment || '', quote: item.quote || '', consentRef: item.consentRef })
+    setEditError('')
+  }
+
+  async function saveEdit(item) {
+    if (!edit.name.trim() || !edit.consentRef.trim()) return setEditError('Name and consent reference are required.')
+    try {
+      const { data } = await axios.patch(`/api/patient-stories/${item._id}`, edit)
+      setItems(prev => prev.map(i => i._id === item._id ? data : i))
+      setEditingId(null)
+    } catch (err) {
+      setEditError(err.response?.data?.error || 'Failed to save.')
+    }
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
@@ -168,7 +190,7 @@ export default function AdminPatientStories() {
                 className="relative cursor-pointer border-2 border-dashed border-gray-200 rounded-lg overflow-hidden hover:border-brand-green transition-colors aspect-square bg-gray-50"
               >
                 {videoPreview ? (
-                  <video src={videoPreview} className="w-full h-full object-cover" muted playsInline />
+                  <video src={videoPreview} className="w-full h-full object-contain bg-black" muted playsInline />
                 ) : (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-brand-muted px-4 text-center">
                     <Upload size={20} />
@@ -254,7 +276,7 @@ export default function AdminPatientStories() {
             <div key={item._id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
               <div className="aspect-square bg-gray-100 relative">
                 {item.status === 'ready' ? (
-                  <video src={item.videoUrl} poster={item.posterUrl} controls preload="none" playsInline className="w-full h-full object-cover" />
+                  <video src={item.videoUrl} poster={item.posterUrl} controls preload="none" playsInline className="w-full h-full object-contain bg-black" />
                 ) : item.status === 'processing' ? (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-brand-muted">
                     <Loader2 size={22} className="animate-spin" />
@@ -273,6 +295,36 @@ export default function AdminPatientStories() {
               </div>
 
               <div className="p-4">
+                {editingId === item._id ? (
+                  <div className="space-y-3">
+                    {editError && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded px-2 py-1">{editError}</p>}
+                    <div>
+                      <label className={label}>Patient first name *</label>
+                      <input value={edit.name} onChange={e => setEdit(p => ({ ...p, name: e.target.value }))} className={input} />
+                    </div>
+                    <div>
+                      <label className={label}>Treatment</label>
+                      <select value={edit.treatment} onChange={e => setEdit(p => ({ ...p, treatment: e.target.value }))} className={input}>
+                        <option value="">— None (home page only) —</option>
+                        {treatments.map(t => <option key={t.slug} value={t.slug}>{t.name}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className={label}>Pull-quote</label>
+                      <textarea value={edit.quote} onChange={e => setEdit(p => ({ ...p, quote: e.target.value }))} className={input} rows={3} maxLength={220} />
+                    </div>
+                    <div>
+                      <label className={label}>Consent reference *</label>
+                      <input value={edit.consentRef} onChange={e => setEdit(p => ({ ...p, consentRef: e.target.value }))} className={input} />
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={() => saveEdit(item)}
+                        className="px-4 py-1.5 bg-brand-green text-white rounded-lg text-sm font-sans hover:bg-brand-green/90">Save</button>
+                      <button onClick={() => setEditingId(null)}
+                        className="px-4 py-1.5 border border-gray-300 rounded-lg text-sm font-sans text-brand-dark hover:bg-gray-50">Cancel</button>
+                    </div>
+                  </div>
+                ) : (<>
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="font-medium text-brand-dark text-sm font-sans leading-snug">{item.name}</p>
@@ -291,11 +343,17 @@ export default function AdminPatientStories() {
                 {item.quote && <p className="text-xs text-brand-dark/70 font-sans mt-2 italic line-clamp-2">&ldquo;{item.quote}&rdquo;</p>}
                 <p className="text-xs text-brand-subtle font-sans mt-1">Ref: {item.consentRef}</p>
 
+                </>)}
+
                 <div className="flex items-center gap-1 mt-3 pt-3 border-t border-gray-100">
                   <button onClick={() => patch(item, { published: !item.published })}
                     title={item.published ? 'Hide from site' : 'Publish to site'}
                     className="p-1.5 rounded hover:bg-gray-100 text-brand-muted hover:text-brand-dark transition-colors">
                     {item.published ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                  <button onClick={() => startEdit(item)} title="Edit details"
+                    className="p-1.5 rounded hover:bg-gray-100 text-brand-muted hover:text-brand-dark transition-colors">
+                    <Pencil size={15} />
                   </button>
                   <button onClick={() => move(i, -1)} disabled={i === 0} title="Move up"
                     className="p-1.5 rounded hover:bg-gray-100 text-brand-muted hover:text-brand-dark transition-colors disabled:opacity-30">
