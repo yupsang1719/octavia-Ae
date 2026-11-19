@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { Plus, Trash2, Eye, EyeOff, X, Upload, ArrowUp, ArrowDown, Film, Loader2, AlertCircle } from 'lucide-react'
-import { usePractice } from '../../contexts/PracticeContext'
 
 const MAX_MB = 200
 const input = 'w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent'
@@ -25,16 +24,14 @@ function fmtMB(bytes) {
 }
 
 export default function AdminPatientStories() {
-  const { slug } = usePractice()
   const [items, setItems]           = useState([])
   const [treatments, setTreatments] = useState([])
-  const [practices, setPractices]   = useState([])
   const [loading, setLoading]       = useState(true)
   const [showForm, setShowForm]     = useState(false)
   const [error, setError]           = useState('')
   const [progress, setProgress]     = useState(null)   // upload %, null when idle
 
-  const blank = { name: '', treatment: '', quote: '', consentRef: '', practices: [slug], published: false }
+  const blank = { name: '', treatment: '', quote: '', consentRef: '', published: false }
   const [form, setForm]         = useState(blank)
   const [video, setVideo]       = useState(null)
   const [videoPreview, setVideoPreview] = useState('')
@@ -46,7 +43,6 @@ export default function AdminPatientStories() {
     Promise.all([
       axios.get('/api/patient-stories/admin/all').then(r => setItems(r.data)),
       axios.get('/api/treatments/admin/all').then(r => setTreatments(r.data)).catch(() => {}),
-      axios.get('/api/practice/all').then(r => setPractices(r.data)).catch(() => {}),
     ]).catch(console.error).finally(() => setLoading(false))
   }, [])
 
@@ -61,13 +57,6 @@ export default function AdminPatientStories() {
   }, [processing])
 
   function set(field, value) { setForm(prev => ({ ...prev, [field]: value })) }
-
-  function togglePractice(s) {
-    setForm(prev => ({
-      ...prev,
-      practices: prev.practices.includes(s) ? prev.practices.filter(p => p !== s) : [...prev.practices, s],
-    }))
-  }
 
   function pickVideo(file) {
     setError('')
@@ -90,7 +79,6 @@ export default function AdminPatientStories() {
     e.preventDefault()
     if (!video) return setError('Please choose a video.')
     if (!form.name || !form.consentRef) return setError('Patient name and consent reference are required.')
-    if (!form.practices.length) return setError('Choose at least one website.')
 
     setError('')
     setProgress(0)
@@ -99,7 +87,6 @@ export default function AdminPatientStories() {
     fd.append('treatment', form.treatment)
     fd.append('quote', form.quote)
     fd.append('consentRef', form.consentRef)
-    fd.append('practices', JSON.stringify(form.practices))
     fd.append('published', String(form.published))
     if (poster) fd.append('poster', poster)
     fd.append('video', video)  // last, so text fields arrive first
@@ -222,26 +209,12 @@ export default function AdminPatientStories() {
                 <textarea value={form.quote} onChange={e => set('quote', e.target.value)} className={input} rows={2} maxLength={220}
                   placeholder="A short line from the video, in the patient's own words" />
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="sm:w-1/2">
                 <div>
                   <label className={label}>Consent reference *</label>
                   <input value={form.consentRef} onChange={e => set('consentRef', e.target.value)} className={input}
                     placeholder="e.g. CONSENT-2026-014" required />
                 </div>
-                {practices.length > 1 && (
-                  <div>
-                    <label className={label}>Show on websites</label>
-                    <div className="space-y-1.5 pt-1">
-                      {practices.map(p => (
-                        <label key={p.slug} className="flex items-center gap-2 text-sm font-sans text-brand-dark cursor-pointer">
-                          <input type="checkbox" checked={form.practices.includes(p.slug)} onChange={() => togglePractice(p.slug)}
-                            className="w-4 h-4 rounded accent-brand-green" />
-                          {p.name}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
               <label className="flex items-center gap-2 cursor-pointer font-sans text-sm text-brand-dark">
                 <input type="checkbox" checked={form.published} onChange={e => set('published', e.target.checked)}

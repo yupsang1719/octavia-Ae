@@ -12,6 +12,9 @@ const VIDEO_EXTS  = new Set(['.mp4', '.mov', '.m4v', '.webm'])
 const IMAGE_EXTS  = new Set(['.jpg', '.jpeg', '.png', '.webp'])
 const MAX_BYTES   = 200 * 1024 * 1024
 
+// Patient Stories are only shown on Octavia Dental & Facial Aesthetics
+const STORY_PRACTICE = 'octavia-aesthetic'
+
 // Originals go to the OS temp dir (not /uploads) so they're never publicly served
 const upload = multer({
   dest: tmpdir(),
@@ -34,13 +37,10 @@ function uploadFields(req, res, next) {
   })
 }
 
-const EDITABLE = ['name', 'treatment', 'quote', 'consentRef', 'practices', 'published', 'order']
+const EDITABLE = ['name', 'treatment', 'quote', 'consentRef', 'published', 'order']
 function pick(body) {
   const out = {}
   for (const k of EDITABLE) if (body[k] !== undefined) out[k] = body[k]
-  if (typeof out.practices === 'string') {
-    try { out.practices = JSON.parse(out.practices) } catch { out.practices = [out.practices] }
-  }
   if (typeof out.published === 'string') out.published = out.published === 'true'
   return out
 }
@@ -51,8 +51,9 @@ function storyFile(url) {
 
 // ── Public ────────────────────────────────────────────────────────────────────
 router.get('/', async (req, res) => {
+  if (req.practiceSlug !== STORY_PRACTICE) return res.json([])
   try {
-    const filter = { published: true, status: 'ready', practices: req.practiceSlug }
+    const filter = { published: true, status: 'ready', practices: STORY_PRACTICE }
     if (req.query.treatment) filter.treatment = String(req.query.treatment)
     const items = await PatientStory
       .find(filter, 'name treatment quote videoUrl posterUrl duration')
@@ -68,7 +69,7 @@ router.get('/', async (req, res) => {
 // ── Admin ─────────────────────────────────────────────────────────────────────
 router.get('/admin/all', requireAuth, requireManager, async (req, res) => {
   try {
-    const items = await PatientStory.find({ practices: req.practiceSlug }).sort({ order: 1, createdAt: -1 })
+    const items = await PatientStory.find({ practices: STORY_PRACTICE }).sort({ order: 1, createdAt: -1 })
     res.json(items)
   } catch {
     res.status(500).json({ error: 'Failed to fetch patient stories' })
@@ -83,8 +84,7 @@ router.post('/', requireAuth, requireManager, uploadFields, async (req, res) => 
     return res.status(400).json({ error: 'Please choose a video file' })
   }
   try {
-    const data = pick(req.body)
-    if (!data.practices?.length) data.practices = [req.practiceSlug]
+    const data = { ...pick(req.body), practices: [STORY_PRACTICE] }
     const top = await PatientStory.findOne().sort({ order: 1 }).select('order').lean()
     const story = await PatientStory.create({ ...data, order: (top?.order ?? 0) - 1, status: 'processing' })
     enqueueVideo({ id: story._id.toString(), inputPath: video.path, posterPath: poster?.path })

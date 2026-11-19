@@ -12,7 +12,7 @@ const NAV = [
   { to: '/admin/enquiries',          label: 'Enquiries',       icon: Inbox },
   { to: '/admin/blog',               label: 'Blog',            icon: FileText },
   { to: '/admin/gallery',            label: 'Gallery',         icon: Image },
-  { to: '/admin/patient-stories',    label: 'Patient Stories', icon: Film },
+  { to: '/admin/patient-stories',    label: 'Patient Stories', icon: Film, onlyFor: 'octavia-aesthetic' },
   { to: '/admin/team',               label: 'Team',            icon: Users },
   { to: '/admin/reviews',            label: 'Reviews',         icon: MessageSquare },
   { to: '/admin/notices',            label: 'Notices',         icon: Megaphone },
